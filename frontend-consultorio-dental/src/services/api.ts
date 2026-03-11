@@ -1,25 +1,25 @@
 const url_api = import.meta.env.VITE_API_URL
 
 
-export async function post(endpoint: string, datos: object) {
+export async function post<T>(endpoint: string, datos: object): Promise<T> {
 
-    
     const respuesta = await fetch(url_api + endpoint, {
         method: 'POST',
         body: JSON.stringify(datos),
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json'
         }
     });
 
     const respuesta_json = await respuesta.json();
+    console.log(respuesta_json);
 
     if (!respuesta.ok) {
-        console.log(respuesta_json);
-        throw new Error(respuesta_json);
+        throw respuesta_json;
     }
 
-    return {data: respuesta_json, error: null};
+    return respuesta_json;
 }
 
 
@@ -29,7 +29,7 @@ export async function post(endpoint: string, datos: object) {
 
 
 
-export function get(endpoint : string, id? : number): Promise<Response> {
+export function get(endpoint: string, id?: number): Promise<Response> {
 
     const path = id ? `${endpoint}/${id}` : endpoint;
 
@@ -38,6 +38,7 @@ export function get(endpoint : string, id? : number): Promise<Response> {
     try {
         return fetch(url_api + path, {
             method: 'GET',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             }

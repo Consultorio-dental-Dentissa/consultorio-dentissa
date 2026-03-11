@@ -1,3 +1,4 @@
+
 import { Controller, NotFoundException } from '@nestjs/common';
 import { Get, Post, Body } from '@nestjs/common';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
@@ -13,12 +14,7 @@ export class UsuariosController {
 
     @Post() 
     post(@Body() datos : any) {
-
-        throw new NotFoundException('Usuario no encontrado');
         
-        return {
-            logged: true
-        };
     }
 
 }

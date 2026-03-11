@@ -1,32 +1,33 @@
 import { useState } from "react";
-import { iniciar_sesion } from "../services/auth/authService";
-
+import { iniciar_sesion } from "../services/auth.service";
+import Cookies from 'js-cookie'
 
 export function useAuth() {
 
-    const [correo, setCorreo] = useState('');
-    const [contraseña, setContraseña] = useState('');
-
-
+    const [error, setError] = useState('');
 
     async function login(credenciales: any) {
 
         try {
 
             if (!credenciales.correo || !credenciales.contraseña) {
-                return {data: null, error: 'Debes llenar todos los campos'};
+                setError('Debes llenar todos los campos');
+                return;
             }
 
-            const datos = await iniciar_sesion(credenciales);
+            const respuesta = await iniciar_sesion(credenciales);
 
-            return {data: datos, error: null};
+            Cookies.set('token', respuesta.token, {secure: true});
+            
+            return respuesta;
 
         } catch (error) {
-            return {data: null, error: error};
+            setError((error as Error).message);
         }
+        
     }
 
 
-    return { correo, setCorreo, contraseña, setContraseña, login }
+    return { login, error }
 
 }

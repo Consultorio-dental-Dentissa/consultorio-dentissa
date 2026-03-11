@@ -1,34 +1,34 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-
+import Cookies from "js-cookie";
 
 
 export default function Login() {
 
-  const { login } = useAuth();
+  const { login, error } = useAuth();
 
   const [correo, setCorreo] = useState('');
   const [contraseña, setContraseña] = useState('');
   const [mensaje, setMensaje] = useState('');
 
+
   const manejarClick = async () => {
-    
+
     const credenciales = {
       correo: correo,
       contraseña: contraseña
     }
 
-    const {data, error} = await login(credenciales);
+    const respuesta = await login(credenciales);
 
     if (error) {
-      console.log(error);
-      setMensaje('Sucedio un error inesperado');
-      return;
+      setMensaje(error);
     }
 
-    if (data && (data as any).logged) {
-      setMensaje('Bienvenido. Iniciaste session correctamente');
+    if (respuesta) {
+      setMensaje(respuesta.message);
     }
+
   }
 
 

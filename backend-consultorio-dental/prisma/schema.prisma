@@ -11,5 +11,194 @@ generator client {
 
 datasource db {
   provider = "sqlserver"
+}
 
+
+
+
+/* Modelos de la base de datos */
+
+model Usuario {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  correo      String   @unique
+  contraseña String
+  telefono    String?
+  created_at  DateTime @default(now())
+  rol_id      Int
+  activo      Boolean  @default(true)
+
+  rol            Rol            @relation(fields: [rol_id], references: [id])
+  paciente       Paciente?
+  notificaciones Notificacion[]
+
+  @@map("usuarios")
+}
+
+model Rol {
+  id  Int    @id @default(autoincrement())
+  rol String @unique
+
+  usuarios Usuario[]
+
+  @@map("roles")
+}
+
+model Paciente {
+  id                  Int      @id @default(autoincrement())
+  nombre              String
+  apellido            String
+  direccion           String
+  fecha_nacimiento    DateTime
+  telefono            String
+  telefono_emergencia String?
+  usuario_id          Int      @unique
+
+  usuario Usuario @relation(fields: [usuario_id], references: [id])
+  citas   Cita[]
+
+  @@map("pacientes")
+}
+
+/**
+ * Modelos de las citas y consultas
+ */
+
+model Servicio {
+  id               Int     @id @default(autoincrement())
+  nombre           String
+  duracion_minutos Int
+  precio           Decimal @db.Decimal(10, 2)
+  descripcion      String  @db.NVarChar(MAX)
+  activo           Boolean @default(true)
+
+  citas    Cita[]
+  imagenes ImagenesServicio[]
+  ofertas  OfertaServicio[]
+
+  @@map("servicios")
+}
+
+model ImagenesServicio {
+  id          Int     @id @default(autoincrement())
+  url         String  @db.NVarChar(MAX)
+  ubicacion   String? @db.NVarChar(Max)
+  servicio_id Int
+
+  servicio Servicio @relation(fields: [servicio_id], references: [id])
+
+  @@map("imagenes_servicio")
+}
+
+model Cita {
+  id               Int      @id @default(autoincrement())
+  fecha            DateTime
+  hora             DateTime @db.Time
+  duracion_minutos Int
+  estado           String   @default("PENDIENTE")
+  nota_previa      String   @db.NVarChar(MAX)
+  motivo           String?  @db.NVarChar(MAX)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now())
+
+  paciente_id Int
+  servicio_id Int
+
+  paciente Paciente @relation(fields: [paciente_id], references: [id])
+  servicio Servicio @relation(fields: [servicio_id], references: [id])
+
+  consulta      Consulta?
+  notificacions Notificacion[]
+
+  @@map("citas")
+}
+
+model Consulta {
+  id            Int      @id @default(autoincrement())
+  notas         String   @db.NVarChar(MAX)
+  observaciones String   @db.NVarChar(MAX)
+  created_at    DateTime @default(now())
+
+  cita_id Int @unique
+
+  imagenes ImagenesConsulta[]
+  cita     Cita               @relation(fields: [cita_id], references: [id])
+
+  @@map("consultas")
+}
+
+model ImagenesConsulta {
+  id          Int     @id @default(autoincrement())
+  url         String  @db.NVarChar(MAX)
+  ubicacion   String? @db.NVarChar(MAX)
+  consulta_id Int
+
+  consulta Consulta @relation(fields: [consulta_id], references: [id])
+
+  @@map("imagenes_consultas")
+}
+
+model Oferta {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  descripcion  String   @db.NVarChar(MAX)
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  activa       Boolean  @default(false)
+
+  servicios OfertaServicio[]
+
+  @@map("ofertas")
+}
+
+model OfertaServicio {
+  id          Int @id @default(autoincrement())
+  oferta_id   Int
+  servicio_id Int
+
+  oferta   Oferta   @relation(fields: [oferta_id], references: [id])
+  servicio Servicio @relation(fields: [servicio_id], references: [id])
+
+  @@map("ofertas_servicios")
+}
+
+model HorarioDisponible {
+  id          Int      @id @default(autoincrement())
+  dia_semana  Int
+  hora_inicio DateTime @db.Time
+  hora_fin    DateTime @db.Time
+  estado      Boolean
+
+  @@map("horarios_disponibles")
+}
+
+model FechaBloqueada {
+  id     Int      @id @default(autoincrement())
+  fecha  DateTime
+  motivo String
+
+  @@map("fechas_bloqueadas")
+}
+
+model PreguntaFrecuente {
+  id        Int    @id @default(autoincrement())
+  pregunta  String @db.NVarChar(MAX)
+  respuesta String @db.NVarChar(MAX)
+
+  @@map("preguntas_frecuentes")
+}
+
+model Notificacion {
+  id         Int      @id @default(autoincrement())
+  tipo       String
+  mensaje    String
+  leida      Boolean  @default(false)
+  usuario_id Int
+  cita_id    Int?
+  created_at DateTime @default(now())
+
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cita    Cita?   @relation(fields: [cita_id], references: [id])
+
+  @@map("notificaciones")
 }
