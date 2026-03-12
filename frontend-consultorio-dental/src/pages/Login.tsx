@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import Cookies from "js-cookie";
-
 
 export default function Login() {
 
@@ -9,7 +7,7 @@ export default function Login() {
 
   const [correo, setCorreo] = useState('');
   const [contraseña, setContraseña] = useState('');
-  const [mensaje, setMensaje] = useState('');
+
 
 
   const manejarClick = async () => {
@@ -22,33 +20,40 @@ export default function Login() {
     const respuesta = await login(credenciales);
 
     if (error) {
-      setMensaje(error);
+      alert(error);
     }
 
     if (respuesta) {
-      setMensaje(respuesta.message);
+      alert(respuesta.message)
     }
-
   }
 
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="contenedor-login">
+      <div className="contenedor-formulario">
 
-      <h3>{mensaje}</h3>
 
-      <h2>Iniciar sesión</h2>
-      <form>
-        <label htmlFor="">correo electronico</label>
-        <input type="text" id="correo" onChange={(e) => setCorreo(e.target.value)} />
+        <form className="formulario-login">
+          <h2>Iniciar sesión</h2>
 
-        <label htmlFor="">Contraseña</label>
-        <input type="password" id="contraseña" onChange={(e) => setContraseña(e.target.value)} />
+          <div>
+            <label htmlFor="">Correo electronico</label>
+            <input type="text" id="correo" onChange={(e) => setCorreo(e.target.value)} />
 
-        <button type="button" onClick={manejarClick}>Iniciar sesión</button>
+            <label htmlFor="">Contraseña</label>
+            <input type="password" id="contraseña" onChange={(e) => setContraseña(e.target.value)} />
+          </div>
 
-      </form>
+          <div>
+            <button className="btn btn-login" type="button" onClick={manejarClick}>Iniciar sesión</button>
+            <button className="btn btn-registrate" type="button">Registrate</button>
+          </div>
+
+
+        </form>
+      </div>
     </div>
+
   )
 }

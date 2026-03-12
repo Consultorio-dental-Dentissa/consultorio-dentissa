@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 
 import Router from './router/router'
-import './styles/style.css'
+import './styles/theme.public.css'
 
 function App() {
 

@@ -2,7 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Home from "../pages/Home"
 import About from "../pages/Sobre-nosotros"
 import Login from "../pages/Login"
-import NavbarPublico from "../layouts/public_navbar"
+import Servicios from "../pages/Servicios"
+import NavbarPublico from "../layouts/PublicLayout"
+import Registrarse from "../pages/Registrarse"
 
 export default function Router() {
     return (
@@ -10,8 +12,10 @@ export default function Router() {
             <Routes>
                 <Route element={<NavbarPublico />}>
                     <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
+                    <Route path="/sobre-nosotros" element={<About />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/servicios" element={<Servicios />}/>
+                    <Route path="/registrate" element={<Registrarse />}/>
                 </Route>
 
             </Routes>

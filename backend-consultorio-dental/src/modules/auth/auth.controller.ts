@@ -1,16 +1,17 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import type { LoginDto } from './dtos/LoginDto';
+import type { IniciarSesionDto } from './dtos/IniciarSesionDto';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
 
-    /*
     constructor(private authService : AuthService) {}
 
     @Post()
-    post(@Body() datos: LoginDto, @Res({ passthrough: true }) response: Response): any
+    post(@Body() credenciales: IniciarSesionDto, /* @Res({ passthrough: true }) response: Response */) {
+        return this.authService.iniciar_sesion(credenciales);
+    }
     
     /* ApiResponse<{ token: string; usuario: LoginUser }> */ 
 

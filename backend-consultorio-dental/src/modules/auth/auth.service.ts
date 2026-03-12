@@ -1,7 +1,22 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { IniciarSesionDto } from './dtos/IniciarSesionDto';
+import { RepositorioUsuario } from 'src/modules/usuarios/repositories/usuarios.repository';
 
 @Injectable()
 export class AuthService {
+
+    constructor(private repositorioUsuario : RepositorioUsuario) {}
+
+    async iniciar_sesion(credenciales : IniciarSesionDto) {
+        
+        const usuario = this.repositorioUsuario.obtenerUsuarioPorCorreoConContraseña(credenciales.correo);
+
+        if (!usuario) {
+            throw new NotFoundException('Este usuario no existe');
+        }
+
+        
+    }
 
     /*
     iniciar_session(datos, response) {
