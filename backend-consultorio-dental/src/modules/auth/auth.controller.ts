@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import type { IniciarSesionDto } from './dtos/IniciarSesionDto';
+import type { IniciarSesionDto } from './dto/IniciarSesionDto';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 

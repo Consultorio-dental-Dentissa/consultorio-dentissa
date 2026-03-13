@@ -11,19 +11,31 @@ export class RepositorioUsuario {
 
 
     async obtenerTodos() {
-        return await this.prisma.usuario.findMany();
+        return await this.prisma.usuario.findMany({
+            include: {
+                rol: true
+            }
+        });
     }
 
 
 
     
     async obtenerUsuarioPorId(id: number) : Promise<Usuario | null> {
+        
+        console.log("3. Pasamos por el repositorio de usuarios");
+        
         return await this.prisma.usuario.findFirst({
             where: {
                 id: id
+            },
+            include: {
+                rol: true
             }
         });
     }
+
+    
 
     async obtenerUsuarioPorCorreo(correo: string) : Promise<Usuario | null> {
         return await this.prisma.usuario.findFirst({
@@ -34,7 +46,7 @@ export class RepositorioUsuario {
     }
 
 
-    async existeCorreo(correo: string) {
+    async existeCorreo(correo: string) : Promise<Boolean> {
         const conteo = await this.prisma.usuario.count({
             where: {
                 correo: correo
@@ -44,7 +56,7 @@ export class RepositorioUsuario {
         return conteo > 0;
     }
 
-    async existeTelefono(telefono: string) {
+    async existeTelefono(telefono: string) : Promise<Boolean> {
         const conteo = await this.prisma.usuario.count({
             where: {
                 telefono: telefono
@@ -78,6 +90,7 @@ export class RepositorioUsuario {
                 }
             },
             select: {
+                id: true,
                 nombre: true,
                 correo: true,
                 telefono: true,
@@ -94,13 +107,16 @@ export class RepositorioUsuario {
 
     // Metodo definido para devolver usuario con contraseña
 
-    async obtenerUsuarioPorCorreoConContraseña(correo: string) : Promise<Usuario | null> {
-        return await this.prisma.usuario.findFirst({
+    async obtenerUsuarioPorCorreoConContraseña(correo: string) {
+        return await this.prisma.usuario.findUnique({
             where: {
                 correo: correo
             },
             omit: {
                 contraseña: false
+            },
+            include: {
+                rol: true
             }
         });
     }

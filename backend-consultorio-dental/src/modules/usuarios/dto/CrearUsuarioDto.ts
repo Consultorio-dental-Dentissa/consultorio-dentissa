@@ -1,5 +1,3 @@
-import { Usuario } from "@prisma/client";
-
 export interface CrearUsuarioDto {
     nombre: string;
     correo: string;

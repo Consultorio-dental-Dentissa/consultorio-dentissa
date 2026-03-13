@@ -1,24 +1,22 @@
-FROM node:16 AS builder
+FROM node:22-alpine
 
-# Create app directory
 WORKDIR /app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# Copiar package.json primero para aprovechar el cache de capas de Docker
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install app dependencies
+# Instalar TODAS las dependencias (incluye devDependencies para ts-node, nest, etc.)
 RUN npm install
 
+# Generar el cliente de Prisma con los tipos correctos
+RUN npx prisma generate
+
+# El código fuente se monta como volumen en docker-compose,
+# así los cambios locales se reflejan en tiempo real (hot-reload)
 COPY . .
 
-RUN npm run build
-
-FROM node:16
-
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
-
 EXPOSE 3000
-CMD [ "npm", "run", "start:prod" ]
+
+# Al arrancar: aplica migraciones pendientes y luego inicia en modo desarrollo (watch)
+CMD npx prisma migrate deploy && npm run start:dev

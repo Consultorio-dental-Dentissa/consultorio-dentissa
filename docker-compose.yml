@@ -1,0 +1,66 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: consultorio_sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${DATABASE_PASSWORD}"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools18/bin/sqlcmd",
+          "-S",
+          "localhost",
+          "-U",
+          "SA",
+          "-P",
+          "${DATABASE_PASSWORD}",
+          "-C",
+          "-Q",
+          "SELECT 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend-consultorio-dental
+      dockerfile: Dockerfile
+    container_name: consultorio_backend
+    env_file:
+      - ./backend-consultorio-dental/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend-consultorio-dental:/app
+      - /app/node_modules
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ./frontend-consultorio-dental
+      dockerfile: Dockerfile
+    container_name: consultorio_frontend
+    env_file:
+      - ./frontend-consultorio-dental/.env
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend-consultorio-dental:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  sqlserver_data:
