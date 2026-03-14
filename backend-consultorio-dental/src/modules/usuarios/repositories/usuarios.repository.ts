@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Usuario } from "@prisma/client";
+import { Prisma, Usuario } from "@prisma/client";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { CrearUsuarioDto } from '../dto/CrearUsuarioDto';
 
 @Injectable()
 export class RepositorioUsuario {
 
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) { }
 
 
 
@@ -20,11 +20,11 @@ export class RepositorioUsuario {
 
 
 
-    
-    async obtenerUsuarioPorId(id: number) : Promise<Usuario | null> {
-        
+
+    async obtenerUsuarioPorId(id: number): Promise<Usuario | null> {
+
         console.log("3. Pasamos por el repositorio de usuarios");
-        
+
         return await this.prisma.usuario.findFirst({
             where: {
                 id: id
@@ -35,9 +35,9 @@ export class RepositorioUsuario {
         });
     }
 
-    
 
-    async obtenerUsuarioPorCorreo(correo: string) : Promise<Usuario | null> {
+
+    async obtenerUsuarioPorCorreo(correo: string): Promise<Usuario | null> {
         return await this.prisma.usuario.findFirst({
             where: {
                 correo: correo
@@ -46,7 +46,7 @@ export class RepositorioUsuario {
     }
 
 
-    async existeCorreo(correo: string) : Promise<Boolean> {
+    async existeCorreo(correo: string): Promise<Boolean> {
         const conteo = await this.prisma.usuario.count({
             where: {
                 correo: correo
@@ -56,7 +56,7 @@ export class RepositorioUsuario {
         return conteo > 0;
     }
 
-    async existeTelefono(telefono: string) : Promise<Boolean> {
+    async existeTelefono(telefono: string): Promise<Boolean> {
         const conteo = await this.prisma.usuario.count({
             where: {
                 telefono: telefono
@@ -67,9 +67,11 @@ export class RepositorioUsuario {
     }
 
 
-    async crearUsuario(crearUsuarioDto : CrearUsuarioDto) {
+    async crearUsuario(crearUsuarioDto: CrearUsuarioDto, transaction? : Prisma.TransactionClient) {
 
-        const rol = await this.prisma.rol.findFirst({
+        const cliente = transaction ?? this.prisma;
+
+        const rol = await cliente.rol.findFirst({
             where: {
                 rol: crearUsuarioDto.rol
             }
@@ -79,22 +81,21 @@ export class RepositorioUsuario {
             throw new NotFoundException('Rol no encontrado');
         }
 
-        return await this.prisma.usuario.create({
+        return await cliente.usuario.create({
             data: {
                 nombre: crearUsuarioDto.nombre,
+                apellido: crearUsuarioDto.apellido,
                 correo: crearUsuarioDto.correo,
                 contraseña: crearUsuarioDto.contraseña,
                 telefono: crearUsuarioDto.telefono,
-                rol: {
-                    connect: {id: rol.id}
-                }
+                rol_id: rol.id
             },
             select: {
                 id: true,
                 nombre: true,
                 correo: true,
                 telefono: true,
-                activo: true,   
+                activo: true,
                 rol: {
                     select: {
                         rol: true

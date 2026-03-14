@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { crearPacienteDto } from "../dto/crearPacienteDto";
+import { Prisma } from '@prisma/client';
+
 
 @Injectable()
-export class pacientesRepository {
+export class RepositorioPaciente {
 
     constructor(private prisma: PrismaService) {}
 
@@ -22,16 +24,16 @@ export class pacientesRepository {
     }
 
 
-    async crearPaciente(crearPacienteDto : crearPacienteDto) {
-        return await this.prisma.paciente.create({
+    async crearPaciente(crearPacienteDto : crearPacienteDto, transaction? : Prisma.TransactionClient) {
+
+        const cliente = transaction ?? this.prisma;
+
+        return await cliente.paciente.create({
             data: {
-                nombre: crearPacienteDto.nombre,
-                apellido: crearPacienteDto.apellido,
-                direccion: crearPacienteDto.apellido,
-                fecha_nacimiento: crearPacienteDto.fecha_nacimiento,
-                telefono: crearPacienteDto.telefono,
+                direccion: crearPacienteDto.direccion,
+                fecha_nacimiento: new Date(crearPacienteDto.fecha_nacimiento),
                 telefono_emergencia: crearPacienteDto.telefono_emergencia,
-                usuario_id: crearPacienteDto.usuario.id
+                usuario_id: crearPacienteDto.usuario_id
             }
         });
     }
