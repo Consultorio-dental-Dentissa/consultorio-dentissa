@@ -1,10 +1,11 @@
-import { Controller, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { Get, Post, Body } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import type { CrearUsuarioDto } from './dto/CrearUsuarioDto';
+import { AuthGuard } from '../security/guards/auth.guard';
 
-"POST /usuarios"
 
+@UseGuards(AuthGuard)
 @Controller('usuarios')
 export class UsuariosController {
 
