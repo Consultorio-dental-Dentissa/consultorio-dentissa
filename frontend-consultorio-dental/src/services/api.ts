@@ -2,7 +2,7 @@ import { ApiError } from "../types/ApiError";
 
 const url_api = import.meta.env.VITE_API_URL
 
-
+// POST
 export async function post<T>(endpoint: string, datos: object): Promise<T> {
 
     try {
@@ -42,7 +42,7 @@ export async function post<T>(endpoint: string, datos: object): Promise<T> {
 
 }
 
-
+// GET
 export async function get<T>(endpoint: string, id?: number): Promise<T> {
 
     try {
@@ -77,4 +77,84 @@ export async function get<T>(endpoint: string, id?: number): Promise<T> {
         );
     }
 
+}
+
+
+
+
+
+// PUT
+export async function put<T>(endpoint: string, id: number, datos: object): Promise<T> {
+
+    try {
+        const respuesta = await fetch(`${url_api}${endpoint}/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(datos),
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const respuesta_json = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new ApiError(
+                respuesta_json.message,
+                respuesta_json.error,
+                respuesta_json.statusCode
+            );
+        }
+
+        return respuesta_json;
+    } catch (error) {
+
+        if (error instanceof ApiError) {
+            throw error;
+        }
+
+        throw new ApiError(
+            'Hubo un error al comunicarse con el servidor',
+            'Internal Server Error',
+            500
+        );
+    }
+}
+
+
+// DELETE
+export async function deleteR<T>(endpoint: string, id: number): Promise<T> {
+
+    try {
+        const respuesta = await fetch(`${url_api}${endpoint}/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const respuesta_json = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new ApiError(
+                respuesta_json.message,
+                respuesta_json.error,
+                respuesta_json.statusCode
+            );
+        }
+
+        return respuesta_json;
+    } catch (error) {
+
+        if (error instanceof ApiError) {
+            throw error;
+        }
+
+        throw new ApiError(
+            'Hubo un error al comunicarse con el servidor',
+            'Internal Server Error',
+            500
+        );
+    }
 }
