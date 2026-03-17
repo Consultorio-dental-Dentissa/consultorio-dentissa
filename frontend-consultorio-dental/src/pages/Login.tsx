@@ -1,25 +1,48 @@
 // Login.tsx
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { useLogin } from "../hooks/useLogin";
+import { useAuth } from "../context/AuthContextProvider";
 
 export default function Login() {
-    const [formData, setFormData] = useState({
-        email: "",
-        password: ""
-    });
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+    const [correo, setCorreo] = useState('');
+    const [contraseña, setContraseña] = useState('');
+    const [errorFormulario, setErrorFormulario] = useState<string | null>('');
+    const { login, loading, error, clearError } = useLogin();
+    const { setIsAuthenticated, setUsuario } = useAuth();
 
-    const handleSubmit = (e) => {
+    const manejarSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Aquí iría la lógica de login
-        console.log("Login:", formData);
-    };
+        console.log(correo + contraseña);
+
+        setErrorFormulario(null);
+        clearError();
+
+        if (!correo || !contraseña) {
+            setErrorFormulario('Debes llenar todos los campos del formulario');
+            return;
+        }
+
+
+        const respuesta = await login(correo, contraseña);
+
+        if (respuesta?.estado) {
+
+            // Autenticamos al usuario y guardamos sus datos
+            setIsAuthenticated(true);
+            setUsuario(respuesta.usuario);
+
+            // Guardamos lo datos en el localStorage
+            localStorage.setItem('token', respuesta.token);
+            localStorage.setItem('usuario', JSON.stringify(respuesta.usuario));
+            localStorage.setItem('isAuthenticated', 'true');
+
+            <Navigate to="/dashboard" />
+        }
+
+
+    }
 
     return (
         <div className="auth-container">
@@ -27,19 +50,24 @@ export default function Login() {
                 <div className="auth-header">
                     <h2>Bienvenido de nuevo</h2>
                     <p>Inicia sesión para acceder a tu cuenta</p>
+
+                    {errorFormulario && <p style={{ color: "#ce1b1b" }}>{errorFormulario}</p>}
+                    {error && <p style={{ color: "#ce1b1b" }}>{error}</p>}
+                    {loading ? <p>Cargando...</p> : ''}
+
                 </div>
 
-                <form onSubmit={handleSubmit} className="auth-form">
+                <form onSubmit={manejarSubmit} className="auth-form">
                     <div className="form-group">
                         <label htmlFor="email">Correo electrónico</label>
                         <input
                             type="email"
                             id="email"
                             name="email"
-                            value={formData.email}
-                            onChange={handleChange}
+                            value={correo}
+                            onChange={(e) => { setCorreo(e.target.value) }}
                             placeholder="ejemplo@correo.com"
-                            required
+
                         />
                     </div>
 
@@ -49,10 +77,10 @@ export default function Login() {
                             type="password"
                             id="password"
                             name="password"
-                            value={formData.password}
-                            onChange={handleChange}
+                            value={contraseña}
+                            onChange={(e) => { setContraseña(e.target.value) }}
                             placeholder="••••••••"
-                            required
+
                         />
                     </div>
 

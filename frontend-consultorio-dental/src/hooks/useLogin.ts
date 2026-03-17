@@ -1,5 +1,6 @@
 import { requestLogin } from "../services/auth.service";
 import { useState } from "react";
+import type { ApiError } from "../types/Respuestas/ApiError";
 
 export function useLogin() {
 
@@ -27,7 +28,7 @@ export function useLogin() {
 
         } catch (error) {
 
-            setError((error as Error).message);
+            setError((error as ApiError).message);
             return null;
 
         } finally {
