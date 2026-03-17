@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContextProvider";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaLaptopMedical } from "react-icons/fa6";
 import { IoGitNetworkOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 
 export default function Dashboard() {
@@ -20,7 +21,7 @@ export default function Dashboard() {
       </div>
 
       <section className="contenedor-fichas-dashboard">
-        <div className="ficha-dashboard pacientes">
+        <Link to="/pacientes" className="ficha-dashboard pacientes">
 
           <div className="seccion-derecha">
             <FiUser className="ficha-icon" />
@@ -30,8 +31,9 @@ export default function Dashboard() {
 
           </div>
 
-        </div>
-        <div className="ficha-dashboard consultas">
+        </Link>
+
+        <Link to="/consultas" className="ficha-dashboard consultas">
 
           <div className="seccion-izquierda">
             <FaRegCalendarAlt className="ficha-icon" />
@@ -41,8 +43,9 @@ export default function Dashboard() {
 
           </div>
 
-        </div>
-        <div className="ficha-dashboard citas">
+        </Link>
+
+        <Link to="/citas" className="ficha-dashboard citas">
 
           <div className="seccion-izquierda">
             <FaLaptopMedical className="ficha-icon" />
@@ -52,8 +55,9 @@ export default function Dashboard() {
 
           </div>
 
-        </div>
-        <div className="ficha-dashboard servicios">
+        </Link>
+
+        <Link to="/servicios" className="ficha-dashboard servicios">
 
           <div className="seccion-izquierda">
             <IoGitNetworkOutline className="ficha-icon" />
@@ -63,7 +67,7 @@ export default function Dashboard() {
 
           </div>
 
-        </div>
+        </Link>
       </section>
 
 
