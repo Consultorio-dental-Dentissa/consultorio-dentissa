@@ -1,5 +1,5 @@
 import { FiUser } from "react-icons/fi";
-import { useAuth } from "../context/AuthContextProvider";
+import { useAuth } from "../../context/AuthContextProvider";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaLaptopMedical } from "react-icons/fa6";
 import { IoGitNetworkOutline } from "react-icons/io5";

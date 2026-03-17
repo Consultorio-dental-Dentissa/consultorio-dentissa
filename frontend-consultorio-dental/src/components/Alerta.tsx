@@ -16,7 +16,7 @@ export function Alerta({ mensaje, tipo, onCerrar }: Props) {
         }, 2000);
 
         return () => clearTimeout(timer);
-    }, [mensaje, tipo]);
+    }, [mensaje, tipo]);    
 
     return (
         <div className={`alerta alerta-${tipo}`}>
