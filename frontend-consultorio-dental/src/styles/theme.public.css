@@ -1,4 +1,8 @@
 /* ESTILOS PRINCIPALES ACTUALIZADOS */
+html, body, #root {
+    height: 100%;
+}
+
 :root {
     --primary-pink: #d75078;    /* Pantone 191 C */
     --secondary-pink: #f2b0a6;  /* Pantone 487 C */
@@ -10,9 +14,8 @@
     --border-color: #e2e8f0;
 }
 
-.layout {
-    min-height: 100vh;
-    min-height: 100dvh;
+.public-layout {
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -24,13 +27,15 @@
     min-height: 0;
     flex: 1;
     width: 100%;
+    overflow-y: auto;
+
 }
 
 .public-contenedor-principal {
     width: 100%;
-    display: flex;
-    flex: 1;
     position: relative;
+    overflow-y: auto;
+    height: auto;
 }
 
 /* NAVBAR ACTUALIZADO CON COLORES DE MARCA */
@@ -123,7 +128,6 @@
 
 /* ESTILOS PARA LOGIN Y REGISTRO - CENTRADOS Y ROSA */
 .auth-container {
-    min-height: calc(100vh - 80px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -205,6 +209,7 @@
     margin-bottom: 0;
     width: 100%;
     box-sizing: border-box;
+    color: black
 }
 
 .form-group input:focus {
@@ -214,7 +219,7 @@
 }
 
 .form-group input::placeholder {
-    color: #a0aec0;
+    color: #7a7a7a;
 }
 
 .form-options {

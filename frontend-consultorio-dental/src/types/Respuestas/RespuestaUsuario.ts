@@ -1,4 +1,4 @@
-export interface Usuario {
+export interface RespuestaUsuario {
     id: number;
     nombre: string;
     apellido: string;
@@ -6,9 +6,4 @@ export interface Usuario {
     telefono: string | null;
     contraseña: string;
     rol: string;
-    paciente?: {
-        direccion: string,
-        fechaNacimiento: string,
-        telefonoEmergencia: string,
-    }
 }
