@@ -1,8 +1,8 @@
 // Login.tsx
 import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
-import { useLogin } from "../hooks/useLogin";
-import { useAuth } from "../context/AuthContextProvider";
+import { useLogin } from "../../hooks/useLogin";
+import { useAuth } from "../../context/AuthContextProvider";
 
 export default function Login() {
 
