@@ -1,8 +1,8 @@
 // Registrarse.tsx
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import type { RegistrarUsuario } from "../types/RegistrarUsuario";
-import { useRegister } from "../hooks/useRegister";
+import type { RegistrarUsuario } from "../../types/RegistrarUsuario";
+import { useRegister } from "../../hooks/useRegister";
 
 export default function Registrarse() {
 
