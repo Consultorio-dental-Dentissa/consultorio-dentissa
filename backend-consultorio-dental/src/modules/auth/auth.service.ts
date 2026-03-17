@@ -53,7 +53,7 @@ export class AuthService {
         
 
         const usuario_autenticado = {
-            logged: true,
+            estado: true,
             token: token,
             usuario: {
                 id: usuario.id,
