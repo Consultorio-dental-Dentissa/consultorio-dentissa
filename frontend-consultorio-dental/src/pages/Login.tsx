@@ -1,82 +1,79 @@
+// Login.tsx
+import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useLogin } from "../hooks/useLogin";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContextProvider";
 
 export default function Login() {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
 
-  const { setIsAuthenticated, setUsuario } = useAuth();
-  const { login, loading, error, clearError } = useLogin();
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
 
-  const [correo, setCorreo] = useState('');
-  const [contraseña, setContraseña] = useState('')
-  const [formError, setFormError] = useState<string | null>(null);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Aquí iría la lógica de login
+        console.log("Login:", formData);
+    };
 
+    return (
+        <div className="auth-container">
+            <div className="auth-card">
+                <div className="auth-header">
+                    <h2>Bienvenido de nuevo</h2>
+                    <p>Inicia sesión para acceder a tu cuenta</p>
+                </div>
 
-  /**
-   * Preguntar al contexto global si el usuario esta authenticado
-   * si lo esta, renviarlo directamente al dashboard para que no
-   * vueva a iniciar sesión a menos que haya cerrado la que tiene
-   * avierta
-   */
+                <form onSubmit={handleSubmit} className="auth-form">
+                    <div className="form-group">
+                        <label htmlFor="email">Correo electrónico</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="ejemplo@correo.com"
+                            required
+                        />
+                    </div>
 
+                    <div className="form-group">
+                        <label htmlFor="password">Contraseña</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            required
+                        />
+                    </div>
 
-  const manejarSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+                    <div className="form-options">
+                        <label className="checkbox-label">
+                            <input type="checkbox" /> Recordarme
+                        </label>
+                        <Link to="/recuperar-password" className="forgot-password">
+                            ¿Olvidaste tu contraseña?
+                        </Link>
+                    </div>
 
-    e.preventDefault();
-    setFormError(null);
-    clearError();
+                    <button type="submit" className="auth-button">
+                        Iniciar sesión
+                    </button>
+                </form>
 
-    if (!correo || !contraseña) {
-      setFormError('Debes llenar todos los campos.');
-      return;
-    }
-
-    const respuesta = await login(correo, contraseña);
-
-    if (respuesta?.estado) {
-
-      setIsAuthenticated(true);
-      setUsuario(respuesta.usuario);
-
-      // Guardamos todo en el LocalStorage
-      localStorage.setItem('token', respuesta.token);
-      localStorage.setItem('usuario', JSON.stringify(respuesta.usuario));
-      localStorage.setItem('isAuthenticated', "true");
-
-      return <Navigate to="/dashboard" replace/>
-    }
-  }
-
-
-  return (
-    <div className="contenedor-login">
-      <div className="contenedor-formulario">
-
-        {error && <h2>{error}</h2>}
-        {formError && <h2>{formError}</h2>}
-
-
-        {loading ? <h2>Cargando...</h2> : ''}
-
-        <form className="formulario-login" onSubmit={manejarSubmit}>
-          <h2>Iniciar sesión</h2>
-
-          <div>
-            <label htmlFor="">Correo electronico</label>
-            <input type="text" id="correo" onChange={(e) => setCorreo(e.target.value)} />
-
-            <label htmlFor="">Contraseña</label>
-            <input type="password" id="contraseña" onChange={(e) => setContraseña(e.target.value)} />
-          </div>
-
-          <div>
-            <button disabled={loading} className="btn btn-login">Iniciar sesión</button>
-            <button className="btn btn-registrate" type="button">Registrate</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-  )
+                <div className="auth-footer">
+                    <p>¿No tienes una cuenta? <Link to="/registrate">Regístrate aquí</Link></p>
+                </div>
+            </div>
+        </div>
+    );
 }
