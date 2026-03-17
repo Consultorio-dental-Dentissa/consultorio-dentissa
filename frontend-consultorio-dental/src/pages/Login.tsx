@@ -1,30 +1,50 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useLogin } from "../hooks/useLogin";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContextProvider";
 
 export default function Login() {
 
-  const { login, error } = useAuth();
+  const { setIsAuthenticated, setUsuario } = useAuth();
+  const { login, loading, error, clearError } = useLogin();
 
   const [correo, setCorreo] = useState('');
-  const [contraseña, setContraseña] = useState('');
+  const [contraseña, setContraseña] = useState('')
+  const [formError, setFormError] = useState<string | null>(null);
 
 
+  /**
+   * Preguntar al contexto global si el usuario esta authenticado
+   * si lo esta, renviarlo directamente al dashboard para que no
+   * vueva a iniciar sesión a menos que haya cerrado la que tiene
+   * avierta
+   */
 
-  const manejarClick = async () => {
 
-    const credenciales = {
-      correo: correo,
-      contraseña: contraseña
+  const manejarSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+    e.preventDefault();
+    setFormError(null);
+    clearError();
+
+    if (!correo || !contraseña) {
+      setFormError('Debes llenar todos los campos.');
+      return;
     }
 
-    const respuesta = await login(credenciales);
+    const respuesta = await login(correo, contraseña);
 
-    if (error) {
-      alert(error);
-    }
+    if (respuesta?.estado) {
 
-    if (respuesta) {
-      alert(respuesta.message)
+      setIsAuthenticated(true);
+      setUsuario(respuesta.usuario);
+
+      // Guardamos todo en el LocalStorage
+      localStorage.setItem('token', respuesta.token);
+      localStorage.setItem('usuario', JSON.stringify(respuesta.usuario));
+      localStorage.setItem('isAuthenticated', "true");
+
+      return <Navigate to="/dashboard" replace/>
     }
   }
 
@@ -33,8 +53,13 @@ export default function Login() {
     <div className="contenedor-login">
       <div className="contenedor-formulario">
 
+        {error && <h2>{error}</h2>}
+        {formError && <h2>{formError}</h2>}
 
-        <form className="formulario-login">
+
+        {loading ? <h2>Cargando...</h2> : ''}
+
+        <form className="formulario-login" onSubmit={manejarSubmit}>
           <h2>Iniciar sesión</h2>
 
           <div>
@@ -46,11 +71,9 @@ export default function Login() {
           </div>
 
           <div>
-            <button className="btn btn-login" type="button" onClick={manejarClick}>Iniciar sesión</button>
+            <button disabled={loading} className="btn btn-login">Iniciar sesión</button>
             <button className="btn btn-registrate" type="button">Registrate</button>
           </div>
-
-
         </form>
       </div>
     </div>
