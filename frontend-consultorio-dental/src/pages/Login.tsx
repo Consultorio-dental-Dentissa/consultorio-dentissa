@@ -1,59 +1,79 @@
+// Login.tsx
+import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
 
-  const { login, error } = useAuth();
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
 
-  const [correo, setCorreo] = useState('');
-  const [contraseña, setContraseña] = useState('');
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Aquí iría la lógica de login
+        console.log("Login:", formData);
+    };
 
+    return (
+        <div className="auth-container">
+            <div className="auth-card">
+                <div className="auth-header">
+                    <h2>Bienvenido de nuevo</h2>
+                    <p>Inicia sesión para acceder a tu cuenta</p>
+                </div>
 
+                <form onSubmit={handleSubmit} className="auth-form">
+                    <div className="form-group">
+                        <label htmlFor="email">Correo electrónico</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="ejemplo@correo.com"
+                            required
+                        />
+                    </div>
 
-  const manejarClick = async () => {
+                    <div className="form-group">
+                        <label htmlFor="password">Contraseña</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            required
+                        />
+                    </div>
 
-    const credenciales = {
-      correo: correo,
-      contraseña: contraseña
-    }
+                    <div className="form-options">
+                        <label className="checkbox-label">
+                            <input type="checkbox" /> Recordarme
+                        </label>
+                        <Link to="/recuperar-password" className="forgot-password">
+                            ¿Olvidaste tu contraseña?
+                        </Link>
+                    </div>
 
-    const respuesta = await login(credenciales);
+                    <button type="submit" className="auth-button">
+                        Iniciar sesión
+                    </button>
+                </form>
 
-    if (error) {
-      alert(error);
-    }
-
-    if (respuesta) {
-      alert(respuesta.message)
-    }
-  }
-
-
-  return (
-    <div className="contenedor-login">
-      <div className="contenedor-formulario">
-
-
-        <form className="formulario-login">
-          <h2>Iniciar sesión</h2>
-
-          <div>
-            <label htmlFor="">Correo electronico</label>
-            <input type="text" id="correo" onChange={(e) => setCorreo(e.target.value)} />
-
-            <label htmlFor="">Contraseña</label>
-            <input type="password" id="contraseña" onChange={(e) => setContraseña(e.target.value)} />
-          </div>
-
-          <div>
-            <button className="btn btn-login" type="button" onClick={manejarClick}>Iniciar sesión</button>
-            <button className="btn btn-registrate" type="button">Registrate</button>
-          </div>
-
-
-        </form>
-      </div>
-    </div>
-
-  )
+                <div className="auth-footer">
+                    <p>¿No tienes una cuenta? <Link to="/registrate">Regístrate aquí</Link></p>
+                </div>
+            </div>
+        </div>
+    );
 }
