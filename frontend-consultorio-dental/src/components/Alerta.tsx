@@ -1,39 +1,26 @@
-import { MdError } from "react-icons/md";
-import { BiSolidError } from "react-icons/bi";
-import { GrStatusGood } from "react-icons/gr";
+import { useEffect } from 'react';
 
-export type Props = {
-  tipo: "error" | "exito" | "warning";
-  mensaje: string;
-};
+type TipoAlerta = 'success' | 'error' | 'warning';
 
-export function Alerta({tipo, mensaje}: Props) {
+interface Props {
+    mensaje: string;
+    tipo: TipoAlerta;
+    onCerrar: () => void;
+}
 
-    let alerta = '';
-    let icono;
+export function Alerta({ mensaje, tipo, onCerrar }: Props) {
 
-    switch(tipo) {
-        case 'exito':
-            alerta = 'alerta-exito';
-            icono = <GrStatusGood className="icon-exito" />
-            break;
-        case 'error':
-            alerta = 'alerta-error';
-            icono = <MdError className="icon-error" />
-            break;
-        case 'warning':
-            alerta = 'alerta-warning';
-            icono = <BiSolidError className="icon-warning" />
-            break;   
-    }
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            onCerrar();
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, [mensaje, tipo]);
 
     return (
-        <div className={`alerta ${alerta}`}>
-            <div className="contenedor-icon-alerta">
-                {icono}
-            </div>
-            <h3>{mensaje}</h3>
+        <div className={`alerta alerta-${tipo}`}>
+            <span>{mensaje}</span>
         </div>
     );
-
 }

@@ -26,7 +26,7 @@
     width: 100%;
 }
 
-.contenedor-principal {
+.public-contenedor-principal {
     width: 100%;
     display: flex;
     flex: 1;
@@ -73,7 +73,7 @@
     border-radius: 2px;
 }
 
-.contenedor-links {
+.public-contenedor-links {
     display: flex;
     gap: 8px;
     align-items: center;

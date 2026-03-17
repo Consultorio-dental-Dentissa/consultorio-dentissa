@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider     = "prisma-client-js"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -9,6 +10,7 @@ datasource db {
 model Usuario {
   id             Int            @id @default(autoincrement())
   nombre         String
+  apellido       String
   correo         String         @unique
   contraseña    String
   telefono       String?
@@ -32,11 +34,8 @@ model Rol {
 
 model Paciente {
   id                  Int      @id @default(autoincrement())
-  nombre              String
-  apellido            String
   direccion           String
   fecha_nacimiento    DateTime
-  telefono            String
   telefono_emergencia String?
   usuario_id          Int      @unique
   citas               Cita[]
