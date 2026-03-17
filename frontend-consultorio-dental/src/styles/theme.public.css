@@ -1,4 +1,4 @@
-.layout {
+.public-layout {
     min-height: 100vh;        /* Mínimo: toda la pantalla */
     min-height: 100dvh;       /* Para móviles */
     display: flex;            /* Activa flexbox */
@@ -15,7 +15,7 @@
 
 }
 
-.contenedor-principal {
+.public-contenedor-principal {
     width: 100%;
     display: flex;
     flex: 1;
@@ -41,12 +41,12 @@
 }
 
 
-.contenedor-links {
+.public-contenedor-links {
     display: flex;
     gap: 10px;
 }
 
-.contenedor-links .link {
+.public-contenedor-links .link {
     color: black;
     text-decoration: none;
     font-weight: 500;
@@ -58,21 +58,21 @@
         transform 0.2s ease;
 }
 
-.contenedor-links .login {
+.public-contenedor-links .login {
     background-color: aliceblue;
 }
 
-.contenedor-links .link:hover {
+.public-contenedor-links .link:hover {
     background-color: rgb(255, 255, 255);
     border-color: rgb(0, 0, 0);
 }
 
-.contenedor-links .login:hover {
+.public-contenedor-links .login:hover {
     background-color: rgb(0, 0, 0);
     color: white;
 }
 
-.contenedor-links .login:active {
+.public-contenedor-links .login:active {
     transform: scale(1.1);
 
 }
@@ -123,6 +123,7 @@ input {
     background-color: aliceblue;
     height: 30px;
     border: none;
+    color: black;
 }
 
 .contenedor-login .btn {
