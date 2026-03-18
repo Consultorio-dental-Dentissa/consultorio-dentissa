@@ -1,4 +1,4 @@
-import { ApiError } from "../types/Respuestas/ApiError";
+import { ApiError } from "../types/respuestas/ApiError";
 
 const url_api = import.meta.env.VITE_API_URL
 

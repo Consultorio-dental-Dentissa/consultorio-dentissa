@@ -28,22 +28,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     }, []);
 
-    /*
-    const iniciarSesion = (datosUsuario: Usuario, token: string) => {
-        setUsuario(datosUsuario);
+    
+    const iniciarSesion = (usuario: Usuario, token: string) => {
+
+        // Autenticamos al usuario y guardamos sus datos
         setIsAuthenticated(true);
-        localStorage.setItem('token', JSON.stringify(token));
+        setUsuario(usuario);
+
+        // Guardamos lo datos en el localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('usuario', JSON.stringify(usuario));
+        localStorage.setItem('isAuthenticated', 'true');
     };
 
+    
     const cerrarSesion = () => {
         setUsuario(null);
         setIsAuthenticated(false);
+
         localStorage.removeItem('token');
+        localStorage.removeItem('usuario');
+        localStorage.removeItem('isAuthenticated');
     };
-    */
 
     return (
-        <AuthContext.Provider value={{ usuario, setUsuario, isAuthenticated , setIsAuthenticated}}>
+        <AuthContext.Provider value={{ usuario, isAuthenticated, iniciarSesion, cerrarSesion}}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { TituloPanel } from "../../components/TituloPanel";
 
 export default function Servicios() {
 
@@ -7,10 +7,10 @@ export default function Servicios() {
 
     return (
         <div>
-            <div className="contenedor-titulos-principal">
-                <h2>Panel de servicios</h2>
-                <h4>Aqui esta el resumen de tu consultorio dental</h4>
-            </div>
+            <TituloPanel
+                titulo="Panel de servicios"
+                subtitulo="Aqui puedes manejar tus servicios"
+            />
         </div>
     );
 

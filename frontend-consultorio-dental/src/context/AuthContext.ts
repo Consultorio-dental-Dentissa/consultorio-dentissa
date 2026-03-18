@@ -4,9 +4,9 @@ import type { Usuario } from '../types/Usuario';
 
 interface AuthContextType {
   usuario: Usuario | null;
-  setUsuario(usuario: Usuario) : void,
   isAuthenticated: boolean;
-  setIsAuthenticated(estado : boolean) : void,  
+  iniciarSesion(datosUsuario : Usuario, token : string) : void,
+  cerrarSesion() : void
 }
 
 
