@@ -20,7 +20,7 @@ export default function LayoutPublico() {
             <nav className="navbar-publico">
 
                 <div className="contenedor-titulo-principal">
-                    <Link className="logo-navbar" to="/">Publico</Link>
+                    <Link className="logo-navbar" to="/">Consultorio Dentissa</Link>
                 </div>
 
                 <div className="public-contenedor-links">

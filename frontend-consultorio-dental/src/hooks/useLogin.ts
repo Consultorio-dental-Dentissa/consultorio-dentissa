@@ -1,6 +1,6 @@
 import { requestLogin } from "../services/auth.service";
 import { useState } from "react";
-import type { ApiError } from "../types/Respuestas/ApiError";
+import type { ApiError } from "../types/respuestas/ApiError";
 
 export function useLogin() {
 

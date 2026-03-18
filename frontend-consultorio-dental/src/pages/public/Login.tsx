@@ -9,12 +9,14 @@ export default function Login() {
     const [correo, setCorreo] = useState('');
     const [contraseña, setContraseña] = useState('');
     const [errorFormulario, setErrorFormulario] = useState<string | null>('');
+
+
     const { login, loading, error, clearError } = useLogin();
-    const { setIsAuthenticated, setUsuario } = useAuth();
+    const { iniciarSesion } = useAuth();
 
     const manejarSubmit = async (e: React.FormEvent) => {
+
         e.preventDefault();
-        console.log(correo + contraseña);
 
         setErrorFormulario(null);
         clearError();
@@ -24,20 +26,11 @@ export default function Login() {
             return;
         }
 
-
         const respuesta = await login(correo, contraseña);
 
         if (respuesta?.estado) {
-
-            // Autenticamos al usuario y guardamos sus datos
-            setIsAuthenticated(true);
-            setUsuario(respuesta.usuario);
-
-            // Guardamos lo datos en el localStorage
-            localStorage.setItem('token', respuesta.token);
-            localStorage.setItem('usuario', JSON.stringify(respuesta.usuario));
-            localStorage.setItem('isAuthenticated', 'true');
-
+            
+            iniciarSesion(respuesta.usuario, respuesta.token);
             <Navigate to="/dashboard" />
         }
 
@@ -51,8 +44,8 @@ export default function Login() {
                     <h2>Bienvenido de nuevo</h2>
                     <p>Inicia sesión para acceder a tu cuenta</p>
 
-                    {errorFormulario && <p style={{ color: "#ce1b1b" }}>{errorFormulario}</p>}
-                    {error && <p style={{ color: "#ce1b1b" }}>{error}</p>}
+                    {errorFormulario && <p style={{ color: "#ce1b1b", fontWeight: "700" }}>{errorFormulario}</p>}
+                    {error && <p style={{ color: "#ce1b1b", fontWeight: "700"}}>{error}</p>}
                     {loading ? <p>Cargando...</p> : ''}
 
                 </div>
@@ -93,8 +86,8 @@ export default function Login() {
                         </Link>
                     </div>
 
-                    <button type="submit" className="auth-button">
-                        Iniciar sesión
+                    <button type="submit" disabled={loading} className="auth-button">
+                        {loading ? <p>Cargando...</p> : <p>Iniciar sesión</p>}
                     </button>
                 </form>
 
