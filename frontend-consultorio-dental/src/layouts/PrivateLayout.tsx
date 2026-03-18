@@ -22,20 +22,17 @@ import { IoIosLogOut } from "react-icons/io";
 
 export default function LayoutPrivado() {
 
-    const { isAuthenticated, setIsAuthenticated } = useAuth();
+    const { isAuthenticated, cerrarSesion } = useAuth();
+
+    console.log("pene" + isAuthenticated);
 
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
 
-    console.log(isAuthenticated);
-
-    const cerrarSesion = () => {
-        console.log("cerrar sesion");
-        localStorage.removeItem('usuario');
-        localStorage.removeItem('token');
-        localStorage.removeItem('isAuthenticated');
-        setIsAuthenticated(false);
+    const manejarCerrarSesion = () => {
+        cerrarSesion();
+        <Navigate to="/login"/>
     }
 
     return (
@@ -70,7 +67,7 @@ export default function LayoutPrivado() {
                 <div className="footer-menu-lateral">
                     <div className="contenedor-links">
                         <div className="seccion-menu">
-                            <button id="logout-btn" className="link" onClick={cerrarSesion}><IoIosLogOut className="menu-icon"/> Cerrar sesion</button>
+                            <button id="logout-btn" className="link" onClick={manejarCerrarSesion}><IoIosLogOut className="menu-icon"/> Cerrar sesion</button>
                         </div>
                     </div>
                 </div>

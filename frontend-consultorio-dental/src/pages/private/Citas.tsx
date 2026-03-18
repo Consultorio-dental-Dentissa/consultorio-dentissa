@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { TituloPanel } from "../../components/TituloPanel";
 
 
 export default function Citas() {
@@ -7,10 +8,10 @@ export default function Citas() {
 
     return (
         <div>
-            <div className="contenedor-titulos-principal">
-                <h2>Panel de citas</h2>
-                <h4>Aqui esta el resumen de tu consultorio dental</h4>
-            </div>
+            <TituloPanel
+                titulo="Panel de citas"
+                subtitulo="Aqui puedes manejar tus citas"
+            />
         </div>
     );
 

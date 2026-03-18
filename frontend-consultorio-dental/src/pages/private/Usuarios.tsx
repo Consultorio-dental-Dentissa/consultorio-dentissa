@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { TituloPanel } from "../../components/TituloPanel";
 
 export default function Usuarios() {
 
@@ -7,9 +7,23 @@ export default function Usuarios() {
 
     return (
         <div>
-            <div className="contenedor-titulos-principal">
-                <h2>Panel de usuarios</h2>
-                <h4>Aqui esta el resumen de tu consultorio dental</h4>
+            <TituloPanel
+                titulo="Panel de usuarios"
+                subtitulo="Aqui puedes manejar tus usuarios"
+            />
+
+            <div className="contenedor-tabla">
+                <div className="header-tabla">
+
+                </div>
+
+                <div className="registros-tabla">
+                    <div className="registro"></div>
+                    <div className="registro"></div>
+                    <div className="registro"></div>
+                    <div className="registro"></div>
+                    <div className="registro"></div>
+                </div>
             </div>
         </div>
     );
