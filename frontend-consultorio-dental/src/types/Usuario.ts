@@ -4,11 +4,10 @@ export interface Usuario {
     apellido: string;
     correo: string;
     telefono: string | null;
-    contraseña: string;
-    rol: string;
-    paciente?: {
-        direccion: string,
-        fechaNacimiento: string,
-        telefonoEmergencia: string,
+    activo: boolean;
+    created_at: string;
+    rol: {
+        id: number,
+        rol: string
     }
 }

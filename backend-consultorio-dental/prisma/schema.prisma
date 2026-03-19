@@ -88,6 +88,12 @@ model Cita {
   @@map("citas")
 }
 
+/* RECORDATORIO: 
+MODIFICAR LA BASE DE DATOS PARA QUE SE PUEDAN AGREGAR 
+MULTIPLES SERVICIOS POR CITA. MAXIMO LA SUMA DE DURACION 
+DE LOS SERVICIOS DEBE DE DURAR 2 HORAS */
+
+
 model Consulta {
   id            Int                @id @default(autoincrement())
   notas         String             @db.NVarChar(Max)
