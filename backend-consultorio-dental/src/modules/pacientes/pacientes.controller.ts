@@ -1,8 +1,8 @@
-import { Controller, UseGuards, Get } from '@nestjs/common';
+import { Controller, UseGuards, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { AuthGuard } from '../security/guards/auth.guard';
 import { PacientesService } from './pacientes.service';
 
-//@UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller('pacientes')
 export class PacientesController {
 
@@ -13,5 +13,9 @@ export class PacientesController {
         return await this.pacientesService.obtenerPacientes();
     }
 
+    @Get(':id')
+    async getById(@Param('id', ParseIntPipe) id: number) {
+        return await this.pacientesService.obtenerPacientePorId(id);
+    }
 
 }

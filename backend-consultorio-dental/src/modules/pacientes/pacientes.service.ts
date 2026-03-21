@@ -10,4 +10,8 @@ export class PacientesService {
         return await this.repositorioPaciente.obtenerTodos();
     }
 
+    async obtenerPacientePorId(id: number) {
+        return await this.repositorioPaciente.obtenerPacientePorId(id);
+    }
+
 }

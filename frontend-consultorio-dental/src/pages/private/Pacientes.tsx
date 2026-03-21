@@ -3,12 +3,13 @@ import { TituloPanel } from "../../components/TituloPanel";
 import { usePacientes } from "../../hooks/usePacientes";
 import type { RespuestaPaciente } from "../../types/respuestas/RespuestaPaciente";
 import TablaVacia from "../../components/tablaVacia";
-import { get } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Pacientes() {
 
     const [pacientes, setPacientes] = useState<RespuestaPaciente[]>([])
     const { obtenerPacientes, loading } = usePacientes();
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -71,12 +72,9 @@ export default function Pacientes() {
                                         <td>{paciente.direccion}</td>
                                         <td>
                                             <div className="actions">
-                                                {
-                                                    /*
-                                                    <button className="action-btn editar">Editar</button>
-                                                    <button className="action-btn eliminar">Eliminar</button>
-                                                    */
-                                                }
+                                            
+                                                <button className="btn-registrar" onClick={() => {navigate(`/pacientes/${paciente.id}`)}}>Ver perfil</button>
+                                                
                                             </div>
                                         </td>
                                     </tr>

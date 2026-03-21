@@ -1,4 +1,4 @@
-import { requestObtenerPacientes } from "../services/pacientes.service"
+import { requestObtenerPacientes, requestObtenerPaciente } from "../services/pacientes.service"
 import { useState } from "react";
 
 export function usePacientes() {
@@ -16,5 +16,10 @@ export function usePacientes() {
         }
     }
 
-    return { obtenerPacientes, loading }
+
+    async function obtenerPaciente(id: number) {
+        return await requestObtenerPaciente(id);
+    }
+
+    return { obtenerPacientes, obtenerPaciente, loading }
 }
