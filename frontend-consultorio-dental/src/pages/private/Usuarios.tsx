@@ -4,14 +4,16 @@ import { useUsuarios } from "../../hooks/useUsuarios";
 import type { Usuario } from "../../types/Usuario";
 import TablaVacia from "../../components/tablaVacia";
 import NuevoUsuarioForm from "../../components/NuevoUsuarioFormModal";
-
+import { ToggleButton } from "../../components/ToggleButton";
+import toast from "react-hot-toast";
+import type { ApiError } from "../../types/respuestas/ApiError";
 
 export default function Usuarios() {
 
     const [usuarios, setUsuarios] = useState<Usuario[]>([])
     const [modalAbierto, setModalAbierto] = useState(false);
 
-    const { obtenerUsuarios, loading } = useUsuarios();
+    const { obtenerUsuarios, cambiarEstadoUsuario, loading } = useUsuarios();
 
 
 
@@ -29,6 +31,21 @@ export default function Usuarios() {
     const manejarUsuarioCreado = (nuevoUsuario: Usuario) => {
         setUsuarios(prev => [...prev, nuevoUsuario]);
         setModalAbierto(false);
+    }
+
+    const manejarCambioDeEstado = async (id: number, nuevoEstado: boolean) => {
+
+        try {
+            await cambiarEstadoUsuario(id, nuevoEstado);
+            setUsuarios(prev => {
+                return prev.map(u => u.id === id ? { ...u, activo: nuevoEstado } : u)
+            });
+
+            toast.success('El estado se actualzó correctamente');
+
+        } catch(error) {
+            toast.error((error as ApiError).message);
+        }
     }
 
     return (
@@ -78,9 +95,10 @@ export default function Usuarios() {
                                     <td>{usuario.correo}</td>
 
                                     <td>
-                                        <span className="badge activo">
-                                            {usuario.activo ? "Activo" : "No activo"}
-                                        </span>
+                                        <ToggleButton
+                                            estado={usuario.activo}
+                                            onChange={(nuevoEstado) => manejarCambioDeEstado(usuario.id, nuevoEstado)}
+                                        />
                                     </td>
 
                                     <td>{usuario.rol.rol}</td>

@@ -123,4 +123,18 @@ export class RepositorioUsuario {
         });
     }
 
+
+    async cambiarEstadoDeUsuario(id: number, estado: boolean) {
+        const usuario = await this.prisma.usuario.update({
+            where: {
+                id: id
+            },
+            data: {
+                activo: estado
+            }
+        });
+
+        return usuario ? true : false;
+    }
+
 }

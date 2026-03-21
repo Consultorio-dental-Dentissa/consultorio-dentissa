@@ -31,7 +31,9 @@ export class AuthService {
             throw new UnauthorizedException('Datos incorrectos');
         }
 
-
+        if (!usuario.activo) {
+            throw new UnauthorizedException('Tu cuenta ha sido desactivada');
+        }
         
         const payload = {
             nombre: usuario.nombre,

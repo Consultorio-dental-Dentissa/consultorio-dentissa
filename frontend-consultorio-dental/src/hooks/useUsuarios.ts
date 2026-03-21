@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { requestRegistrarUsuario, requestUsuarios } from "../services/usuarios.service"
+import { requestCambiarEstadoUsuario, requestRegistrarUsuario, requestUsuarios } from "../services/usuarios.service"
 import type { Usuario } from "../types/Usuario";
 import type { RegistrarUsuario } from "../types/RegistrarUsuario";
 
@@ -19,9 +19,13 @@ export function useUsuarios() {
 
 
     async function registrarUsuario(usuario: RegistrarUsuario): Promise<Usuario> {
-
         return await requestRegistrarUsuario(usuario)
     }
 
-    return { obtenerUsuarios, registrarUsuario, loading }
+
+    async function cambiarEstadoUsuario(id: number, estado: boolean) {
+        return await requestCambiarEstadoUsuario(id, estado);
+    }
+
+    return { obtenerUsuarios, registrarUsuario, cambiarEstadoUsuario, loading }
 }
