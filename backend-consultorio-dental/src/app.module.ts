@@ -10,6 +10,7 @@ import { PacientesModule } from './modules/pacientes/pacientes.module';
 import { SecurityModule } from './modules/security/security.module';
 //import { APP_GUARD } from '@nestjs/core';
 //import { AuthGuard } from './modules/security/guards/auth.guard';
+import { ServiciosModule } from './modules/servicios/servicios.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SecurityModule } from './modules/security/security.module';
     CitasModule,
     PacientesModule,
     SecurityModule,
+    ServiciosModule,
   ],
   controllers: [AppController],
   providers: [
