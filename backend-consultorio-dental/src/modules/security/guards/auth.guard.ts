@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate {
             return true;
 
         } catch (error) {
-            throw new UnauthorizedException('No tienes permitido entrar');
+            throw new UnauthorizedException('No tienes permitido realizar esta acción');
         }
 
     }
