@@ -93,6 +93,7 @@ export class RepositorioUsuario {
             select: {
                 id: true,
                 nombre: true,
+                apellido: true,
                 correo: true,
                 telefono: true,
                 activo: true,
