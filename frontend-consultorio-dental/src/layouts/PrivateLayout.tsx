@@ -22,10 +22,10 @@ import { IoIosLogOut } from "react-icons/io";
 
 export default function LayoutPrivado() {
 
-    const { isAuthenticated, cerrarSesion } = useAuth();
+    const { isAuthenticated, cerrarSesion, loading } = useAuth();
 
-    console.log("pene" + isAuthenticated);
-
+    if (loading) return null;
+    
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }

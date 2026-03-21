@@ -160,7 +160,7 @@ export default function NuevoUsuarioForm({ onSubmit, onCancel }: Props) {
 
                 <div className="form-footer">
                     <button className="btn-cancel" type="button" onClick={onCancel}>Cancelar</button>
-                    <button className="btn-submit" type="submit" >Guardar usuario</button>
+                    <button className="btn-registrar" type="submit" >Guardar usuario</button>
                 </div>
 
             </form>

@@ -7,11 +7,26 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class RepositorioPaciente {
 
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) { }
 
 
     async obtenerTodos() {
-        return await this.prisma.paciente.findMany();
+        return await this.prisma.paciente.findMany({
+            select: {
+                id: true,
+                direccion: true,
+                fecha_nacimiento: true,
+                telefono_emergencia: true,
+                usuario: {
+                    select: {
+                        nombre: true,
+                        apellido: true,
+                        correo: true,
+                        telefono: true
+                    }
+                }
+            }
+        });
     }
 
 
@@ -19,12 +34,26 @@ export class RepositorioPaciente {
         return await this.prisma.paciente.findUnique({
             where: {
                 id: id
+            },
+            select: {
+                id: true,
+                direccion: true,
+                fecha_nacimiento: true,
+                telefono_emergencia: true,
+                usuario: {
+                    select: {
+                        nombre: true,
+                        apellido: true,
+                        correo: true,
+                        telefono: true
+                    }
+                }
             }
         });
     }
 
 
-    async crearPaciente(crearPacienteDto : crearPacienteDto, transaction? : Prisma.TransactionClient) {
+    async crearPaciente(crearPacienteDto: crearPacienteDto, transaction?: Prisma.TransactionClient) {
 
         const cliente = transaction ?? this.prisma;
 
