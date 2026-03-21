@@ -12,6 +12,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
 
@@ -26,6 +27,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUsuario(usuario);
         setIsAuthenticated(true);
 
+        setLoading(false);
     }, []);
 
     
@@ -52,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     return (
-        <AuthContext.Provider value={{ usuario, isAuthenticated, iniciarSesion, cerrarSesion}}>
+        <AuthContext.Provider value={{ usuario, isAuthenticated, iniciarSesion, cerrarSesion, loading}}>
             {children}
         </AuthContext.Provider>
     );

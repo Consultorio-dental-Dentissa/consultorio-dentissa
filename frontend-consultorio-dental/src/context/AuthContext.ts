@@ -6,7 +6,8 @@ interface AuthContextType {
   usuario: Usuario | null;
   isAuthenticated: boolean;
   iniciarSesion(datosUsuario : Usuario, token : string) : void,
-  cerrarSesion() : void
+  cerrarSesion() : void,
+  loading: boolean
 }
 
 
