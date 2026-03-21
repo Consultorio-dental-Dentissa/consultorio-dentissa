@@ -11,7 +11,22 @@ export class RepositorioPaciente {
 
 
     async obtenerTodos() {
-        return await this.prisma.paciente.findMany();
+        return await this.prisma.paciente.findMany({
+            select: {
+                id: true,
+                direccion: true,
+                fecha_nacimiento: true,
+                telefono_emergencia: true,
+                usuario: {
+                    select: {
+                        nombre: true,
+                        apellido: true,
+                        correo: true,
+                        telefono: true
+                    }
+                }
+            }
+        });
     }
 
 
