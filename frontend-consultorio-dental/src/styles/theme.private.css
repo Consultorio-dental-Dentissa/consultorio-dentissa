@@ -361,3 +361,270 @@ td {
 .action-btn:hover {
     background: #f5f5f5;
 }
+
+
+.contenedor-btn-registrar {
+    margin-top: 10px;
+}
+
+.btn-registrar {
+    background-color: #111;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+
+
+/* Estilos Toggle Button */
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #e5e5e5;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background: #22c55e;
+}
+
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(18px);
+}
+
+
+/* Modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 660px;
+  padding: 16px;
+}
+
+
+/* Formulario */
+
+.form-card {
+  background: #fff;
+  border: 1px solid #ebebea;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  max-width: 640px;
+  width: 100%;
+}
+
+/* ── HEADER ── */
+.form-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #ebebea;
+}
+
+.form-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 2px;
+}
+
+.form-subtitle {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0;
+}
+
+/* ── SECTIONS ── */
+.form-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid #ebebea;
+}
+
+.form-section--paciente {
+  background: #fafafa;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 14px;
+}
+
+/* ── GRID ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+/* ── LABELS & INPUTS ── */
+.field label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.field input,
+.field select {
+  padding: 8px 10px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #aaa;
+}
+
+.field input::placeholder {
+  color: #bbb;
+}
+
+/* ── FOOTER ── */
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  font-size: 0.83rem;
+  font-family: inherit;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-cancel:hover {
+  background: #f5f5f5;
+}
+
+.btn-submit {
+  padding: 8px 18px;
+  font-size: 0.83rem;
+  font-family: inherit;
+  border: 1px solid #111;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.btn-submit:hover {
+  opacity: 0.82;
+}
+
+
+
+
+
+/* Mensajes de tablas */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 24px;
+  gap: 12px;
+}
+
+.empty-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111;
+  margin: 0;
+}
+
+.empty-desc {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+  text-align: center;
+  max-width: 280px;
+}
+
+.empty-btn {
+  margin-top: 8px;
+  padding: 8px 18px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.empty-btn:hover {
+  background: #f5f5f5;
+}

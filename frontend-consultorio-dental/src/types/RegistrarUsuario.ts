@@ -8,7 +8,7 @@ export interface RegistrarUsuario {
     telefono: string;
     contraseña: string;
     rol: string;
-    paciente: {
+    paciente?: {
         direccion: string,
         fecha_nacimiento: string,
         telefono_emergencia: string

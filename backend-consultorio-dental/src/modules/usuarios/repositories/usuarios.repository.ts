@@ -93,6 +93,7 @@ export class RepositorioUsuario {
             select: {
                 id: true,
                 nombre: true,
+                apellido: true,
                 correo: true,
                 telefono: true,
                 activo: true,
@@ -120,6 +121,20 @@ export class RepositorioUsuario {
                 rol: true
             }
         });
+    }
+
+
+    async cambiarEstadoDeUsuario(id: number, estado: boolean) {
+        const usuario = await this.prisma.usuario.update({
+            where: {
+                id: id
+            },
+            data: {
+                activo: estado
+            }
+        });
+
+        return usuario ? true : false;
     }
 
 }
