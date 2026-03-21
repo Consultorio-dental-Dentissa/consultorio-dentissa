@@ -96,4 +96,9 @@ export class UsuariosService {
     async ObtenerUsuarioPorCorreoConContraseña(correo) {
         return await this.repositorioUsuario.obtenerUsuarioPorCorreoConContraseña(correo);
     }
+
+
+    async cambiarEstadoDeUsuario(id: number, estado: boolean) {
+        return await this.repositorioUsuario.cambiarEstadoDeUsuario(id, estado)
+    }
 }

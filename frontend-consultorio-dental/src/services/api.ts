@@ -62,11 +62,9 @@ export async function post<T>(endpoint: string, datos: object): Promise<T> {
 
 
 // GET
-export function get<T>(endpoint: string, id?: number): Promise<T> {
+export function get<T>(endpoint: string): Promise<T> {
     
-    const path = id ? `${endpoint}/${id}` : endpoint;
-
-    return request<T>(path, {
+    return request<T>(endpoint, {
         method: 'GET',
     });
 }
@@ -76,9 +74,19 @@ export function get<T>(endpoint: string, id?: number): Promise<T> {
 
 
 // PUT
-export function put<T>(endpoint: string, id: number, datos: object): Promise<T> {
-    return request<T>(`${endpoint}/${id}`, {
+export function put<T>(endpoint: string, datos: object): Promise<T> {
+    return request<T>(endpoint, {
         method: 'PUT',
+        body: JSON.stringify(datos),
+    });
+}
+
+
+
+// PATCH
+export function patch<T>(endpoint: string, datos: object): Promise<T> {
+    return request<T>(endpoint, {
+        method: 'PATCH',
         body: JSON.stringify(datos),
     });
 }
@@ -87,9 +95,9 @@ export function put<T>(endpoint: string, id: number, datos: object): Promise<T> 
 
 
 // DELETE
-export function deleteR<T>(endpoint: string, id: number): Promise<T> {
+export function deleteR<T>(endpoint: string): Promise<T> {
     
-    return request<T>(`${endpoint}/${id}`, {
+    return request<T>(endpoint, {
         method: 'DELETE'
     })
 }
