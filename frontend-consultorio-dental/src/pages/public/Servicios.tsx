@@ -1,7 +1,7 @@
 // Servicios.tsx
 import { Link } from "react-router-dom";
 
-export default function Servicios() {
+export default function NuestrosServicios() {
     const servicios = [
         {
             id: 1,

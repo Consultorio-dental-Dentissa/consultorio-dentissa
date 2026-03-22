@@ -3,12 +3,12 @@ import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useLogin } from "../../hooks/useLogin";
 import { useAuth } from "../../context/AuthContextProvider";
+import toast from "react-hot-toast";
 
 export default function Login() {
 
     const [correo, setCorreo] = useState('');
     const [contraseña, setContraseña] = useState('');
-    const [errorFormulario, setErrorFormulario] = useState<string | null>('');
 
 
     const { login, loading, error, clearError } = useLogin();
@@ -17,24 +17,20 @@ export default function Login() {
     const manejarSubmit = async (e: React.FormEvent) => {
 
         e.preventDefault();
-
-        setErrorFormulario(null);
         clearError();
 
         if (!correo || !contraseña) {
-            setErrorFormulario('Debes llenar todos los campos del formulario');
+            toast.error('Debes llenar todos los campos del formulario');
             return;
         }
 
         const respuesta = await login(correo, contraseña);
 
         if (respuesta?.estado) {
-            
+
             iniciarSesion(respuesta.usuario, respuesta.token);
             <Navigate to="/dashboard" />
         }
-
-
     }
 
     return (
@@ -44,8 +40,7 @@ export default function Login() {
                     <h2>Bienvenido de nuevo</h2>
                     <p>Inicia sesión para acceder a tu cuenta</p>
 
-                    {errorFormulario && <p style={{ color: "#ce1b1b", fontWeight: "700" }}>{errorFormulario}</p>}
-                    {error && <p style={{ color: "#ce1b1b", fontWeight: "700"}}>{error}</p>}
+                    {error && toast.error(error)}
                     {loading ? <p>Cargando...</p> : ''}
 
                 </div>

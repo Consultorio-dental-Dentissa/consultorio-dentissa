@@ -6,6 +6,7 @@ import Home from "../pages/public/Home"
 import About from "../pages/public/Sobre-nosotros"
 import Login from "../pages/public/Login"
 import Registrarse from "../pages/public/Registrarse"
+import NuestrosServicios from "../pages/public/Servicios"
 
 
 // Vistas privadas
@@ -31,7 +32,7 @@ export default function Router() {
                     <Route path="/" element={<Home />} />
                     <Route path="/sobre-nosotros" element={<About />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/servicios" element={<Servicios />} />
+                    <Route path="/nuestros-servicios" element={<NuestrosServicios />} />
                     <Route path="/registrate" element={<Registrarse />} />
                 </Route>
 
