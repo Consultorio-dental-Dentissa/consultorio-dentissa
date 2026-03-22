@@ -7,9 +7,7 @@ import '../styles/theme.public.css'
 export default function LayoutPublico() {
 
     
-    const { isAuthenticated, usuario } = useAuth();
-
-    console.log(isAuthenticated + ' - ' + usuario);
+    const { isAuthenticated } = useAuth();
 
     if (isAuthenticated) {
         return <Navigate to="/dashboard" replace />;
