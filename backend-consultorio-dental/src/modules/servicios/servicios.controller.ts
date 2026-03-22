@@ -1,9 +1,9 @@
-import { Controller, Get, UseGuards, Post, Body, Delete, ParseIntPipe, Param } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Body, Delete, ParseIntPipe, Param, Patch } from '@nestjs/common';
 import { ServiciosService } from './servicios.service';
 import { AuthGuard } from '../security/guards/auth.guard';
 import { type CrearServicioDto } from './dto/CrearServicioDto';
 
-//@UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller('servicios')
 export class ServiciosController {
 
@@ -11,12 +11,17 @@ export class ServiciosController {
 
     @Get()
     async obtenerServicios() {
-        return this.serviciosService.obtenerTodos();
+        return await this.serviciosService.obtenerTodos();
+    }
+
+    @Patch(':id/estado')
+    async cambiarEstadoServicio(@Param ('id', ParseIntPipe) id: number, @Body () body: {estado: boolean}) {
+        return await this.serviciosService.cambiarEstadoServicio(id, body.estado);
     }
 
     @Post()
     async crearServicio(@Body () crearServicioDto: CrearServicioDto) {
-        return this.serviciosService.crearServicio(crearServicioDto);
+        return await this.serviciosService.crearServicio(crearServicioDto);
     }
 
 }

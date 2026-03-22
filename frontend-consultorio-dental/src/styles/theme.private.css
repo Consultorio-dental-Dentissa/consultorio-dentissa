@@ -466,7 +466,7 @@ td {
 
 .modal-content {
   width: 100%;
-  max-width: 660px;
+  max-width: 760px;
   padding: 16px;
 }
 
@@ -478,7 +478,7 @@ td {
   border: 1px solid #ebebea;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 2px rgba(253, 87, 87, 0.899), 0 4px 16px rgba(111, 30, 30, 0.04);
   max-width: 640px;
   width: 100%;
 }
@@ -486,18 +486,18 @@ td {
 /* ── HEADER ── */
 .form-header {
   padding: 20px 24px 16px;
-  border-bottom: 1px solid #ebebea;
+  border-bottom: 1px solid #ecc3d8;
 }
 
 .form-title {
-  font-size: 1rem;
+  font-size: 20px;
   font-weight: 600;
   color: #111;
   margin: 0 0 2px;
 }
 
 .form-subtitle {
-  font-size: 0.8rem;
+  font-size: 15px;
   color: #888;
   margin: 0;
 }
@@ -505,7 +505,7 @@ td {
 /* ── SECTIONS ── */
 .form-section {
   padding: 20px 24px;
-  border-bottom: 1px solid #ebebea;
+  border-bottom: 1px solid #ecc3d8;
 }
 
 .form-section--paciente {
@@ -519,7 +519,7 @@ td {
 }
 
 .section-label {
-  font-size: 0.7rem;
+  font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -546,13 +546,14 @@ td {
 
 /* ── LABELS & INPUTS ── */
 .field label {
-  font-size: 0.78rem;
+  font-size: 14px;
   font-weight: 500;
   color: #555;
 }
 
 .field input,
-.field select {
+.field select,
+.field textarea {
   padding: 8px 10px;
   font-size: 0.875rem;
   font-family: inherit;
@@ -589,12 +590,18 @@ td {
   border-radius: 8px;
   background: #fff;
   color: #555;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  box-shadow: 0px 1px 5px #9d9d9d;
+  transition: background 0.15s,
+              box-shadow 0.3s ease,
+              transform 0.3s ease;
 }
 
 .btn-cancel:hover {
   background: #f5f5f5;
+  box-shadow: 0px 1px 5px #7d7d7d;
+  transform: scale(1.03);
 }
 
 .btn-submit {

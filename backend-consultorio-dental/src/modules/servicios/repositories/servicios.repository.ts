@@ -39,4 +39,17 @@ export class RepositorioServicios {
 
         return servicio ? true : false;
     }
+
+    async cambiarEstado(id: number, estado: boolean) {
+        const servicio = await this.prisma.servicio.update({
+            where: {
+                id: id
+            },
+            data: {
+                activo: estado
+            }
+        });
+
+        return servicio ? true : false;
+    }
 }
