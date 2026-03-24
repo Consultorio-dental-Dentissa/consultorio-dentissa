@@ -11,7 +11,7 @@ export default function Servicios() {
 
     const [servicios, setServicios] = useState<RespuestaServicio[]>([]);
     const [modalAbierto, setModalAbierto] = useState<boolean>(false);
-    const { obtenerServicios, cambiarEstadoServicio, loading, error } = useServicios();
+    const { obtenerServicios, cambiarEstadoServicio, loading } = useServicios();
 
     useEffect(() => {
 
@@ -31,8 +31,7 @@ export default function Servicios() {
             setServicios(prev => prev.map((servicio) => servicio.id === id ? { ...servicio, activo: nuevoEstado } : servicio))
             toast.success('Se ha cambiado el estado del servicio');
         } 
-        
-        error && toast.error(error);
+            
     }
 
     const manejarNuevoServicio = (nuevoServicio: RespuestaServicio) => {

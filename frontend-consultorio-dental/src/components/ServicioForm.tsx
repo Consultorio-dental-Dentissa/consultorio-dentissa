@@ -39,6 +39,16 @@ export default function ServicioForm({ onSubmit, onCancel }: Props) {
 
         e.preventDefault();
 
+        !form.horas ? form.horas = '0' : form.horas ;
+        !form.minutos ? form.minutos = '0' : form.minutos ;
+
+        const sumaTotal = (Number(form.horas) * 60) + Number(form.minutos);
+
+        if (sumaTotal > 120 || sumaTotal < 30) {
+            toast.error('La cita solo puede durar un maximo de 2 horas y un minimo de 30 minutos');
+            return;
+        }
+
         const registrarServicio: RegistrarServicio = {
             nombre: form.nombre,
             duracion_horas: `${form.horas}:${form.minutos}`,

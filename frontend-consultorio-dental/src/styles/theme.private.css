@@ -297,7 +297,7 @@ table {
     width: 100%;
     margin-top: 20px;
     background-color: #fff;
-    border: 3px solid #e19090;
+    border: 1px solid #cfcfcf;
     border-radius: 10px;
 }
 
@@ -879,4 +879,121 @@ td {
     font-weight: 500;
     text-align: right;
     max-width: 60%;
+}
+
+
+/* ESTILOS COMPONENTE CARD CITA */
+
+.contenedor-citas {
+    background-color: #f8cdf594;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.grupo-fecha {
+    /* background-color: #3488dc; */
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 10%;
+}
+
+.grupo-fecha h3 {
+    color: #393939;
+    font-weight: 500;
+}
+
+.card-cita {
+    height: 100px;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: row;
+    border-radius: 20px;
+    transition: 0.3s;
+    cursor: pointer;
+    border: 2px solid black;
+}
+
+.card-cita:hover {
+    transform: scale(1.01);
+}
+
+.card-cita.PENDIENTE {border-color: #6c6c6c;}
+.card-cita.CONFIRMADO {border-color: #229e37;}
+.card-cita.CANCELADO {border-color: #d13434;}
+.card-cita.REPROGRAMADO {border-color: #e9da36;}
+
+
+.card-cita .seccion-hora {
+    width: 10%;
+    border-right: 1px solid black;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-cita .seccion-hora h3 {
+    color: black;
+    font-size: 20px;
+    margin: 0;
+}
+
+.card-cita .seccion-hora h4 {
+    color: #3b3b3b;
+    font-size: 15px;
+    margin: 0;
+}
+
+.card-cita .seccion-info {
+    flex: 1;
+    height: 100%;
+    padding: 10px;
+}
+
+.seccion-info .nombre-paciente {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.seccion-info .nombre-servicio {
+    color: #5e5e5e;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.seccion-info .contenedor-tiempo-y-estado {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.seccion-info .contenedor-tiempo-y-estado .span-estado {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    box-sizing: border-box;
+    font-weight: 500;
+    color: white;
+}
+
+.seccion-info p {
+    color: #000000;
+    font-size: 12px;
+}
+
+.span-estado.PENDIENTE  { background-color: #9E9E9E; color: white; }
+.span-estado.CONFIRMADO { background-color: #5DCAA5; color: #085041; }
+.span-estado.CANCELADO  { background-color: #F09595; color: #A32D2D; }
+.span-estado.COMPLETADO { background-color: #85B7EB; color: #185FA5; }
+.span-estado.NO_ASISTIO { background-color: #B4B2A9; color: white; }
+
+
+.card-cita-vacia {
+    background-color: #f3f3f3;
 }
