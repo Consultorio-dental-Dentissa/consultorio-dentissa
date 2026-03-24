@@ -210,21 +210,10 @@ body,
     color: white
 }
 
-.pacientes {
-    background: linear-gradient(90deg, rgba(131, 118, 232, 1) 0%, rgba(51, 133, 196, 1) 16%, rgba(50, 110, 194, 1) 49%);
-}
-
-.consultas {
-    background: linear-gradient(90deg, rgb(121, 106, 230) 0%, rgba(133, 60, 230, 1) 16%, rgba(136, 50, 194, 1) 75%);
-}
-
-.citas {
-    background: linear-gradient(90deg, rgb(239, 92, 146) 0%, rgba(230, 60, 122, 1) 16%, rgba(222, 53, 56, 1) 75%);
-}
-
-.servicios {
-    background: linear-gradient(90deg, rgb(238, 160, 87) 0%, rgba(230, 142, 60, 1) 16%, rgba(209, 73, 75, 1) 75%);
-}
+.pacientes {background: linear-gradient(90deg, rgba(131, 118, 232, 1) 0%, rgba(51, 133, 196, 1) 16%, rgba(50, 110, 194, 1) 49%);}
+.citas {background: linear-gradient(90deg, rgb(121, 106, 230) 0%, rgba(133, 60, 230, 1) 16%, rgba(136, 50, 194, 1) 75%);}
+.consultas {background: linear-gradient(90deg, rgb(239, 92, 146) 0%, rgba(230, 60, 122, 1) 16%, rgba(222, 53, 56, 1) 75%);}
+.servicios {background: linear-gradient(90deg, rgb(238, 160, 87) 0%, rgba(230, 142, 60, 1) 16%, rgba(209, 73, 75, 1) 75%);}
 
 .contenedor-seccion-titulo {
     margin-top: 30px;
