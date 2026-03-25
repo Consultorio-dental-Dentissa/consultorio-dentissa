@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
+  provider = "postgresql"
 }
 
 model Usuario {
@@ -49,7 +49,7 @@ model Servicio {
   nombre           String
   duracion_minutos Int
   precio           Decimal            @db.Decimal(10, 2)
-  descripcion      String             @db.NVarChar(Max)
+  descripcion      String
   activo           Boolean            @default(true)
   citas            Cita[]
   imagenes         ImagenesServicio[]
@@ -60,8 +60,8 @@ model Servicio {
 
 model ImagenesServicio {
   id          Int      @id @default(autoincrement())
-  url         String   @db.NVarChar(Max)
-  ubicacion   String?  @db.NVarChar(Max)
+  url         String
+  ubicacion   String?
   servicio_id Int
   servicio    Servicio @relation(fields: [servicio_id], references: [id])
 
@@ -74,8 +74,8 @@ model Cita {
   hora             String
   duracion_minutos Int
   estado           String         @default("PENDIENTE")
-  nota_previa      String         @db.NVarChar(Max)
-  motivo           String?        @db.NVarChar(Max)
+  nota_previa      String
+  motivo           String?
   created_at       DateTime       @default(now())
   updated_at       DateTime       @default(now())
   paciente_id      Int
@@ -88,16 +88,10 @@ model Cita {
   @@map("citas")
 }
 
-/* RECORDATORIO: 
-MODIFICAR LA BASE DE DATOS PARA QUE SE PUEDAN AGREGAR 
-MULTIPLES SERVICIOS POR CITA. MAXIMO LA SUMA DE DURACION 
-DE LOS SERVICIOS DEBE DE DURAR 2 HORAS */
-
-
 model Consulta {
   id            Int                @id @default(autoincrement())
-  notas         String             @db.NVarChar(Max)
-  observaciones String             @db.NVarChar(Max)
+  notas         String
+  observaciones String
   created_at    DateTime           @default(now())
   cita_id       Int                @unique
   cita          Cita               @relation(fields: [cita_id], references: [id])
@@ -108,8 +102,8 @@ model Consulta {
 
 model ImagenesConsulta {
   id          Int      @id @default(autoincrement())
-  url         String   @db.NVarChar(Max)
-  ubicacion   String?  @db.NVarChar(Max)
+  url         String
+  ubicacion   String?
   consulta_id Int
   consulta    Consulta @relation(fields: [consulta_id], references: [id])
 
@@ -119,7 +113,7 @@ model ImagenesConsulta {
 model Oferta {
   id           Int              @id @default(autoincrement())
   nombre       String
-  descripcion  String           @db.NVarChar(Max)
+  descripcion  String
   fecha_inicio DateTime
   fecha_fin    DateTime
   activa       Boolean          @default(false)
@@ -139,10 +133,10 @@ model OfertaServicio {
 }
 
 model HorarioDisponible {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   dia_semana  Int
-  hora_inicio DateTime @db.Time
-  hora_fin    DateTime @db.Time
+  hora_inicio String
+  hora_fin    String
   estado      Boolean
 
   @@map("horarios_disponibles")
@@ -158,8 +152,8 @@ model FechaBloqueada {
 
 model PreguntaFrecuente {
   id        Int    @id @default(autoincrement())
-  pregunta  String @db.NVarChar(Max)
-  respuesta String @db.NVarChar(Max)
+  pregunta  String
+  respuesta String
 
   @@map("preguntas_frecuentes")
 }
