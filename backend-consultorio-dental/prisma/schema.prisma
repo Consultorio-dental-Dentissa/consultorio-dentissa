@@ -71,7 +71,7 @@ model ImagenesServicio {
 model Cita {
   id               Int            @id @default(autoincrement())
   fecha            DateTime
-  hora             DateTime       @db.Time
+  hora             String
   duracion_minutos Int
   estado           String         @default("PENDIENTE")
   nota_previa      String         @db.NVarChar(Max)

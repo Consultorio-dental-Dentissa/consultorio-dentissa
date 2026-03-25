@@ -52,4 +52,20 @@ export class RepositorioServicios {
 
         return servicio ? true : false;
     }
+
+    async existeServicioPorId(id: number) {
+        return await this.prisma.servicio.count({
+            where: {
+                id: id
+            }
+        }) > 0 ? true : false;
+    }
+
+    async obtenerServicioPorId(id: number) {
+        return await this.prisma.servicio.findUnique({
+            where: {
+                id: id
+            }
+        });
+    }
 }

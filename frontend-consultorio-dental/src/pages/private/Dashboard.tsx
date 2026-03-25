@@ -33,7 +33,7 @@ export default function Dashboard() {
 
         </Link>
 
-        <Link to="/consultas" className="ficha-dashboard consultas">
+        <Link to="/citas" className="ficha-dashboard citas">
 
           <div className="seccion-izquierda">
             <FaRegCalendarAlt className="ficha-icon" />
@@ -45,7 +45,7 @@ export default function Dashboard() {
 
         </Link>
 
-        <Link to="/citas" className="ficha-dashboard citas">
+        <Link to="/consultas" className="ficha-dashboard consultas">
 
           <div className="seccion-izquierda">
             <FaLaptopMedical className="ficha-icon" />
