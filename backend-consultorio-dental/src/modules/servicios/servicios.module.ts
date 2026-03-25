@@ -7,6 +7,7 @@ import { SecurityModule } from '../security/security.module';
 @Module({
   imports: [SecurityModule],
   controllers: [ServiciosController],
-  providers: [ServiciosService, RepositorioServicios]
+  providers: [ServiciosService, RepositorioServicios],
+  exports: [RepositorioServicios]
 })
 export class ServiciosModule {}

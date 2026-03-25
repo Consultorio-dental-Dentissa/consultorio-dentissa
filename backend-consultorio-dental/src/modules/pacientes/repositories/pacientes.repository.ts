@@ -67,5 +67,12 @@ export class RepositorioPaciente {
         });
     }
 
+    async existePacientePorId(id: number) {
+        return await this.prisma.paciente.count({
+            where: {
+                id: id
+            }
+        }) > 0 ? true : false;
+    }
 
 }
