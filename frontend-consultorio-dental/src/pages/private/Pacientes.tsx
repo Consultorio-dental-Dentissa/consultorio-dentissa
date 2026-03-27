@@ -4,18 +4,19 @@ import { usePacientes } from "../../hooks/usePacientes";
 import type { RespuestaPaciente } from "../../types/respuestas/RespuestaPaciente";
 import TablaVacia from "../../components/tablaVacia";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Pacientes() {
 
     const [pacientes, setPacientes] = useState<RespuestaPaciente[]>([])
-    const { obtenerPacientes, loading } = usePacientes();
+    const { obtenerPacientes, loading, error } = usePacientes();
     const navigate = useNavigate();
 
     useEffect(() => {
 
         async function cargarPacientes() {
             const pacientes = await obtenerPacientes();
-            setPacientes(pacientes);
+            pacientes && setPacientes(pacientes);
         }
 
         cargarPacientes();
@@ -25,6 +26,9 @@ export default function Pacientes() {
 
     return (
         <div>
+
+            {error && toast.error(error)}
+
             <TituloPanel
                 titulo="Panel de pacientes"
                 subtitulo="Aqui puedes manejar tus pacientes"

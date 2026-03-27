@@ -1,6 +1,7 @@
 import { requestLogin } from "../services/auth.service";
 import { useState } from "react";
 import type { ApiError } from "../types/respuestas/ApiError";
+import type { CredencialesLogin } from "../types/CredencialesLogin";
 
 export function useLogin() {
 
@@ -12,28 +13,14 @@ export function useLogin() {
         setError(null);
     }
 
+    async function login(credenciales: CredencialesLogin ) {
 
-    async function login(correo: string, contraseña: string) {
+        setError(null);
+        setLoading(true);
 
-        const credenciales = {
-            correo: correo,
-            contraseña: contraseña
-        }
-
-        try {
-
-            setLoading(true);
-            const respuesta = await requestLogin(credenciales);
-            return respuesta;
-
-        } catch (error) {
-
-            setError((error as ApiError).message);
-            return null;
-
-        } finally {
-            setLoading(false);
-        }
+        return await requestLogin(credenciales)
+            .catch((error: ApiError) => { setError(error.message); return null; })
+            .finally(() => setLoading(false));
     }
 
     return { login, loading, error, clearError }

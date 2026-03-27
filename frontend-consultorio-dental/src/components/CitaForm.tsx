@@ -75,6 +75,7 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
         e.preventDefault();
 
         Object.values(form).some(campo => !campo) && toast.error('Debes llenar todos los campos');
+        console.log(form);
 
         if (form.fecha < fechaLocal) {
             toast.error('No puedes seleccionar una fecha pasada');
@@ -90,13 +91,14 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
         }
         
         const cita = await crearCita(registrarCita);
-        console.log(cita);
 
         if (cita) {
             toast.success('La cita se ha agendado exitosamente');
             onSubmit(cita);
         }
     }
+
+    console.log(form);
 
     return (
         <div className="form-card">
@@ -128,8 +130,11 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
                             <select name="servicio" id="servicio" value={form.servicio} onChange={handleChange}>
                                 {
                                     servicios.map((servicio) => {
+                                        
                                         return (
-                                            <option value={servicio.id}>{servicio.nombre}</option>
+                                            <option value={servicio.id}>
+                                                {servicio.nombre}
+                                            </option>
                                         )
                                     })
                                 }

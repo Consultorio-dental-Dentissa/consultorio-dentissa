@@ -3,25 +3,22 @@ import { TituloPanel } from "../../components/TituloPanel";
 import { useUsuarios } from "../../hooks/useUsuarios";
 import type { Usuario } from "../../types/Usuario";
 import TablaVacia from "../../components/tablaVacia";
-import NuevoUsuarioForm from "../../components/NuevoUsuarioFormModal";
+import UsuarioForm from "../../components/UsuarioForm";
 import { ToggleButton } from "../../components/ToggleButton";
 import toast from "react-hot-toast";
-import type { ApiError } from "../../types/respuestas/ApiError";
 
 export default function Usuarios() {
 
     const [usuarios, setUsuarios] = useState<Usuario[]>([])
     const [modalAbierto, setModalAbierto] = useState(false);
 
-    const { obtenerUsuarios, cambiarEstadoUsuario, loading } = useUsuarios();
-
-
+    const { obtenerUsuarios, cambiarEstadoUsuario, loading, error } = useUsuarios();
 
     useEffect(() => {
 
         async function cargarUsuarios() {
             const usuarios = await obtenerUsuarios();
-            setUsuarios(usuarios);
+            usuarios && setUsuarios(usuarios);
         }
 
         cargarUsuarios();
@@ -35,21 +32,22 @@ export default function Usuarios() {
 
     const manejarCambioDeEstado = async (id: number, nuevoEstado: boolean) => {
 
-        try {
-            await cambiarEstadoUsuario(id, nuevoEstado);
+        const respuesta = await cambiarEstadoUsuario(id, nuevoEstado);
+        if (respuesta) {
             setUsuarios(prev => {
                 return prev.map(u => u.id === id ? { ...u, activo: nuevoEstado } : u)
             });
 
             toast.success('El estado se actualzó correctamente');
-
-        } catch(error) {
-            toast.error((error as ApiError).message);
         }
     }
 
+
     return (
         <div>
+
+            {error && toast.error(error)}
+
             <TituloPanel
                 titulo="Panel de usuarios"
                 subtitulo="Aqui puedes manejar tus usuarios"
@@ -121,7 +119,7 @@ export default function Usuarios() {
                 modalAbierto && (
                     <div className="modal-overlay" onClick={() => setModalAbierto(false)}>
                         <div className="modal-content" onClick={e => e.stopPropagation()}>
-                            <NuevoUsuarioForm
+                            <UsuarioForm
                                 onSubmit={manejarUsuarioCreado}
                                 onCancel={() => setModalAbierto(false)}
                             />
