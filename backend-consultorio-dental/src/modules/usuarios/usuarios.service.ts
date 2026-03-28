@@ -6,7 +6,7 @@ import type { Usuario } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Rol } from './enums/rol.enum';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { crearPacienteDto } from '../pacientes/dto/crearPacienteDto';
+import { CrearPacienteDto } from '../pacientes/dto/CrearPacienteDto';
 
 
 @Injectable()
@@ -63,40 +63,41 @@ export class UsuariosService {
          * para no dejar al usuario registrado sin un registro de paciente relacionado.
          */
 
-        if (crearUsuarioDto.rol === Rol.PACIENTE && crearUsuarioDto.paciente) {
+        if (crearUsuarioDto.rol === Rol.PACIENTE) {
+
+            if (!crearUsuarioDto.paciente) {
+                throw new BadRequestException('Debes llenar todos los campos del paciente');
+            }
+
             return await this.crearUsuarioYPaciente(crearUsuarioDto, crearUsuarioDto.paciente);
         }
 
-        return await this.repositorioUsuario.crearUsuario(crearUsuarioDto);
+        return await this.repositorioUsuario.crear(crearUsuarioDto);
     }
 
 
-    async crearUsuarioYPaciente(datos_usuario: CrearUsuarioDto, datos_paciente: crearPacienteDto) {
+    async crearUsuarioYPaciente(datos_usuario: CrearUsuarioDto, datos_paciente: CrearPacienteDto) {
 
         try {
             return await this.prisma.$transaction(async (tx) => {
 
-                const usuario = await this.repositorioUsuario.crearUsuario(datos_usuario, tx);
-
+                const usuario = await this.repositorioUsuario.crear(datos_usuario, tx);
                 datos_paciente.usuario_id = usuario.id;
 
-                const paciente = await this.repositorioPaciente.crearPaciente(datos_paciente, tx);
+                await this.repositorioPaciente.crear(datos_paciente, tx);
 
                 return usuario;
-                
             });
 
         } catch (error) {
-            
-            throw new BadRequestException(error.message);
+            console.log(error);
+            throw new BadRequestException('Hubo un error al ingresar el usuario');
         }
     }
-
 
     async ObtenerUsuarioPorCorreoConContraseña(correo) {
         return await this.repositorioUsuario.obtenerUsuarioPorCorreoConContraseña(correo);
     }
-
 
     async cambiarEstadoDeUsuario(id: number, estado: boolean) {
         return await this.repositorioUsuario.cambiarEstadoDeUsuario(id, estado)

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
-import { crearPacienteDto } from "../dto/crearPacienteDto";
+import { CrearPacienteDto } from "../dto/CrearPacienteDto";
 import { Prisma } from '@prisma/client';
 
 
@@ -29,7 +29,6 @@ export class RepositorioPaciente {
         });
     }
 
-
     async obtenerPacientePorId(id: number) {
         return await this.prisma.paciente.findUnique({
             where: {
@@ -52,8 +51,7 @@ export class RepositorioPaciente {
         });
     }
 
-
-    async crearPaciente(crearPacienteDto: crearPacienteDto, transaction?: Prisma.TransactionClient) {
+    async crear(crearPacienteDto: CrearPacienteDto, transaction?: Prisma.TransactionClient) {
 
         const cliente = transaction ?? this.prisma;
 
@@ -62,7 +60,7 @@ export class RepositorioPaciente {
                 direccion: crearPacienteDto.direccion,
                 fecha_nacimiento: new Date(crearPacienteDto.fecha_nacimiento),
                 telefono_emergencia: crearPacienteDto.telefono_emergencia,
-                usuario_id: crearPacienteDto.usuario_id
+                usuario_id: crearPacienteDto.usuario_id!
             }
         });
     }
@@ -74,5 +72,4 @@ export class RepositorioPaciente {
             }
         }) > 0 ? true : false;
     }
-
 }

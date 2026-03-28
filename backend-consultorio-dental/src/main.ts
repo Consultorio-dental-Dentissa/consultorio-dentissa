@@ -8,11 +8,14 @@ async function bootstrap() {
     origin: "http://localhost:5173",
     credentials: true
   });
-  await app.listen(process.env.PORT ?? 3000);
 
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
-    whitelist: true,
-}))
+    whitelist: true,       // elimina campos que no están en el DTO
+    forbidNonWhitelisted: true, // lanza error si llegan campos extra
+  }))
+
+  await app.listen(process.env.PORT ?? 3000);
+
 }
 bootstrap();
