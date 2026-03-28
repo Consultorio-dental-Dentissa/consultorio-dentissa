@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { TituloPanel } from "../../components/TituloPanel";
 import { useServicios } from "../../hooks/useServicios";
-import type { RespuestaServicio } from "../../types/respuestas/RespuestaServicio";
-import TablaVacia from "../../components/tablaVacia";
+import type { RespuestaServicio } from "../../types/api/responses/RespuestaServicio";
+import TablaVacia from "../../components/TablaVacia";
 import { ToggleButton } from "../../components/ToggleButton";
 import toast from "react-hot-toast";
 import ServicioForm from "../../components/ServicioForm";

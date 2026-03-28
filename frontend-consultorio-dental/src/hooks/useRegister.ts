@@ -1,7 +1,7 @@
 import type { RegistrarUsuario } from '../types/RegistrarUsuario';
 import { requestRegister } from '../services/auth.service';
 import { useState } from 'react';
-import type { ApiError } from '../types/respuestas/ApiError';
+import type { ApiError } from '../types/api/responses/ApiError';
 
 export function useRegister() {
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { requestCrearCita, requestObtenerCitas } from "../services/citas.service"
-import type { ApiError } from "../types/respuestas/ApiError";
-import type { RegistrarCita } from "../types/RegistrarCita";
-import type { RespuestaCita } from "../types/respuestas/RespuestaCita";
+import type { ApiError } from "../types/api/responses/ApiError";
+import type { RespuestaCita } from "../types/api/responses/RespuestaCita";
+import type { CrearCita } from "../types/api/request/CrearCita";
 
 export function useCitas() {
 
@@ -13,18 +13,18 @@ export function useCitas() {
 
         setError(null);
         setCargando(true);
-
+        
         return await requestObtenerCitas()
             .catch((error: ApiError) => {setError(error.message); return null;})
             .finally(() => setCargando(false));
     }
 
-    async function crearCita(registrarCita: RegistrarCita) {
+    async function crearCita(nuevaCita: CrearCita) {
         
         setError(null);
         setCargando(true);
 
-        return await requestCrearCita(registrarCita)
+        return await requestCrearCita(nuevaCita)
             .catch((error: ApiError) => {setError(error.message); return null;})
             .finally(() => setCargando(false));
     }

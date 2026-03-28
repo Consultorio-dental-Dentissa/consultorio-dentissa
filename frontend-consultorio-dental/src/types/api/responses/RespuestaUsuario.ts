@@ -4,6 +4,10 @@ export interface RespuestaUsuario {
     apellido: string;
     correo: string;
     telefono: string | null;
-    contraseña: string;
-    rol: string;
+    activo: boolean;
+    rol: {
+        id: number,
+        rol: string
+    };
+
 }

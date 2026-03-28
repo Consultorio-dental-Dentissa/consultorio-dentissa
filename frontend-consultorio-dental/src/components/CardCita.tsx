@@ -1,5 +1,5 @@
 // components/citas/CardCita.tsx
-import type { RespuestaCita } from '../types/respuestas/RespuestaCita';
+import type { RespuestaCita } from '../types/api/responses/RespuestaCita';
 
 interface PropsCardCita {
     cita: RespuestaCita;
