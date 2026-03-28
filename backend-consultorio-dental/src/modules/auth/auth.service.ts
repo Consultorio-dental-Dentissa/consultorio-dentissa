@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IniciarSesionDto } from './dto/IniciarSesionDto';
-import { RepositorioUsuario } from 'src/modules/usuarios/repositories/usuarios.repository';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt'
 import type { Response } from 'express';
 import { UsuariosService } from '../usuarios/usuarios.service';
-import { RegistrarUsuarioDto } from './dto/registrarUsuarioDto';
 import { Rol } from '../usuarios/enums/rol.enum';
+import { CrearUsuarioDto } from '../usuarios/dto/CrearUsuarioDto';
 
 
 @Injectable()
@@ -17,18 +16,13 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
 
-    async iniciar_sesion(credenciales: IniciarSesionDto, response: Response) {
+    async iniciarSesion(credenciales: IniciarSesionDto, response: Response) {
 
         const usuario = await this.usuariosService.ObtenerUsuarioPorCorreoConContraseña(credenciales.correo);
+        const esContraseñaCorrecta = await bcrypt.compare(credenciales.contraseña, usuario?.contraseña ?? '');
 
-        if (!usuario) {
-            throw new NotFoundException('Este usuario no existe');
-        }
-
-        const contraseña_correcta = await bcrypt.compare(credenciales.contraseña, usuario.contraseña);
-
-        if (!contraseña_correcta) {
-            throw new UnauthorizedException('Datos incorrectos');
+        if (!usuario || !esContraseñaCorrecta) {
+            throw new NotFoundException('Las credenciales son incorrectas');
         }
 
         if (!usuario.activo) {
@@ -54,7 +48,7 @@ export class AuthService {
         });
         
 
-        const usuario_autenticado = {
+        const usuarioAutenticado = {
             estado: true,
             token: token,
             usuario: {
@@ -66,8 +60,7 @@ export class AuthService {
             }
         }
 
-        return usuario_autenticado;
-        
+        return usuarioAutenticado;
     }
 
 
@@ -81,8 +74,8 @@ export class AuthService {
     }
 
 
-    async registrarUsuario(registroUsuario: RegistrarUsuarioDto) {
-        registroUsuario.rol = Rol.PACIENTE;
-        return await this.usuariosService.crearUsuario(registroUsuario);
+    async registrarUsuario(usuario: CrearUsuarioDto) {
+        usuario.rol = Rol.PACIENTE;
+        return await this.usuariosService.crearUsuario(usuario);
     }
 }

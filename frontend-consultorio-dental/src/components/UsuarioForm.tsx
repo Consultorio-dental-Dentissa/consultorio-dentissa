@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import type { RegistrarUsuario } from '../types/RegistrarUsuario'
-import { requestRegistrarUsuario } from '../services/usuarios.service'
 import toast from 'react-hot-toast';
-import type { ApiError } from '../types/respuestas/ApiError';
 import type { Usuario } from '../types/Usuario';
+import { useUsuarios } from '../hooks/useUsuarios';
 
 
 interface FormData {
@@ -30,18 +29,19 @@ const initialState: FormData = {
     fechaNacimiento: '',
 }
 
-interface Props {
+interface UsuarioFormProps {
     onSubmit?: (nuevoUsuario: Usuario) => void
     onCancel?: () => void
 }
 
-export default function NuevoUsuarioForm({ onSubmit, onCancel }: Props) {
+export default function UsuarioForm({ onSubmit, onCancel }: UsuarioFormProps) {
 
-    const [form, setForm] = useState<FormData>(initialState)
+    const [formulario, setFormulario] = useState<FormData>(initialState)
+    const {registrarUsuario, error} = useUsuarios();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
-        setForm(prev => ({ ...prev, [name]: value }))
+        setFormulario(prev => ({ ...prev, [name]: value }))
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -49,40 +49,38 @@ export default function NuevoUsuarioForm({ onSubmit, onCancel }: Props) {
         e.preventDefault()
 
         const datos_usuario: RegistrarUsuario = {
-            nombre: form.nombre,
-            apellido: form.apellido,
-            correo: form.correo,
-            telefono: form.telefono,
-            contraseña: form.contraseña,
-            rol: form.rol,
+            nombre: formulario.nombre,
+            apellido: formulario.apellido,
+            correo: formulario.correo,
+            telefono: formulario.telefono,
+            contraseña: formulario.contraseña,
+            rol: formulario.rol,
         }
 
-        if (form.rol === 'PACIENTE') {
+
+        if (formulario.rol === 'PACIENTE') {
             datos_usuario.paciente = {
-                direccion: form.direccion,
-                fecha_nacimiento: form.fechaNacimiento,
-                telefono_emergencia: form.telefonoEmergencia,
+                direccion: formulario.direccion,
+                fecha_nacimiento: formulario.fechaNacimiento,
+                telefono_emergencia: formulario.telefonoEmergencia,
             }
         }
 
-        console.log(datos_usuario);
-
-        try {
-
-            const respuesta = await requestRegistrarUsuario(datos_usuario);
-            console.log(respuesta);
+        const respuesta = await registrarUsuario(datos_usuario);
+        console.log(respuesta);
+        if (respuesta) {
             toast.success('Usuario registrado exitosamente');
             onSubmit?.(respuesta);
-
-        } catch(error) {
-
-            toast.error((error as ApiError).message)
+            return;
         }
+
+        error && toast.error(error);
     }
 
-    const esPaciente = form.rol === 'PACIENTE'
+    const esPaciente = formulario.rol === 'PACIENTE'
 
     return (
+
         <div className="form-card">
 
             <form onSubmit={handleSubmit}>
@@ -97,32 +95,32 @@ export default function NuevoUsuarioForm({ onSubmit, onCancel }: Props) {
 
                         <div className="field">
                             <label>Nombre</label>
-                            <input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Luis" />
+                            <input name="nombre" value={formulario.nombre} onChange={handleChange} placeholder="Luis" />
                         </div>
 
                         <div className="field">
                             <label>Apellido</label>
-                            <input name="apellido" value={form.apellido} onChange={handleChange} placeholder="González" />
+                            <input name="apellido" value={formulario.apellido} onChange={handleChange} placeholder="González" />
                         </div>
 
                         <div className="field">
                             <label>Teléfono</label>
-                            <input name="telefono" value={form.telefono} onChange={handleChange} placeholder="755 100 0001" />
+                            <input name="telefono" value={formulario.telefono} onChange={handleChange} placeholder="755 100 0001" />
                         </div>
 
                         <div className="field">
                             <label>Correo</label>
-                            <input name="correo" type="email" value={form.correo} onChange={handleChange} placeholder="correo@dentissa.mx" />
+                            <input name="correo" type="email" value={formulario.correo} onChange={handleChange} placeholder="correo@dentissa.mx" />
                         </div>
 
                         <div className="field">
                             <label>Contraseña</label>
-                            <input name="contraseña" type="password" value={form.contraseña} onChange={handleChange} placeholder="ooooooo" />
+                            <input name="contraseña" type="password" value={formulario.contraseña} onChange={handleChange} placeholder="ooooooo" />
                         </div>
 
                         <div className="field field--full">
                             <label>Rol</label>
-                            <select name="rol" value={form.rol} onChange={handleChange}>
+                            <select name="rol" value={formulario.rol} onChange={handleChange}>
                                 <option value="" disabled>Seleccionar rol</option>
                                 <option value="ADMINISTRADOR">Administrador</option>
                                 <option value="ASISTENTE">Asistente</option>
@@ -141,17 +139,17 @@ export default function NuevoUsuarioForm({ onSubmit, onCancel }: Props) {
 
                             <div className="field field--full">
                                 <label>Dirección</label>
-                                <input name="direccion" value={form.direccion} onChange={handleChange} placeholder="Calle, número, colonia" />
+                                <input name="direccion" value={formulario.direccion} onChange={handleChange} placeholder="Calle, número, colonia" />
                             </div>
 
                             <div className="field">
                                 <label>Teléfono de emergencia</label>
-                                <input name="telefonoEmergencia" value={form.telefonoEmergencia} onChange={handleChange} placeholder="755 100 0002" />
+                                <input name="telefonoEmergencia" value={formulario.telefonoEmergencia} onChange={handleChange} placeholder="755 100 0002" />
                             </div>
 
                             <div className="field">
                                 <label>Fecha de nacimiento</label>
-                                <input name="fechaNacimiento" type="date" value={form.fechaNacimiento} onChange={handleChange} />
+                                <input name="fechaNacimiento" type="date" value={formulario.fechaNacimiento} onChange={handleChange} />
                             </div>
 
                         </div>

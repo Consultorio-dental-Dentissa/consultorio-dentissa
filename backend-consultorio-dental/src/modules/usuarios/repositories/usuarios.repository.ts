@@ -8,8 +8,6 @@ export class RepositorioUsuario {
 
     constructor(private prisma: PrismaService) { }
 
-
-
     async obtenerTodos() {
         return await this.prisma.usuario.findMany({
             include: {
@@ -18,13 +16,7 @@ export class RepositorioUsuario {
         });
     }
 
-
-
-
     async obtenerUsuarioPorId(id: number): Promise<Usuario | null> {
-
-        console.log("3. Pasamos por el repositorio de usuarios");
-
         return await this.prisma.usuario.findFirst({
             where: {
                 id: id
@@ -35,8 +27,6 @@ export class RepositorioUsuario {
         });
     }
 
-
-
     async obtenerUsuarioPorCorreo(correo: string): Promise<Usuario | null> {
         return await this.prisma.usuario.findFirst({
             where: {
@@ -44,7 +34,6 @@ export class RepositorioUsuario {
             }
         });
     }
-
 
     async existeCorreo(correo: string): Promise<Boolean> {
         const conteo = await this.prisma.usuario.count({
@@ -66,8 +55,7 @@ export class RepositorioUsuario {
         return conteo > 0;
     }
 
-
-    async crearUsuario(crearUsuarioDto: CrearUsuarioDto, transaction? : Prisma.TransactionClient) {
+    async crear(crearUsuarioDto: CrearUsuarioDto, transaction? : Prisma.TransactionClient) {
 
         const cliente = transaction ?? this.prisma;
 
@@ -106,9 +94,7 @@ export class RepositorioUsuario {
         });
     }
 
-
     // Metodo definido para devolver usuario con contraseña
-
     async obtenerUsuarioPorCorreoConContraseña(correo: string) {
         return await this.prisma.usuario.findUnique({
             where: {
@@ -123,7 +109,6 @@ export class RepositorioUsuario {
         });
     }
 
-
     async cambiarEstadoDeUsuario(id: number, estado: boolean) {
         const usuario = await this.prisma.usuario.update({
             where: {
@@ -136,5 +121,4 @@ export class RepositorioUsuario {
 
         return usuario ? true : false;
     }
-
 }

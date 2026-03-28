@@ -26,7 +26,6 @@ export default function Servicios() {
     const cambiarEstadoDelServicio = async (id: number, nuevoEstado: boolean) => {
         const respuesta = await cambiarEstadoServicio(id, nuevoEstado);
 
-        // Actualizar el estado
         if (respuesta) {
             setServicios(prev => prev.map((servicio) => servicio.id === id ? { ...servicio, activo: nuevoEstado } : servicio))
             toast.success('Se ha cambiado el estado del servicio');
