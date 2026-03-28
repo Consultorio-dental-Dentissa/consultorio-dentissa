@@ -1,33 +1,32 @@
 import { useState } from "react";
 import { requestCrearCita, requestObtenerCitas } from "../services/citas.service"
-import type { ApiError } from "../types/respuestas/ApiError";
-import type { RegistrarCita } from "../types/RegistrarCita";
-import type { RespuestaCita } from "../types/respuestas/RespuestaCita";
+import type { ApiError } from "../types/api/responses/ApiError";
+import type { RespuestaCita } from "../types/api/responses/RespuestaCita";
+import type { CrearCita } from "../types/api/request/CrearCita";
 
 export function useCitas() {
 
-    const [error, setError] = useState<string | null>(null);
-    const [cargando, setCargando] = useState<boolean>(false);
+        const [error, setError] = useState<string | null>(null);
+        const [cargando, setCargando] = useState<boolean>(false);
 
-    async function obtenerCitas(): Promise<RespuestaCita[] | null> {
+        async function obtenerCitas(): Promise<RespuestaCita[] | null> {
 
-        setError(null);
-        setCargando(true);
+                setError(null);
+                setCargando(true);
+                return await requestObtenerCitas()
+                        .catch((error: ApiError) => { setError(error.message); return null; })
+                        .finally(() => setCargando(false));
+        }
 
-        return await requestObtenerCitas()
-            .catch((error: ApiError) => {setError(error.message); return null;})
-            .finally(() => setCargando(false));
-    }
+        async function crearCita(nuevaCita: CrearCita) {
 
-    async function crearCita(registrarCita: RegistrarCita) {
-        
-        setError(null);
-        setCargando(true);
+                setError(null);
+                setCargando(true);
 
-        return await requestCrearCita(registrarCita)
-            .catch((error: ApiError) => {setError(error.message); return null;})
-            .finally(() => setCargando(false));
-    }
+                return await requestCrearCita(nuevaCita)
+                        .catch((error: ApiError) => { setError(error.message); return null; })
+                        .finally(() => setCargando(false));
+        }
 
-    return { obtenerCitas, crearCita, cargando, error }
+        return { obtenerCitas, crearCita, cargando, error }
 }

@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { requestCambiarEstadoUsuario, requestRegistrarUsuario, requestUsuarios } from "../services/usuarios.service"
-import type { Usuario } from "../types/Usuario";
-import type { RegistrarUsuario } from "../types/RegistrarUsuario";
-import type { ApiError } from "../types/respuestas/ApiError";
+import type { CrearUsuario } from "../types/api/request/CrearUsuario";
+import type { ApiError } from "../types/api/responses/ApiError";
+import type { RespuestaUsuario } from "../types/api/responses/RespuestaUsuario";
 
 export function useUsuarios() {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function obtenerUsuarios(): Promise<Usuario[] | null> {
+    async function obtenerUsuarios(): Promise<RespuestaUsuario[] | null> {
 
         setError(null);
         setLoading(true)
@@ -19,7 +19,7 @@ export function useUsuarios() {
             .finally(() => setLoading(false));
     }
 
-    async function registrarUsuario(usuario: RegistrarUsuario): Promise<Usuario | null> {
+    async function registrarUsuario(usuario: CrearUsuario): Promise<RespuestaUsuario | null> {
 
         setError(null);
         setLoading(true);

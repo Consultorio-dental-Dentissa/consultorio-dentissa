@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { requestObtenerServicios, requestCambiarEstadoServicio, requestCrearServicio } from "../services/servicios.service";
 
-import type { RespuestaServicio } from "../types/respuestas/RespuestaServicio";
-import type { ApiError } from "../types/respuestas/ApiError";
-import type { RegistrarServicio } from "../types/RegistrarServicio";
+import type { RespuestaServicio } from "../types/api/responses/RespuestaServicio";
+import type { ApiError } from "../types/api/responses/ApiError";
+import type { CrearServicio } from "../types/api/request/CrearServicio";
 
 
 export function useServicios() {
@@ -11,13 +11,13 @@ export function useServicios() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function crearServicio(registrarServicio: RegistrarServicio): Promise<RespuestaServicio | null> {
+    async function crearServicio(crearServicio: CrearServicio): Promise<RespuestaServicio | null> {
         
         setError(null);
         setLoading(true);
 
-        return await requestCrearServicio(registrarServicio)
-            .catch((error: ApiError) => {setError(error.message); return null;})
+        return await requestCrearServicio(crearServicio)
+            .catch((error: ApiError) => {setError(error.message); console.log(error); return null;})
             .finally(() => setLoading(false));
     }
 

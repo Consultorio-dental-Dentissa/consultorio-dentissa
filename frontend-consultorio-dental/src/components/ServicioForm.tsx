@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useServicios } from '../hooks/useServicios'
-import type { RegistrarServicio } from '../types/RegistrarServicio'
-import type { RespuestaServicio } from '../types/respuestas/RespuestaServicio'
+import type { CrearServicio } from '../types/api/request/CrearServicio'
+import type { RespuestaServicio } from '../types/api/responses/RespuestaServicio'
 import toast from 'react-hot-toast'
 
 interface FormData {
@@ -42,21 +42,30 @@ export default function ServicioForm({ onSubmit, onCancel }: Props) {
         !form.horas ? form.horas = '0' : form.horas ;
         !form.minutos ? form.minutos = '0' : form.minutos ;
 
+        const precio = Number(form.precio);
+
+        if (Number.isNaN(precio)) {
+            toast.error('El precio debe ser un número valido');
+            return;
+        }
+
         const sumaTotal = (Number(form.horas) * 60) + Number(form.minutos);
 
-        if (sumaTotal > 120 || sumaTotal < 30) {
+        if (sumaTotal > 120 || sumaTotal < 15) {
             toast.error('La cita solo puede durar un maximo de 2 horas y un minimo de 30 minutos');
             return;
         }
 
-        const registrarServicio: RegistrarServicio = {
+        const nuevoServicio: CrearServicio = {
             nombre: form.nombre,
-            duracion_horas: `${form.horas}:${form.minutos}`,
-            precio: form.precio,
+            duracion_minutos: sumaTotal,
+            precio: precio,
             descripcion: form.descripcion
         }
 
-        const servicio = await crearServicio(registrarServicio);
+        console.log(nuevoServicio);
+
+        const servicio = await crearServicio(nuevoServicio);
         servicio && onSubmit?.(servicio);
     }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { TituloPanel } from "../../components/TituloPanel";
-import type { RespuestaCita } from "../../types/respuestas/RespuestaCita";
+import type { RespuestaCita } from "../../types/api/responses/RespuestaCita";
 import { useCitas } from "../../hooks/useCitas";
 import { CardCita, CardCitaVacia } from "../../components/CardCita";
 import CitaForm from "../../components/CitaForm";

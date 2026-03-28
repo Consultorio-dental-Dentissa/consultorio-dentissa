@@ -1,13 +1,13 @@
 import { get, post, patch } from "./api";
-import type { Usuario } from "../types/Usuario";
-import type { RegistrarUsuario } from "../types/RegistrarUsuario";
+import type { CrearUsuario } from "../types/api//request/CrearUsuario";
+import type { RespuestaUsuario } from "../types/api/responses/RespuestaUsuario";
 
-export async function requestUsuarios() : Promise<Usuario[]> {
-    return await get<Usuario[]>("/usuarios");
+export async function requestUsuarios() : Promise<RespuestaUsuario[]> {
+    return await get<RespuestaUsuario[]>("/usuarios");
 }
 
-export async function requestRegistrarUsuario(usuario: RegistrarUsuario) : Promise<Usuario> {
-    return await post<Usuario>("/usuarios", usuario);
+export async function requestRegistrarUsuario(usuario: CrearUsuario) : Promise<RespuestaUsuario> {
+    return await post<RespuestaUsuario>("/usuarios", usuario);
 }
 
 export async function requestCambiarEstadoUsuario(id: number, estado: boolean): Promise<boolean> {

@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import type { RegistrarUsuario } from '../types/RegistrarUsuario'
-import toast from 'react-hot-toast';
-import type { Usuario } from '../types/Usuario';
 import { useUsuarios } from '../hooks/useUsuarios';
-
+import type { RespuestaUsuario } from '../types/api/responses/RespuestaUsuario';
+import type { CrearUsuario } from '../types/api/request/CrearUsuario'
+import toast from 'react-hot-toast';
 
 interface FormData {
     nombre: string
@@ -30,7 +29,7 @@ const initialState: FormData = {
 }
 
 interface UsuarioFormProps {
-    onSubmit?: (nuevoUsuario: Usuario) => void
+    onSubmit?: (nuevoUsuario: RespuestaUsuario) => void
     onCancel?: () => void
 }
 
@@ -48,7 +47,7 @@ export default function UsuarioForm({ onSubmit, onCancel }: UsuarioFormProps) {
 
         e.preventDefault()
 
-        const datos_usuario: RegistrarUsuario = {
+        const datos_usuario: CrearUsuario = {
             nombre: formulario.nombre,
             apellido: formulario.apellido,
             correo: formulario.correo,

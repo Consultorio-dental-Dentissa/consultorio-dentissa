@@ -1,4 +1,4 @@
-import type { RespuestaPaciente } from '../types/respuestas/RespuestaPaciente';
+import type { RespuestaPaciente } from '../types/api/responses/RespuestaPaciente';
 import { get } from './api'
 
 export async function requestObtenerPacientes(): Promise<RespuestaPaciente[]> {

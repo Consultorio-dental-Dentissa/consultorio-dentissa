@@ -1,5 +1,5 @@
 import { get, post } from './api';
-import type { RespuestaCita } from '../types/respuestas/RespuestaCita';
+import type { RespuestaCita } from '../types/api/responses/RespuestaCita';
 import type { RegistrarCita } from '../types/RegistrarCita';
 
 export async function requestObtenerCitas(): Promise<RespuestaCita[]> {
