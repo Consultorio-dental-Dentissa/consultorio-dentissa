@@ -56,15 +56,14 @@ export default function ServicioForm({ onSubmit, onCancel }: Props) {
             descripcion: form.descripcion
         }
 
-        const respuesta = await crearServicio(registrarServicio);
-        respuesta && onSubmit?.(respuesta);
-
-        error && toast.error(error);
-
+        const servicio = await crearServicio(registrarServicio);
+        servicio && onSubmit?.(servicio);
     }
 
     return (
         <div className="form-card">
+            
+            {error && toast.error(error)}
 
             <form onSubmit={handleSubmit}>
                 <div className="form-header">

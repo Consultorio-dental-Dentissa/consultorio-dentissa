@@ -24,7 +24,8 @@ export default function Login() {
             return;
         }
 
-        const respuesta = await login(correo, contraseña);
+        const credenciales = {correo: correo, contraseña: contraseña};
+        const respuesta = await login(credenciales);
 
         if (respuesta?.estado) {
 

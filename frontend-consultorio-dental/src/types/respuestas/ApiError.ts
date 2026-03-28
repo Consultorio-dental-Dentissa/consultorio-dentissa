@@ -1,12 +1,18 @@
+interface ApiErrorInferface {
+    error : string;
+    statusCode: number;
+    message: string;
+}
+
 export class ApiError {
 
     public error : string;
     public statusCode: number;
-    public message: string
+    public message: string;
 
-    constructor(message: string, error: string, statuscode: number) {
+    constructor({message: message, error: error, statusCode: statusCode}: ApiErrorInferface) {
         this.message = message;
-        this.statusCode = statuscode;
+        this.statusCode = statusCode;
         this.error = error;
     }
 

@@ -1,11 +1,26 @@
-import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, Min, IsNumber, IsInt, IsDefined } from 'class-validator'
+import { Type } from 'class-transformer'
 
 export class CrearServicioDto {
-    nombre: string;
-    duracion_minutos: number;
-    duracion_horas: string;
-    descripcion: string;
 
-    @Type(() => Number)
-    precio: number;
+    @IsNotEmpty({ message: 'El nombre del servicio es requerido' })
+    @IsString()
+    nombre!: string
+
+    @IsDefined({ message: 'La duración del servicio es requerida' })
+    @IsNumber({}, { message: 'La duracion debe ser un número' })
+    @IsInt({ message: 'La duración en minutos debe ser un número entero' })
+    duracion_minutos!: number
+
+    @IsNotEmpty({ message: 'La descripción del servicio es requerida' })
+    @IsString()
+    descripcion!: string
+
+    @IsNotEmpty({ message: 'El precio es requerido' })
+    @IsNumber({ maxDecimalPlaces: 2 }, { message: 'El precio debe ser un número válido' })
+    @Min(0, { message: 'El precio no puede ser negativo' })
+    precio!: number
 }
+
+
+

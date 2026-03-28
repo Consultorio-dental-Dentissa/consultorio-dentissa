@@ -1,19 +1,20 @@
 import { requestObtenerPacientes, requestObtenerPaciente } from "../services/pacientes.service"
 import { useState } from "react";
+import type { ApiError } from "../types/respuestas/ApiError";
 
 export function usePacientes() {
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
     async function obtenerPacientes() {
 
-        try {
-            setLoading(true);
-            return await requestObtenerPacientes();
-            
-        } finally {
-            setLoading(false);
-        }
+        setError(null);
+        setLoading(true);
+        
+        return await requestObtenerPacientes()
+            .catch((error: ApiError) => {setError(error.message); return null;})
+            .finally(() => setLoading(false));
     }
 
 
@@ -21,5 +22,5 @@ export function usePacientes() {
         return await requestObtenerPaciente(id);
     }
 
-    return { obtenerPacientes, obtenerPaciente, loading }
+    return { obtenerPacientes, obtenerPaciente, loading, error }
 }

@@ -15,18 +15,12 @@ export function useRegister() {
 
     async function register(usuario : RegistrarUsuario) {
         
-        try {
+        setError(null);
+        setLoading(true);
 
-            setLoading(true);
-            return await requestRegister(usuario);
-
-       } catch(error) {
-            setError((error as ApiError).message);
-       } finally {
-
-        setLoading(false);
-
-       }
+        return await requestRegister(usuario)
+            .catch((error: ApiError) => {setError(error.message); return null;})
+            .finally(() => setLoading(false));
     }
 
     return { register, error, loading, clearError }

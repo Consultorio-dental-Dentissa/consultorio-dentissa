@@ -10,6 +10,6 @@ export async function requestRegistrarUsuario(usuario: RegistrarUsuario) : Promi
     return await post<Usuario>("/usuarios", usuario);
 }
 
-export async function requestCambiarEstadoUsuario(id: number, estado: boolean) {
+export async function requestCambiarEstadoUsuario(id: number, estado: boolean): Promise<boolean> {
     return await patch(`/usuarios/${id}/estado`, {estado});
 }

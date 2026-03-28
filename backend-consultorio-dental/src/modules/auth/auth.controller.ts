@@ -1,8 +1,8 @@
-import { Body, Controller, Post, Get, Res } from '@nestjs/common';
-import type { IniciarSesionDto } from './dto/IniciarSesionDto';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { IniciarSesionDto } from './dto/IniciarSesionDto';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
-import type { RegistrarUsuarioDto } from './dto/registrarUsuarioDto';
+import { CrearUsuarioDto } from '../usuarios/dto/CrearUsuarioDto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,14 +11,13 @@ export class AuthController {
 
     @Post('iniciar-sesion')
     login(@Body() credenciales: IniciarSesionDto, @Res({ passthrough: true }) response: Response) {
-        return this.authService.iniciar_sesion(credenciales, response);
+        return this.authService.iniciarSesion(credenciales, response);
     }  
 
     @Post('registrar')
-    register(@Body() registroDto: RegistrarUsuarioDto) {
-        return this.authService.registrarUsuario(registroDto);
+    register(@Body() usuario: CrearUsuarioDto) {
+        return this.authService.registrarUsuario(usuario);
     }
-
     
     @Post('verificar-prueba')
     get(@Body() credenciales : any): Promise<any> {

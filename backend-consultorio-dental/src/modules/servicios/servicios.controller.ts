@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards, Post, Body, Delete, ParseIntPipe, Param, Patch } from '@nestjs/common';
 import { ServiciosService } from './servicios.service';
 import { AuthGuard } from '../security/guards/auth.guard';
-import { type CrearServicioDto } from './dto/CrearServicioDto';
+import { CrearServicioDto } from './dto/CrearServicioDto';
 
 @UseGuards(AuthGuard)
 @Controller('servicios')
@@ -23,5 +23,4 @@ export class ServiciosController {
     async crearServicio(@Body () crearServicioDto: CrearServicioDto) {
         return await this.serviciosService.crearServicio(crearServicioDto);
     }
-
 }
