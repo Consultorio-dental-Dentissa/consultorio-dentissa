@@ -1,7 +1,7 @@
 import { requestLogin } from "../services/auth.service";
 import { useState } from "react";
-import type { ApiError } from "../types/respuestas/ApiError";
-import type { CredencialesLogin } from "../types/CredencialesLogin";
+import type { ApiError } from "../types/api/responses/ApiError";
+import type { IniciarSesion } from "../types/api/request/IniciarSesion";
 
 export function useLogin() {
 
@@ -13,7 +13,7 @@ export function useLogin() {
         setError(null);
     }
 
-    async function login(credenciales: CredencialesLogin ) {
+    async function login(credenciales: IniciarSesion ) {
 
         setError(null);
         setLoading(true);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { usePacientes } from "../../hooks/usePacientes"
-import type { RespuestaPaciente } from "../../types/respuestas/RespuestaPaciente"
+import type { RespuestaPaciente } from "../../types/api/responses/RespuestaPaciente"
 
 
 function iniciales(nombre: string, apellido: string) {

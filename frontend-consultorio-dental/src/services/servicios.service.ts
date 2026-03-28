@@ -1,5 +1,5 @@
-import type { RegistrarServicio } from '../types/RegistrarServicio';
-import type { RespuestaServicio } from '../types/respuestas/RespuestaServicio';
+import type { RespuestaServicio } from '../types/api/responses/RespuestaServicio';
+import type { CrearServicio } from '../types/api/request/CrearServicio';
 import { get, patch, post } from './api';
 
 export async function requestObtenerServicios(): Promise<RespuestaServicio[]> {
@@ -10,6 +10,6 @@ export async function requestCambiarEstadoServicio(id: number, estado: boolean):
     return await patch(`/servicios/${id}/estado`, {estado})
 }
 
-export async function requestCrearServicio(registrarServicio: RegistrarServicio): Promise<RespuestaServicio> {
-    return await post('/servicios', registrarServicio);
+export async function requestCrearServicio(crearServicio: CrearServicio): Promise<RespuestaServicio> {
+    return await post('/servicios', crearServicio);
 }

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { TituloPanel } from "../../components/TituloPanel";
 import { useUsuarios } from "../../hooks/useUsuarios";
-import type { Usuario } from "../../types/Usuario";
-import TablaVacia from "../../components/tablaVacia";
+import TablaVacia from "../../components/TablaVacia";
 import UsuarioForm from "../../components/UsuarioForm";
 import { ToggleButton } from "../../components/ToggleButton";
 import toast from "react-hot-toast";
+import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuario";
 
 export default function Usuarios() {
 
-    const [usuarios, setUsuarios] = useState<Usuario[]>([])
+    const [usuarios, setUsuarios] = useState<RespuestaUsuario[]>([])
     const [modalAbierto, setModalAbierto] = useState(false);
 
     const { obtenerUsuarios, cambiarEstadoUsuario, loading, error } = useUsuarios();
@@ -25,7 +25,7 @@ export default function Usuarios() {
     }, []);
 
 
-    const manejarUsuarioCreado = (nuevoUsuario: Usuario) => {
+    const manejarUsuarioCreado = (nuevoUsuario: RespuestaUsuario) => {
         setUsuarios(prev => [...prev, nuevoUsuario]);
         setModalAbierto(false);
     }

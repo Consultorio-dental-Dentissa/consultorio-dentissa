@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import type { RespuestaServicio } from '../types/respuestas/RespuestaServicio'
-import type { RespuestaPaciente } from '../types/respuestas/RespuestaPaciente'
+import type { RespuestaServicio } from '../types/api/responses/RespuestaServicio'
+import type { RespuestaPaciente } from '../types/api/responses/RespuestaPaciente'
 import { usePacientes } from '../hooks/usePacientes'
 import { useServicios } from '../hooks/useServicios'
 import { useCitas } from '../hooks/useCitas'
 import type { RegistrarCita } from '../types/RegistrarCita'
-import type { RespuestaCita } from '../types/respuestas/RespuestaCita'
+import type { RespuestaCita } from '../types/api/responses/RespuestaCita'
 
 interface FormData {
     fecha: string

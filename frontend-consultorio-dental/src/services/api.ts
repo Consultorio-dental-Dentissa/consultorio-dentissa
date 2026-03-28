@@ -1,4 +1,4 @@
-import { ApiError } from "../types/respuestas/ApiError";
+import { ApiError } from "../types/api/responses/ApiError";
 import axios from 'axios';
 
 
