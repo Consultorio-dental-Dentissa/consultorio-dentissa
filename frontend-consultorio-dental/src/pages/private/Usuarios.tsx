@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { TituloPanel } from "../../components/TituloPanel";
 import { useUsuarios } from "../../hooks/useUsuarios";
 import TablaVacia from "../../components/TablaVacia";
-import UsuarioForm from "../../components/UsuarioForm";
 import { ToggleButton } from "../../components/ToggleButton";
 import toast from "react-hot-toast";
 import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuario";
+import { ModalUsuario } from "@/components/modals/ModalCrearUsuario";
 
 export default function Usuarios() {
 
@@ -114,19 +114,11 @@ export default function Usuarios() {
                 </tbody>
             </table>
 
-
-            {
-                modalAbierto && (
-                    <div className="modal-overlay" onClick={() => setModalAbierto(false)}>
-                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                            <UsuarioForm
-                                onSubmit={manejarUsuarioCreado}
-                                onCancel={() => setModalAbierto(false)}
-                            />
-                        </div>
-                    </div>
-                )
-            }
+            <ModalUsuario 
+                open={modalAbierto}
+                onOpenChange={(open) => setModalAbierto(open)}
+                onSubmit={() => manejarUsuarioCreado}
+            />
 
         </div>
     );
