@@ -1,6 +1,6 @@
 import { requestObtenerPacientes, requestObtenerPaciente } from "../services/pacientes.service"
-import type { ApiError } from "../types/api/responses/ApiError";
 import { useState } from "react";
+import type { ApiError } from "../types/api/responses/ApiError";
 
 export function usePacientes() {
 

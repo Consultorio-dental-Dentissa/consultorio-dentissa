@@ -6,28 +6,27 @@ import type { CrearCita } from "../types/api/request/CrearCita";
 
 export function useCitas() {
 
-    const [error, setError] = useState<string | null>(null);
-    const [cargando, setCargando] = useState<boolean>(false);
+        const [error, setError] = useState<string | null>(null);
+        const [cargando, setCargando] = useState<boolean>(false);
 
-    async function obtenerCitas(): Promise<RespuestaCita[] | null> {
+        async function obtenerCitas(): Promise<RespuestaCita[] | null> {
 
-        setError(null);
-        setCargando(true);
-        
-        return await requestObtenerCitas()
-            .catch((error: ApiError) => {setError(error.message); return null;})
-            .finally(() => setCargando(false));
-    }
+                setError(null);
+                setCargando(true);
+                return await requestObtenerCitas()
+                        .catch((error: ApiError) => { setError(error.message); return null; })
+                        .finally(() => setCargando(false));
+        }
 
-    async function crearCita(nuevaCita: CrearCita) {
-        
-        setError(null);
-        setCargando(true);
+        async function crearCita(nuevaCita: CrearCita) {
 
-        return await requestCrearCita(nuevaCita)
-            .catch((error: ApiError) => {setError(error.message); return null;})
-            .finally(() => setCargando(false));
-    }
+                setError(null);
+                setCargando(true);
 
-    return { obtenerCitas, crearCita, cargando, error }
+                return await requestCrearCita(nuevaCita)
+                        .catch((error: ApiError) => { setError(error.message); return null; })
+                        .finally(() => setCargando(false));
+        }
+
+        return { obtenerCitas, crearCita, cargando, error }
 }
