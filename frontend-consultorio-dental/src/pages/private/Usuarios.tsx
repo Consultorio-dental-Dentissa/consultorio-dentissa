@@ -7,13 +7,14 @@ import toast from "react-hot-toast";
 import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuario";
 import { ModalUsuario } from "@/components/modals/ModalCrearUsuario";
 import { Button } from "@/components/ui/button"
+import type { CrearUsuario } from "@/types/api/request/CrearUsuario";
 
 export default function Usuarios() {
 
     const [usuarios, setUsuarios] = useState<RespuestaUsuario[]>([])
     const [modalAbierto, setModalAbierto] = useState(false);
 
-    const { obtenerUsuarios, cambiarEstadoUsuario, loading, error } = useUsuarios();
+    const { obtenerUsuarios, cambiarEstadoUsuario, registrarUsuario, loading, error } = useUsuarios();
 
     useEffect(() => {
 
@@ -26,9 +27,13 @@ export default function Usuarios() {
     }, []);
 
 
-    const manejarUsuarioCreado = (nuevoUsuario: RespuestaUsuario) => {
-        setUsuarios(prev => [...prev, nuevoUsuario]);
-        setModalAbierto(false);
+    const manejarUsuarioCreado = async (usuario: CrearUsuario) => {
+        const nuevoUsuario = await registrarUsuario(usuario);
+        if (nuevoUsuario) {
+            toast.success('Se ha creado un nuevo usuario');
+            setUsuarios(prev => [...prev, nuevoUsuario]);
+            setModalAbierto(false);
+        }
     }
 
     const manejarCambioDeEstado = async (id: number, nuevoEstado: boolean) => {
@@ -39,7 +44,7 @@ export default function Usuarios() {
                 return prev.map(u => u.id === id ? { ...u, activo: nuevoEstado } : u)
             });
 
-            toast.success('El estado se actualzó correctamente');
+            toast.success('El estado se actualizó correctamente');
         }
     }
 
@@ -115,10 +120,10 @@ export default function Usuarios() {
                 </tbody>
             </table>
 
-            <ModalUsuario 
+            <ModalUsuario
                 open={modalAbierto}
                 onOpenChange={(open) => setModalAbierto(open)}
-                onSubmit={() => manejarUsuarioCreado}
+                onSubmit={manejarUsuarioCreado}
             />
 
         </div>

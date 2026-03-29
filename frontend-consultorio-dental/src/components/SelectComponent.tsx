@@ -1,4 +1,7 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select"
+import {
+    Select, SelectContent, SelectGroup,
+    SelectItem, SelectLabel, SelectTrigger, SelectValue,
+} from "@/components/ui/select"
 
 export interface SelectData {
     data: any;
@@ -9,12 +12,13 @@ interface SelectProps {
     title: string;
     placeholder?: string;
     onChange: (e: any) => void;
-    data: SelectData[]
+    data: SelectData[],
+    value?: string;
 }
 
-export function SelectComponent({ title, placeholder, data, onChange }: SelectProps) {
+export function SelectComponent({ title, placeholder, data, onChange, value }: SelectProps) {
     return (
-        <Select onValueChange={(e) => onChange(e)}>
+        <Select onValueChange={onChange} value={value}>
             <SelectTrigger className="w-full">
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>

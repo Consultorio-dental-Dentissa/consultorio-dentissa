@@ -1,10 +1,11 @@
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from '@/components/ui/dialog'
 import UsuarioForm from '@/components/formularios/UsuarioForm';
+import type { CrearUsuario } from '@/types/api/request/CrearUsuario';
 
 interface ModalUsuarioProps {
     open: boolean;
     onOpenChange: (open: boolean) => void
-    onSubmit: () => void;
+    onSubmit: (data: CrearUsuario) => void;
 }
 
 export function ModalUsuario({ open, onOpenChange, onSubmit }: ModalUsuarioProps) {
