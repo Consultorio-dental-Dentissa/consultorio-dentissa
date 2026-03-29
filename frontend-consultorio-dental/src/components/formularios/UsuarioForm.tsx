@@ -5,25 +5,24 @@ import { Label } from "@/components/ui/label"
 import { Field, FieldGroup } from "../ui/field"
 import { Rol } from "@/types/enums/rol-enum"
 import { useState } from "react"
-
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { SelectComponent, type SelectData } from "../SelectComponent"
 
 interface UsuarioFormProps {
     onSubmit: () => void
     onCancel: () => void
 }
 
+const roles : SelectData[] = [{value: 'ADMINISTRADOR', data: 'Administrador'}, {value: 'ASISTENTE', data: 'Asistente'}, {value: 'PACIENTE', data: 'Paciente'}];
+
+
 export default function UsuarioForm({ onSubmit, onCancel }: UsuarioFormProps) {
 
     const [esPaciente, setEsPaciente] = useState(false);
+
+    const expandirFormulario = (e: string) => {
+        console.log("Pregunta si es paciente");
+        setEsPaciente(e === Rol.PACIENTE ? true : false);
+    }
 
     return (
         <div className="flex flex-col gap-7">
@@ -51,23 +50,16 @@ export default function UsuarioForm({ onSubmit, onCancel }: UsuarioFormProps) {
             <FieldGroup className="flex-row">
                 <Field>
                     <Label>Contraseña</Label>
-                    <Input placeholder="......" type="password"></Input>
+                    <Input placeholder="Minimo debe incluir 8 caracteres" type="password"></Input>
                 </Field>
                 <Field>
                     <Label>Rol</Label>
-                    <Select onValueChange={(rol) => rol === Rol.PACIENTE ? setEsPaciente(true) : setEsPaciente(false)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Seleccioné un rol" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Roles</SelectLabel>
-                                <SelectItem value="ADMINISTRADOR">Administrador</SelectItem>
-                                <SelectItem value="ASISTENTE">Asistente</SelectItem>
-                                <SelectItem value="PACIENTE">Paciente</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    <SelectComponent
+                        title='Seleccione un rol'
+                        placeholder="Escoja un rol"
+                        data={roles}
+                        onChange={expandirFormulario}
+                    />
                 </Field>
             </FieldGroup>
             <hr />

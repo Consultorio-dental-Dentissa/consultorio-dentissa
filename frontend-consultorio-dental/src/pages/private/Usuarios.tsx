@@ -6,6 +6,7 @@ import { ToggleButton } from "../../components/ToggleButton";
 import toast from "react-hot-toast";
 import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuario";
 import { ModalUsuario } from "@/components/modals/ModalCrearUsuario";
+import { Button } from "@/components/ui/button"
 
 export default function Usuarios() {
 
@@ -54,7 +55,7 @@ export default function Usuarios() {
             />
 
             <div className="contenedor-btn-registrar">
-                <button className="btn-registrar" onClick={() => { setModalAbierto(true) }}>Registrar nuevo usuario</button>
+                <Button onClick={() => { setModalAbierto(true) }}>Registrar nuevo usuario</Button>
             </div>
 
             <table>
@@ -103,8 +104,8 @@ export default function Usuarios() {
 
                                     <td>
                                         <div className="actions">
-                                            <button className="action-btn editar">Editar</button>
-                                            <button className="action-btn eliminar">Eliminar</button>
+                                            <Button >Editar</Button>
+                                            <Button variant="outline">Eliminar</Button>
                                         </div>
                                     </td>
                                 </tr>
