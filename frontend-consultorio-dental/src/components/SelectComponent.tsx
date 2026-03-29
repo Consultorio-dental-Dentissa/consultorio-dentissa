@@ -19,10 +19,10 @@ interface SelectProps {
 export function SelectComponent({ title, placeholder, data, onChange, value }: SelectProps) {
     return (
         <Select onValueChange={onChange} value={value}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full p-5 rounded-md">
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="p-4">
                 <SelectGroup>
                     <SelectLabel>{title}</SelectLabel>
                     {data.map((dato) => <SelectItem value={dato.value}>{dato.data}</SelectItem>)}

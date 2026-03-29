@@ -8,6 +8,7 @@ import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuari
 import { ModalUsuario } from "@/components/modals/ModalCrearUsuario";
 import { Button } from "@/components/ui/button"
 import type { CrearUsuario } from "@/types/api/request/CrearUsuario";
+import { PrimaryButton } from "@/components/Button";
 
 export default function Usuarios() {
 
@@ -60,7 +61,10 @@ export default function Usuarios() {
             />
 
             <div className="contenedor-btn-registrar">
-                <Button onClick={() => { setModalAbierto(true) }}>Registrar nuevo usuario</Button>
+                <PrimaryButton
+                    message="Regiistrar nuevo usuario"
+                    onClick={() => { setModalAbierto(true) }}
+                />
             </div>
 
             <table>

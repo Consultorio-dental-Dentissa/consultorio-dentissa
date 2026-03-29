@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <Toaster position="bottom-right" />
+      <Toaster position="top-right" />
 
       <AuthProvider>
         <Router />
