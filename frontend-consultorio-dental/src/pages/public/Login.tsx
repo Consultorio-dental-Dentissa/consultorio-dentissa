@@ -1,5 +1,5 @@
 // Login.tsx
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useLogin } from "../../hooks/useLogin";
 import { useAuth } from "../../context/AuthContextProvider";
@@ -9,9 +9,8 @@ export default function Login() {
 
     const [correo, setCorreo] = useState('');
     const [contraseña, setContraseña] = useState('');
-
-
-    const { login, loading, error, clearError } = useLogin();
+    const navigate = useNavigate();
+    const { login, loading, clearError } = useLogin();
     const { iniciarSesion } = useAuth();
 
     const manejarSubmit = async (e: React.FormEvent) => {
@@ -24,13 +23,18 @@ export default function Login() {
             return;
         }
 
-        const credenciales = {correo: correo, contraseña: contraseña};
-        const respuesta = await login(credenciales);
+        const credenciales = { correo: correo, contraseña: contraseña };
 
-        if (respuesta?.estado) {
+        try {
+            const respuesta = await login(credenciales);
 
-            iniciarSesion(respuesta.usuario, respuesta.token);
-            <Navigate to="/dashboard" />
+            if (respuesta?.estado) {
+
+                iniciarSesion(respuesta.usuario, respuesta.token);
+                navigate('/login');
+            }
+        } catch (error) {
+            toast.error((error as string));
         }
     }
 
@@ -41,7 +45,6 @@ export default function Login() {
                     <h2>Bienvenido de nuevo</h2>
                     <p>Inicia sesión para acceder a tu cuenta</p>
 
-                    {error && toast.error(error)}
                     {loading ? <p>Cargando...</p> : ''}
 
                 </div>

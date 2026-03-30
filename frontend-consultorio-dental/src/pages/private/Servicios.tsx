@@ -16,21 +16,28 @@ export default function Servicios() {
     useEffect(() => {
 
         async function cargarServicios() {
-            const servicios = await obtenerServicios();
-            servicios && setServicios(servicios);
+
+            try {
+                const servicios = await obtenerServicios();
+                setServicios(servicios);
+            } catch (error) {
+                toast.error((error as string));
+            }
         }
 
         cargarServicios();
     }, []);
 
     const cambiarEstadoDelServicio = async (id: number, nuevoEstado: boolean) => {
-        const respuesta = await cambiarEstadoServicio(id, nuevoEstado);
 
-        if (respuesta) {
+        try {
+            await cambiarEstadoServicio(id, nuevoEstado);
             setServicios(prev => prev.map((servicio) => servicio.id === id ? { ...servicio, activo: nuevoEstado } : servicio))
             toast.success('Se ha cambiado el estado del servicio');
-        } 
-            
+
+        } catch (error) {
+            toast.error((error as string));
+        }
     }
 
     const manejarNuevoServicio = (nuevoServicio: RespuestaServicio) => {

@@ -4,8 +4,16 @@ import axios from 'axios';
 
 
 const urlAPi = import.meta.env.VITE_API_URL
-const obtenerToken = () => localStorage.getItem('token');
-axios.defaults.headers.common['Authorization'] = `Bearer ${obtenerToken()}`;
+// Utilizando Interceptores en lugar de defaults estáticos
+axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    // Para no enviar "Bearer null" si no hay token
+    token ? config.headers['Authorization'] = `Bearer ${token}` : delete config.headers['Authorization'];
+    return config;
+
+}, (error) => {
+    return Promise.reject(error);
+});
 
 
 

@@ -39,8 +39,8 @@ export default function ServicioForm({ onSubmit, onCancel }: Props) {
 
         e.preventDefault();
 
-        !form.horas ? form.horas = '0' : form.horas ;
-        !form.minutos ? form.minutos = '0' : form.minutos ;
+        !form.horas ? form.horas = '0' : form.horas;
+        !form.minutos ? form.minutos = '0' : form.minutos;
 
         const precio = Number(form.precio);
 
@@ -65,20 +65,22 @@ export default function ServicioForm({ onSubmit, onCancel }: Props) {
 
         console.log(nuevoServicio);
 
-        const servicio = await crearServicio(nuevoServicio);
-        servicio && onSubmit?.(servicio);
+        try {
+            const servicio = await crearServicio(nuevoServicio);
+            onSubmit?.(servicio);
+        } catch (error) {
+            toast.error((error as string))
+        }
     }
 
     return (
         <div className="form-card">
-            
-            {error && toast.error(error)}
 
             <form onSubmit={handleSubmit}>
                 <div className="form-header">
                     <p className="form-title">Nuevo servicio</p>
                     <p className="form-subtitle">Completa los campos para registrar un nuevo servicio.</p>
-                    <p className="form-subtitle" style={{fontWeight: '600', color: 'red'}}>La duración del servicio debe ser de un maximo de 2 horas y minimo de 30 minutos.</p>
+                    <p className="form-subtitle" style={{ fontWeight: '600', color: 'red' }}>La duración del servicio debe ser de un maximo de 2 horas y minimo de 30 minutos.</p>
 
                 </div>
 

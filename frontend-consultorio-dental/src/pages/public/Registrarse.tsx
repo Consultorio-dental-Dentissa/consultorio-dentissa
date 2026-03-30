@@ -1,8 +1,9 @@
 // Registrarse.tsx
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import type { RegistrarUsuario } from "../../types/RegistrarUsuario";
+import type { CrearUsuario } from "../../types/api/request/CrearUsuario";
 import { useRegister } from "../../hooks/useRegister";
+import toast from "react-hot-toast";
 
 export default function Registrarse() {
 
@@ -17,10 +18,9 @@ export default function Registrarse() {
 
     const [errorFormulario, setErrorFormulario] = useState<string | null>('');
 
-    const { register, error, loading, clearError } = useRegister();
+    const { register, loading, clearError } = useRegister();
 
-    const [success, setSuccess] = useState('');
-
+    const navigate = useNavigate();
     const manejarSubmit = async (e: React.SubmitEvent) => {
 
         e.preventDefault();
@@ -38,7 +38,7 @@ export default function Registrarse() {
         setErrorFormulario(null);
 
         // Creamos el objeto usuario
-        const usuario : RegistrarUsuario = {
+        const usuario: CrearUsuario = {
             nombre: nombre,
             apellido: apellido,
             correo: correo,
@@ -52,13 +52,13 @@ export default function Registrarse() {
             }
         }
 
-        const respuesta = await register(usuario);
-
-        if (respuesta) {
-            setSuccess('Te has registrado exitosamente');
-            console.log(usuario);
-
-            return;
+        try {
+            toast.success('Te has registrado exitosamente')
+            setTimeout(() => {
+                navigate('/login')
+            }, 1000)
+        } catch (error) {
+            toast.error((error as string))
         }
     }
 
@@ -69,10 +69,7 @@ export default function Registrarse() {
                     <h2>Crear una cuenta</h2>
                     <p>Completa tus datos para registrarte</p>
 
-                    {errorFormulario && <p style={{color: 'red'}} >{errorFormulario}</p>}
-                    {error && <p style={{color: 'red'}} >{error}</p>}
-
-                    {success && <p style={{color: "green"}}>{success}</p>}
+                    {errorFormulario && <p style={{ color: 'red' }} >{errorFormulario}</p>}
                     {loading ? <p>Cargando...</p> : ''}
 
                 </div>

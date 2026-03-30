@@ -20,8 +20,12 @@ export default function Usuarios() {
     useEffect(() => {
 
         async function cargarUsuarios() {
-            const usuarios = await obtenerUsuarios();
-            usuarios && setUsuarios(usuarios);
+            try {
+                const usuarios = await obtenerUsuarios();
+                setUsuarios(usuarios);
+            } catch (error) {
+                toast.error((error as string))
+            }
         }
 
         cargarUsuarios();
@@ -29,31 +33,35 @@ export default function Usuarios() {
 
 
     const manejarUsuarioCreado = async (usuario: CrearUsuario) => {
-        const nuevoUsuario = await registrarUsuario(usuario);
-        if (nuevoUsuario) {
-            toast.success('Se ha creado un nuevo usuario');
+        try {
+            const nuevoUsuario = await registrarUsuario(usuario);
             setUsuarios(prev => [...prev, nuevoUsuario]);
             setModalAbierto(false);
+            toast.success('Se ha creado un nuevo usuario');
+
+        } catch (error) {
+            toast.error((error as string));
         }
+
+
     }
 
     const manejarCambioDeEstado = async (id: number, nuevoEstado: boolean) => {
 
-        const respuesta = await cambiarEstadoUsuario(id, nuevoEstado);
-        if (respuesta) {
+        try {
+            await cambiarEstadoUsuario(id, nuevoEstado);
             setUsuarios(prev => {
                 return prev.map(u => u.id === id ? { ...u, activo: nuevoEstado } : u)
             });
 
             toast.success('El estado se actualizó correctamente');
+        } catch (error) {
+            toast.error((error as string))
         }
     }
 
-
     return (
         <div>
-
-            {error && toast.error(error)}
 
             <div className="mt-2 w-full flex justify-between items-end">
                 <TituloPanel

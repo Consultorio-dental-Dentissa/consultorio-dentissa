@@ -1,4 +1,4 @@
-import type { RegistrarUsuario } from '../types/RegistrarUsuario';
+import type { CrearUsuario } from '../types/api/request/CrearUsuario';
 import { requestRegister } from '../services/auth.service';
 import { useState } from 'react';
 import type { ApiError } from '../types/api/responses/ApiError';
@@ -13,13 +13,13 @@ export function useRegister() {
         setError(null);
     }
 
-    async function register(usuario : RegistrarUsuario) {
+    async function register(usuario : CrearUsuario) {
         
         setError(null);
         setLoading(true);
 
         return await requestRegister(usuario)
-            .catch((error: ApiError) => {setError(error.message); return null;})
+            .catch((error: ApiError) => {setError(error.message); throw error.message;})
             .finally(() => setLoading(false));
     }
 
