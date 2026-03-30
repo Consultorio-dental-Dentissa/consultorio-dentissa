@@ -55,14 +55,14 @@ export default function Usuarios() {
 
             {error && toast.error(error)}
 
-            <TituloPanel
-                titulo="Panel de usuarios"
-                subtitulo="Aqui puedes manejar tus usuarios"
-            />
+            <div className="mt-2 w-full flex justify-between items-end">
+                <TituloPanel
+                    titulo="Panel de usuarios"
+                    subtitulo="Aqui puedes manejar tus usuarios"
+                />
 
-            <div className="contenedor-btn-registrar">
                 <PrimaryButton
-                    message="Regiistrar nuevo usuario"
+                    message="Registrar nuevo usuario"
                     onClick={() => { setModalAbierto(true) }}
                 />
             </div>

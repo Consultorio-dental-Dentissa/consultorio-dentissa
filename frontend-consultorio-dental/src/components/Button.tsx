@@ -7,9 +7,13 @@ interface ButtonProps {
     onClick?: () => void
 }
 
-export function PrimaryButton({ message, type, onClick, disabled}: ButtonProps) {
+export function PrimaryButton({ message, type, onClick, disabled }: ButtonProps) {
     return (
-        <Button className='p-5 bg-rose-500 rounded-sm' type={type} onClick={onClick}>
+        <Button
+            className='p-5 bg-rose-500 rounded-sm font-bold hover:'
+            type={type}
+            onClick={onClick}
+        >
             {message}
         </Button>
     )

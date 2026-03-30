@@ -4,7 +4,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaLaptopMedical } from "react-icons/fa6";
 import { IoGitNetworkOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
-
+import { TituloPanel } from "@/components/TituloPanel";
 
 export default function Dashboard() {
 
@@ -15,10 +15,11 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div className="contenedor-titulos-principal">
-        <h2>Bienvenid@, {usuario?.nombre}</h2>
-        <h4>Aqui esta el resumen de tu consultorio dental</h4>
-      </div>
+      
+      <TituloPanel
+        titulo={`Bienvenid@, ${usuario.nombre}`}
+        subtitulo="qui esta el resumen de tu consultorio dental"
+      />
 
       <section className="contenedor-fichas-dashboard">
         <Link to="/pacientes" className="ficha-dashboard pacientes">
@@ -80,7 +81,7 @@ export default function Dashboard() {
         </div>
 
         <div className="contenedor-citas-de-hoy">
-          
+
         </div>
 
       </section>
