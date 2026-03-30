@@ -3,6 +3,7 @@ import { IniciarSesionDto } from './dto/IniciarSesionDto';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { CrearUsuarioDto } from '../usuarios/dto/CrearUsuarioDto';
+import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,7 +16,7 @@ export class AuthController {
     }  
 
     @Post('registrar')
-    register(@Body() usuario: CrearUsuarioDto) {
+    register(@Body() usuario: RegistrarUsuarioDto) {
         return this.authService.registrarUsuario(usuario);
     }
     

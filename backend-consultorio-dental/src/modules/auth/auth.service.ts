@@ -6,6 +6,7 @@ import type { Response } from 'express';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { Rol } from '../usuarios/enums/rol.enum';
 import { CrearUsuarioDto } from '../usuarios/dto/CrearUsuarioDto';
+import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
 
 
 @Injectable()
@@ -74,8 +75,12 @@ export class AuthService {
     }
 
 
-    async registrarUsuario(usuario: CrearUsuarioDto) {
-        usuario.rol = Rol.PACIENTE;
-        return await this.usuariosService.crearUsuario(usuario);
+    async registrarUsuario(usuario: RegistrarUsuarioDto) {
+        
+        const usuarioPaciente = {
+            ...usuario,
+            rol: Rol.PACIENTE
+        }
+        return await this.usuariosService.crearUsuario(usuarioPaciente);
     }
 }
