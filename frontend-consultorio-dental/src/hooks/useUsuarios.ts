@@ -7,16 +7,17 @@ import type { RespuestaUsuario } from "../types/api/responses/RespuestaUsuario";
 export function useUsuarios() {
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     async function obtenerUsuarios(): Promise<RespuestaUsuario[]> {
 
         setError(null);
-        setLoading(true)
+        setLoadingTable(true)
 
         return await requestUsuarios()
             .catch((error: ApiError) => {setError(error.message); throw error.message;})
-            .finally(() => setLoading(false));
+            .finally(() => setLoadingTable(false));
     }
 
     async function registrarUsuario(usuario: CrearUsuario): Promise<RespuestaUsuario> {
@@ -36,5 +37,5 @@ export function useUsuarios() {
             .catch((error: ApiError) => {setError(error.message); throw error.message;})
     }
 
-    return { obtenerUsuarios, registrarUsuario, cambiarEstadoUsuario, loading, error }
+    return { obtenerUsuarios, registrarUsuario, cambiarEstadoUsuario, loading, loadingTable, error }
 }

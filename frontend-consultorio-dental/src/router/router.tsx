@@ -14,12 +14,12 @@ import Dashboard from "../pages/private/Dashboard"
 import Usuarios from "../pages/private/Usuarios"
 import Pacientes from "../pages/private/Pacientes"
 import Servicios from "../pages/private/Servicios"
+import Citas from "@/pages/private/Citas"
 
 
 // Layouts
 import LayoutPublico from "../layouts/PublicLayout"
 import LayoutPrivado from "../layouts/PrivateLayout"
-import Citas from "../pages/private/Citas"
 import Consultas from "../pages/private/Consultas"
 import PerfilPaciente from "../pages/private/PerfilPaciente"
 

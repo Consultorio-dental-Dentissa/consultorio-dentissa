@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import { TituloPanel } from "../../components/TituloPanel";
+import { TituloPanel } from "../../components/common/TituloPanel";
 import { useUsuarios } from "../../hooks/useUsuarios";
-import TablaVacia from "../../components/TablaVacia";
-import { ToggleButton } from "../../components/ToggleButton";
+import TablaVacia from "../../components/common/TablaVacia";
+import { ToggleButton } from "../../components/common/ToggleButton";
 import toast from "react-hot-toast";
 import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuario";
-import { ModalUsuario } from "@/components/modals/ModalCrearUsuario";
+import { ModalCrearUsuario } from "@/components/modals/ModalCrearUsuario";
 import { Button } from "@/components/ui/button"
 import type { CrearUsuario } from "@/types/api/request/CrearUsuario";
-import { PrimaryButton } from "@/components/Button";
+import { PrimaryButton } from "@/components/common/Button";
 
 export default function Usuarios() {
 
     const [usuarios, setUsuarios] = useState<RespuestaUsuario[]>([])
     const [modalAbierto, setModalAbierto] = useState(false);
 
-    const { obtenerUsuarios, cambiarEstadoUsuario, registrarUsuario, loading, error } = useUsuarios();
+    const { obtenerUsuarios, cambiarEstadoUsuario, registrarUsuario, loading, loadingTable } = useUsuarios();
 
     useEffect(() => {
 
@@ -90,7 +90,7 @@ export default function Usuarios() {
                 <tbody>
 
                     {
-                        loading ? (
+                        loadingTable ? (
                             <TablaVacia
                                 mensaje="Cargando..."
                                 submensaje="Buscando usuarios"
@@ -132,9 +132,9 @@ export default function Usuarios() {
                 </tbody>
             </table>
 
-            <ModalUsuario
+            <ModalCrearUsuario
                 open={modalAbierto}
-                onOpenChange={(open) => setModalAbierto(open)}
+                onClose={() => setModalAbierto(false)}
                 onSubmit={manejarUsuarioCreado}
             />
 

@@ -4,7 +4,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaLaptopMedical } from "react-icons/fa6";
 import { IoGitNetworkOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { TituloPanel } from "@/components/TituloPanel";
+import { TituloPanel } from "@/components/common/TituloPanel";
 
 export default function Dashboard() {
 

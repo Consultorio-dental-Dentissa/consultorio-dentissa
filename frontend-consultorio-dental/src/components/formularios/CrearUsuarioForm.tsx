@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button"
 import { FieldGroup } from "@/components/ui/field"
 import { Rol } from "@/types/enums/rol-enum"
 import { useForm, Controller } from "react-hook-form"
-import { InputForm, SelectForm } from "@/components/Input"
-import { PrimaryButton, SecondaryButton } from "../Button"
+import { InputForm, SelectForm } from "@/components/common/Input"
+import { PrimaryButton, SecondaryButton } from "../common/Button"
 
-import type { SelectData } from "@/components/SelectComponent"
+import type { SelectData } from "@/components/common/SelectComponent"
 import type { CrearUsuario } from "@/types/api/request/CrearUsuario"
 
 interface UsuarioFormProps {
@@ -28,7 +27,7 @@ const roles: SelectData[] = [
     }
 ];
 
-export default function UsuarioForm({ onSubmit, onCancel }: UsuarioFormProps) {
+export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProps) {
 
     const { register, handleSubmit, control, watch, formState: { errors, isSubmitting } } = useForm<CrearUsuario>()
 

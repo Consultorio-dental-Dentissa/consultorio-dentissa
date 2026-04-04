@@ -1,40 +1,34 @@
-// Login.tsx
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useLogin } from "../../hooks/useLogin";
 import { useAuth } from "../../context/AuthContextProvider";
+import { FieldGroup } from '@/components/ui/field'
+import { InputForm } from '@/components/common/Input'
+import { useForm } from "react-hook-form"
+import type { IniciarSesion } from "@/types/api/request/IniciarSesion";
 import toast from "react-hot-toast";
 
 export default function Login() {
-
-    const [correo, setCorreo] = useState('');
-    const [contraseña, setContraseña] = useState('');
     const navigate = useNavigate();
-    const { login, loading, clearError } = useLogin();
+    const { login } = useLogin();
     const { iniciarSesion } = useAuth();
 
-    const manejarSubmit = async (e: React.FormEvent) => {
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<IniciarSesion>()
+    
 
-        e.preventDefault();
-        clearError();
-
-        if (!correo || !contraseña) {
-            toast.error('Debes llenar todos los campos del formulario');
-            return;
-        }
-
-        const credenciales = { correo: correo, contraseña: contraseña };
-
+    const manejarSubmit = async (credenciales: IniciarSesion) => {
+        console.log(credenciales);
+        
         try {
+
             const respuesta = await login(credenciales);
 
-            if (respuesta?.estado) {
-
-                iniciarSesion(respuesta.usuario, respuesta.token);
-                navigate('/login');
+            if (respuesta.estado) {
+                await iniciarSesion(respuesta.usuario, respuesta.token);
+                navigate('/dashboard');
             }
-        } catch (error) {
-            toast.error((error as string));
+
+        } catch(error) {
+            toast.error(error as string);
         }
     }
 
@@ -44,49 +38,38 @@ export default function Login() {
                 <div className="auth-header">
                     <h2>Bienvenido de nuevo</h2>
                     <p>Inicia sesión para acceder a tu cuenta</p>
-
-                    {loading ? <p>Cargando...</p> : ''}
-
                 </div>
 
-                <form onSubmit={manejarSubmit} className="auth-form">
-                    <div className="form-group">
-                        <label htmlFor="email">Correo electrónico</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={correo}
-                            onChange={(e) => { setCorreo(e.target.value) }}
-                            placeholder="ejemplo@correo.com"
+                <form onSubmit={handleSubmit(manejarSubmit)} className="auth-form">
+                    
+                    <FieldGroup>
 
+                        <InputForm
+                            label="Correo electronico"
+                            placeholder='Ingresa tu correo porfavor'
+                            registration={register('correo', { required: 'El correo es obligatorio' })}
+                            error={errors.correo?.message}
                         />
-                    </div>
 
-                    <div className="form-group">
-                        <label htmlFor="password">Contraseña</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={contraseña}
-                            onChange={(e) => { setContraseña(e.target.value) }}
-                            placeholder="••••••••"
+                    </FieldGroup>
 
+                    <FieldGroup>
+                        <InputForm
+                            label="Contraseña"
+                            placeholder='Ingresa tu contraseña porfavor'
+                            registration={register('contraseña', { required: 'La contraseña es obligatoria' })}
+                            error={errors.contraseña?.message}
                         />
-                    </div>
+                    </FieldGroup>
 
                     <div className="form-options">
-                        <label className="checkbox-label">
-                            <input type="checkbox" /> Recordarme
-                        </label>
                         <Link to="/recuperar-password" className="forgot-password">
                             ¿Olvidaste tu contraseña?
                         </Link>
                     </div>
 
-                    <button type="submit" disabled={loading} className="auth-button">
-                        {loading ? <p>Cargando...</p> : <p>Iniciar sesión</p>}
+                    <button type="submit" className="auth-button" disabled={isSubmitting}>
+                        {isSubmitting ? 'Cragando...' : 'Iniciar sesión'}
                     </button>
                 </form>
 

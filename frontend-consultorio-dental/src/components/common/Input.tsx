@@ -10,10 +10,11 @@ interface InputFormProps {
     placeholder?: string;
     error?: string;
     type?: string;
+    step?: string;
     registration?: UseFormRegisterReturn;
 }
 
-export function InputForm({ label, placeholder, error, type, registration }: InputFormProps) {
+export function InputForm({ label, placeholder, error, type, step, registration }: InputFormProps) {
     return (
         <Field>
             <Label>{label}</Label>
@@ -21,9 +22,10 @@ export function InputForm({ label, placeholder, error, type, registration }: Inp
                 placeholder={placeholder} 
                 {...registration} 
                 type={type}
+                step={step}
                 className={`p-5 rounded-md ${error && 'border-red-600'}`}>
             </Input>
-            {error && <ErrorSpan message={error} />}
+            { error && <ErrorSpan message={error} /> }
         </Field>
     )
 }

@@ -25,11 +25,11 @@ const publicidadItems = [
     { href: '/notificaciones', label: 'Notificaciones', icon: IoNotifications },
 ]
 
-interface AppSidebarProps {
+interface SidebarAppProps {
     logout: () => void
 }
 
-export function AppSidebar({logout}: AppSidebarProps) {
+export function SidebarApp({logout}: SidebarAppProps) {
     return (
         <Sidebar>
             <SidebarHeader className="flex items-center gap-0">

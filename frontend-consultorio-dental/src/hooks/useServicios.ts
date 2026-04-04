@@ -9,6 +9,7 @@ import type { CrearServicio } from "../types/api/request/CrearServicio";
 export function useServicios() {
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     async function crearServicio(crearServicio: CrearServicio): Promise<RespuestaServicio> {
@@ -24,11 +25,11 @@ export function useServicios() {
     async function obtenerServicios(): Promise<RespuestaServicio[]> {
 
         setError(null);
-        setLoading(true);
+        setLoadingTable(true);
 
         return await requestObtenerServicios()
             .catch((error: ApiError) => {setError(error.message); throw error.message})
-            .finally(() => setLoading(false));
+            .finally(() => setLoadingTable(false));
     }
 
     async function cambiarEstadoServicio(id: number, estado: boolean): Promise<boolean> {
@@ -39,5 +40,5 @@ export function useServicios() {
             .catch((error: ApiError) => {setError(error.message); throw error.message})
     }
 
-    return { obtenerServicios, cambiarEstadoServicio, crearServicio, loading, error }
+    return { obtenerServicios, cambiarEstadoServicio, crearServicio, loading, loadingTable, error }
 }

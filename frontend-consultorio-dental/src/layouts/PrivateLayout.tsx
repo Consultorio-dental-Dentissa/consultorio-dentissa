@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom"
 import { useAuth } from "../context/AuthContextProvider"
 import { Navigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/MenuLateral"
+import { SidebarApp } from "@/components/common/Sidebar"
 import '../styles/theme.private.css';
 
 export default function LayoutPrivado() {
@@ -24,9 +24,11 @@ export default function LayoutPrivado() {
         <div>
             
             <SidebarProvider>
-                <AppSidebar 
+                
+                <SidebarApp 
                     logout={manejarCerrarSesion}
                 />
+
                 <main className="w-full">
                     <div className="h-16 flex items-center bg-rose-400 p-2">
                         <SidebarTrigger className="text-white"/> 
