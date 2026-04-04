@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import type { RespuestaServicio } from '../types/api/responses/RespuestaServicio'
-import type { RespuestaPaciente } from '../types/api/responses/RespuestaPaciente'
-import { usePacientes } from '../hooks/usePacientes'
-import { useServicios } from '../hooks/useServicios'
-import { useCitas } from '../hooks/useCitas'
-import type { RegistrarCita } from '../types/RegistrarCita'
-import type { RespuestaCita } from '../types/api/responses/RespuestaCita'
+import type { RespuestaServicio } from '../../types/api/responses/RespuestaServicio'
+import type { RespuestaPaciente } from '../../types/api/responses/RespuestaPaciente'
+import { usePacientes } from '../../hooks/usePacientes'
+import { useServicios } from '../../hooks/useServicios'
+import { useCitas } from '../../hooks/useCitas'
+import type { CrearCita } from '../../types/api/request/CrearCita'
+import type { RespuestaCita } from '../../types/api/responses/RespuestaCita'
 
 interface FormData {
     fecha: string
@@ -50,16 +50,16 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
     useEffect(() => {
 
         async function cargarDatos() {
-            const respuestaServicios = await obtenerServicios();
-            const respuestaPacientes = await obtenerPacientes();
 
-            if (!respuestaPacientes || !respuestaServicios) {
-                toast.error('No se pudieron cargar los datos');
-                return;
+            try {
+                const respuestaServicios = await obtenerServicios();
+                const respuestaPacientes = await obtenerPacientes();
+
+                setServicios(respuestaServicios);
+                setPacientes(respuestaPacientes);
+            } catch(error) {
+                toast.error((error as string))
             }
-
-            setServicios(respuestaServicios);
-            setPacientes(respuestaPacientes);
         }
 
         cargarDatos();
@@ -82,19 +82,20 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
             return;
         }
 
-        const registrarCita: RegistrarCita = {
+        const registrarCita: CrearCita = {
             fecha: form.fecha,
             hora: form.hora,
             nota_previa: form.notaPrevia,
             paciente_id: Number(form.paciente),
             servicio_id: Number(form.servicio)
         }
-        
-        const cita = await crearCita(registrarCita);
 
-        if (cita) {
+        try {
+            const cita = await crearCita(registrarCita);
             toast.success('La cita se ha agendado exitosamente');
             onSubmit(cita);
+        } catch (error) {
+            toast.error((error as string));
         }
     }
 
@@ -130,7 +131,7 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
                             <select name="servicio" id="servicio" value={form.servicio} onChange={handleChange}>
                                 {
                                     servicios.map((servicio) => {
-                                        
+
                                         return (
                                             <option value={servicio.id}>
                                                 {servicio.nombre}

@@ -13,7 +13,7 @@ export function usePacientes() {
         setLoading(true);
         
         return await requestObtenerPacientes()
-            .catch((error: ApiError) => {setError(error.message); return null;})
+            .catch((error: ApiError) => {setError(error.message); throw error.message;})
             .finally(() => setLoading(false));
     }
 

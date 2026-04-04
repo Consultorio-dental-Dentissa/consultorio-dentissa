@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TituloPanel } from "../../components/TituloPanel";
+import { TituloPanel } from "../../components/common/TituloPanel";
 
 export default function Consultas() {
 

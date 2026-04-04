@@ -1,60 +1,78 @@
 import { useEffect, useState } from "react";
-import { TituloPanel } from "../../components/TituloPanel";
+import { TituloPanel } from "../../components/common/TituloPanel";
 import { useUsuarios } from "../../hooks/useUsuarios";
-import TablaVacia from "../../components/TablaVacia";
-import UsuarioForm from "../../components/UsuarioForm";
-import { ToggleButton } from "../../components/ToggleButton";
+import TablaVacia from "../../components/common/TablaVacia";
+import { ToggleButton } from "../../components/common/ToggleButton";
 import toast from "react-hot-toast";
 import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuario";
+import { ModalCrearUsuario } from "@/components/modals/ModalCrearUsuario";
+import { Button } from "@/components/ui/button"
+import type { CrearUsuario } from "@/types/api/request/CrearUsuario";
+import { PrimaryButton } from "@/components/common/Button";
 
 export default function Usuarios() {
 
     const [usuarios, setUsuarios] = useState<RespuestaUsuario[]>([])
     const [modalAbierto, setModalAbierto] = useState(false);
 
-    const { obtenerUsuarios, cambiarEstadoUsuario, loading, error } = useUsuarios();
+    const { obtenerUsuarios, cambiarEstadoUsuario, registrarUsuario, loading, loadingTable } = useUsuarios();
 
     useEffect(() => {
 
         async function cargarUsuarios() {
-            const usuarios = await obtenerUsuarios();
-            usuarios && setUsuarios(usuarios);
+            try {
+                const usuarios = await obtenerUsuarios();
+                setUsuarios(usuarios);
+            } catch (error) {
+                toast.error((error as string))
+            }
         }
 
         cargarUsuarios();
     }, []);
 
 
-    const manejarUsuarioCreado = (nuevoUsuario: RespuestaUsuario) => {
-        setUsuarios(prev => [...prev, nuevoUsuario]);
-        setModalAbierto(false);
+    const manejarUsuarioCreado = async (usuario: CrearUsuario) => {
+        try {
+            const nuevoUsuario = await registrarUsuario(usuario);
+            setUsuarios(prev => [...prev, nuevoUsuario]);
+            setModalAbierto(false);
+            toast.success('Se ha creado un nuevo usuario');
+
+        } catch (error) {
+            toast.error((error as string));
+        }
+
+
     }
 
     const manejarCambioDeEstado = async (id: number, nuevoEstado: boolean) => {
 
-        const respuesta = await cambiarEstadoUsuario(id, nuevoEstado);
-        if (respuesta) {
+        try {
+            await cambiarEstadoUsuario(id, nuevoEstado);
             setUsuarios(prev => {
                 return prev.map(u => u.id === id ? { ...u, activo: nuevoEstado } : u)
             });
 
-            toast.success('El estado se actualzó correctamente');
+            toast.success('El estado se actualizó correctamente');
+        } catch (error) {
+            toast.error((error as string))
         }
     }
-
 
     return (
         <div>
 
-            {error && toast.error(error)}
+            <div className="mt-2 w-full flex justify-between items-end">
+                <TituloPanel
+                    titulo="Panel de usuarios"
+                    subtitulo="Aqui puedes manejar tus usuarios"
+                />
 
-            <TituloPanel
-                titulo="Panel de usuarios"
-                subtitulo="Aqui puedes manejar tus usuarios"
-            />
-
-            <div className="contenedor-btn-registrar">
-                <button className="btn-registrar" onClick={() => { setModalAbierto(true) }}>Registrar nuevo usuario</button>
+                <PrimaryButton
+                    message="Registrar nuevo usuario"
+                    onClick={() => { setModalAbierto(true) }}
+                />
             </div>
 
             <table>
@@ -72,7 +90,7 @@ export default function Usuarios() {
                 <tbody>
 
                     {
-                        loading ? (
+                        loadingTable ? (
                             <TablaVacia
                                 mensaje="Cargando..."
                                 submensaje="Buscando usuarios"
@@ -103,8 +121,8 @@ export default function Usuarios() {
 
                                     <td>
                                         <div className="actions">
-                                            <button className="action-btn editar">Editar</button>
-                                            <button className="action-btn eliminar">Eliminar</button>
+                                            <Button >Editar</Button>
+                                            <Button variant="outline">Eliminar</Button>
                                         </div>
                                     </td>
                                 </tr>
@@ -114,19 +132,11 @@ export default function Usuarios() {
                 </tbody>
             </table>
 
-
-            {
-                modalAbierto && (
-                    <div className="modal-overlay" onClick={() => setModalAbierto(false)}>
-                        <div className="modal-content" onClick={e => e.stopPropagation()}>
-                            <UsuarioForm
-                                onSubmit={manejarUsuarioCreado}
-                                onCancel={() => setModalAbierto(false)}
-                            />
-                        </div>
-                    </div>
-                )
-            }
+            <ModalCrearUsuario
+                open={modalAbierto}
+                onClose={() => setModalAbierto(false)}
+                onSubmit={manejarUsuarioCreado}
+            />
 
         </div>
     );
