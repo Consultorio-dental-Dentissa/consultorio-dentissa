@@ -1,64 +1,32 @@
-// Registrarse.tsx
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import type { RegistrarUsuario } from "../../types/RegistrarUsuario";
-import { useRegister } from "../../hooks/useRegister";
+import { Link, useNavigate } from 'react-router-dom';
+import { FieldGroup } from '@/components/ui/field'
+import { InputForm } from '@/components/common/Input'
+import { useForm } from "react-hook-form"
+import type { CrearUsuario } from '@/types/api/request/CrearUsuario';
+import toast from 'react-hot-toast';
+import { useRegister } from '@/hooks/useRegister';
 
 export default function Registrarse() {
 
-    const [nombre, setNombre] = useState('');
-    const [apellido, setApellido] = useState('');
-    const [contraseña, setContraseña] = useState('');
-    const [correo, setCorreo] = useState('');
-    const [telefono, setTelefono] = useState('');
-    const [direccion, setDireccion] = useState('');
-    const [fechaNacimiento, setFechaNacimiento] = useState('');
-    const [telefonoEmergencia, setTelefonoEmergencia] = useState('');
+    const navigate = useNavigate();
+    const registerHook = useRegister();
 
-    const [errorFormulario, setErrorFormulario] = useState<string | null>('');
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CrearUsuario>()
 
-    const { register, error, loading, clearError } = useRegister();
+    const manejarSubmit = async (usuario: CrearUsuario) => {
+        console.log(usuario);
 
-    const [success, setSuccess] = useState('');
+        try {
+            await registerHook.register(usuario);
+            toast.success('Te has registrado exitosamente');
 
-    const manejarSubmit = async (e: React.SubmitEvent) => {
+            setTimeout(() => {
+                navigate('/login');
 
-        e.preventDefault();
-        clearError();
+            }, 2000)
 
-        if (
-            !nombre || !apellido || !contraseña ||
-            !correo || !telefono || !direccion ||
-            !fechaNacimiento || !telefonoEmergencia
-        ) {
-            setErrorFormulario('Debes llenar todos los campos del formulario');
-            return;
-        }
-
-        setErrorFormulario(null);
-
-        // Creamos el objeto usuario
-        const usuario : RegistrarUsuario = {
-            nombre: nombre,
-            apellido: apellido,
-            correo: correo,
-            telefono: telefono,
-            contraseña: contraseña,
-            rol: 'PACIENTE',
-            paciente: {
-                direccion: direccion,
-                fecha_nacimiento: fechaNacimiento,
-                telefono_emergencia: telefonoEmergencia
-            }
-        }
-
-        const respuesta = await register(usuario);
-
-        if (respuesta) {
-            setSuccess('Te has registrado exitosamente');
-            console.log(usuario);
-
-            return;
+        } catch (error) {
+            toast.error(error as string);
         }
     }
 
@@ -68,133 +36,115 @@ export default function Registrarse() {
                 <div className="auth-header">
                     <h2>Crear una cuenta</h2>
                     <p>Completa tus datos para registrarte</p>
-
-                    {errorFormulario && <p style={{color: 'red'}} >{errorFormulario}</p>}
-                    {error && <p style={{color: 'red'}} >{error}</p>}
-
-                    {success && <p style={{color: "green"}}>{success}</p>}
-                    {loading ? <p>Cargando...</p> : ''}
-
                 </div>
 
-                <form onSubmit={manejarSubmit} className="auth-form">
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="nombre">Nombre</label>
-                            <input
-                                type="text"
-                                id="nombre"
-                                name="nombre"
-                                value={nombre}
-                                onChange={(e) => { setNombre(e.target.value) }}
-                                placeholder="Tu nombre"
-                                required
-                            />
-                        </div>
+                <form onSubmit={handleSubmit(manejarSubmit)} className="auth-form">
 
-                        <div className="form-group">
-                            <label htmlFor="apellido">Apellido</label>
-                            <input
-                                type="text"
-                                id="apellido"
-                                name="apellido"
-                                value={apellido}
-                                onChange={(e) => { setApellido(e.target.value) }}
-                                placeholder="Tu apellido"
-                                required
-                            />
-                        </div>
-                    </div>
+                    <FieldGroup className="flex-row">
 
-                    <div className="form-group">
-                        <label htmlFor="email">Correo electrónico</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={correo}
-                            onChange={(e) => { setCorreo(e.target.value) }}
-                            placeholder="ejemplo@correo.com"
-                            required
+                        <InputForm
+                            label="Nombre"
+                            placeholder='Ingresa tu nombre porfavor'
+                            registration={register('nombre', { required: 'El nombre es obligatorio' })}
+                            error={errors.nombre?.message}
                         />
-                    </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="telefono">Teléfono</label>
-                            <input
-                                type="tel"
-                                id="telefono"
-                                name="telefono"
-                                value={telefono}
-                                onChange={(e) => { setTelefono(e.target.value) }}
-                                placeholder="+54 9 11 1234-5678"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="telefono">Teléfono de emergencia</label>
-                            <input
-                                type="tel"
-                                id="telefono"
-                                name="telefono"
-                                value={telefonoEmergencia}
-                                onChange={(e) => { setTelefonoEmergencia(e.target.value) }}
-                                placeholder="+54 9 11 1234-5678"
-                            />
-                        </div>
-                    </div>
-
-
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="password">Contraseña</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={contraseña}
-                                onChange={(e) => { setContraseña(e.target.value) }}
-                                placeholder="Mínimo 8 caracteres"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="confirmPassword">Direccion</label>
-                            <input
-                                type="texxt"
-                                id="direccion"
-                                name="diraccion"
-                                value={direccion}
-                                onChange={(e) => { setDireccion(e.target.value) }}
-                                placeholder="Escribe tu diraccion"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="email">Fecha de nacimiento</label>
-                        <input
-                            type="date"
-                            id="fechaNacimiento"
-                            name="fechaNacimiento"
-                            value={fechaNacimiento}
-                            onChange={(e) => { setFechaNacimiento(e.target.value) }}
-                            placeholder="ejemplo@correo.com"
-                            required
+                        <InputForm
+                            label="Apellido"
+                            placeholder='Ingresa tu apellido porfavor'
+                            registration={register('apellido', { required: 'El apellido es obligatorio' })}
+                            error={errors.apellido?.message}
                         />
-                    </div>
 
-                    <div className="terms-group">
-                        <label className="checkbox-label">
-                            <input type="checkbox" required /> Acepto los <Link to="/terminos">términos y condiciones</Link> y la <Link to="/privacidad">política de privacidad</Link>
-                        </label>
-                    </div>
+                    </FieldGroup>
 
-                    <button type="submit" className="auth-button">
-                        Registrarse
+                    <FieldGroup className="flex-row">
+
+                        <InputForm
+                            label="Correo electronico"
+                            placeholder='Ingresa tu correo porfavor'
+                            registration={register('correo', {
+                                required: 'El correo es obligatorio',
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: 'El correo debe tener el formato de nombre@dominio.com'
+                                }
+                            })}
+                            error={errors.correo?.message}
+                        />
+
+                    </FieldGroup>
+
+                    <FieldGroup className="flex-row">
+
+                        <InputForm
+                            label="Contraseña"
+                            placeholder='La contraseña debe tener minimo 8 caracteres'
+                            registration={register('contraseña', {
+                                required: 'La contraseña es obligatoria',
+                                minLength: { value: 8, message: 'La contraseña debe tener minimo 8 caracteres' }
+                            })}
+                            error={errors.contraseña?.message}
+                        />
+
+                    </FieldGroup>
+
+                    <FieldGroup className="flex-row">
+
+                        <InputForm
+                            type="tel"
+                            label="Telefono"
+                            placeholder='Ingresa tu telefono porfavor'
+                            registration={register('telefono', {
+                                required: 'Este campo es obligatorio',
+                                minLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
+                                maxLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
+                                pattern: { value: /^\d+$/, message: 'El teléfono solo debe contener números' }
+                            })}
+                            error={errors.telefono?.message}
+                        />
+
+                        <InputForm
+                            type="tel"
+                            label="Telefono de emergencia"
+                            placeholder='Ingresa tu telefono de emergencia'
+                            registration={register('paciente.telefono_emergencia', {
+                                required: 'Este campo es obligatorio',
+                                minLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
+                                maxLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
+                                pattern: { value: /^\d+$/, message: 'El teléfono solo debe contener números' }
+                            })}
+                            error={errors.paciente?.telefono_emergencia?.message}
+                        />
+
+                    </FieldGroup>
+
+                    <FieldGroup className="flex-row">
+
+                        <InputForm
+                            label="Direccion"
+                            placeholder='Ingresa tu direccion porfavor'
+                            registration={register('paciente.direccion', {
+                                required: 'Este campo es obligatorio',
+                            })}
+                            error={errors.paciente?.direccion?.message}
+                        />
+
+                        <InputForm
+                            type='date'
+                            label="Fecha de nacimiento"
+                            placeholder='Ingresa tu fecha de nacimiento porfavor'
+                            registration={register('paciente.fecha_nacimiento', {
+                                required: 'Este campo es obligatorio',
+                            })}
+                            error={errors.paciente?.fecha_nacimiento?.message}
+                        />
+
+                    </FieldGroup>
+
+
+                    <button type="submit" className="auth-button" disabled={isSubmitting}>
+                        {isSubmitting ? 'Cargando...' : "Registrarse"}
                     </button>
                 </form>
 

@@ -1,42 +1,58 @@
 import { useEffect, useState } from "react";
-import { TituloPanel } from "../../components/TituloPanel";
+import { TituloPanel } from "../../components/common/TituloPanel";
 import { useServicios } from "../../hooks/useServicios";
+import TablaVacia from "../../components/common/TablaVacia";
+import { ToggleButton } from "../../components/common/ToggleButton";
+import { ModalCrearServicio } from "@/components/modals/ModalCrearServicio";
+import { PrimaryButton } from "@/components/common/Button";
 import type { RespuestaServicio } from "../../types/api/responses/RespuestaServicio";
-import TablaVacia from "../../components/TablaVacia";
-import { ToggleButton } from "../../components/ToggleButton";
 import toast from "react-hot-toast";
-import ServicioForm from "../../components/ServicioForm";
+import type { CrearServicio } from "@/types/api/request/CrearServicio";
 
 export default function Servicios() {
 
     const [servicios, setServicios] = useState<RespuestaServicio[]>([]);
     const [modalAbierto, setModalAbierto] = useState<boolean>(false);
-    const { obtenerServicios, cambiarEstadoServicio, loading } = useServicios();
+    const { obtenerServicios, crearServicio, cambiarEstadoServicio, loading, loadingTable } = useServicios();
 
     useEffect(() => {
 
         async function cargarServicios() {
-            const servicios = await obtenerServicios();
-            servicios && setServicios(servicios);
+
+            try {
+                const servicios = await obtenerServicios();
+                setServicios(servicios);
+            } catch (error) {
+                toast.error((error as string));
+            }
         }
 
         cargarServicios();
     }, []);
 
     const cambiarEstadoDelServicio = async (id: number, nuevoEstado: boolean) => {
-        const respuesta = await cambiarEstadoServicio(id, nuevoEstado);
 
-        if (respuesta) {
+        try {
+            await cambiarEstadoServicio(id, nuevoEstado);
             setServicios(prev => prev.map((servicio) => servicio.id === id ? { ...servicio, activo: nuevoEstado } : servicio))
             toast.success('Se ha cambiado el estado del servicio');
-        } 
-            
+
+        } catch (error) {
+            toast.error((error as string));
+        }
     }
 
-    const manejarNuevoServicio = (nuevoServicio: RespuestaServicio) => {
-        setServicios(prev => [...prev, nuevoServicio]);
-        setModalAbierto(false);
-        toast.success('Se ha registrado un nuevo servicio exitosamente');
+    const manejarNuevoServicio = async (nuevoServicio: CrearServicio): Promise<void> => {
+
+        try {
+            const servicio = await crearServicio(nuevoServicio);
+            setServicios(prev => [...prev, servicio]);
+            setModalAbierto(false);
+            toast.success('Se ha registrado un nuevo servicio exitosamente');
+
+        } catch (error) {
+            toast.error((error as string));
+        }
     }
 
     function minutosAHoras(minutos: number): string {
@@ -47,15 +63,16 @@ export default function Servicios() {
 
     return (
         <div>
-            <TituloPanel
-                titulo="Panel de servicios"
-                subtitulo="Aqui puedes manejar tus servicios"
-            />
+            <div className="mt-2 w-full flex justify-between items-end">
+                <TituloPanel
+                    titulo="Panel de servicios"
+                    subtitulo="Aqui puedes manejar tus servicios"
+                />
 
-            <div className="contenedor-btn-registrar">
-                <button className="btn-registrar" onClick={() => {
-                    setModalAbierto(true)
-                }}>Registrar nuevo servicio</button>
+                <PrimaryButton
+                    message="Registrar nuevo servicio"
+                    onClick={() => { setModalAbierto(true) }}
+                />
             </div>
 
             <table>
@@ -71,7 +88,7 @@ export default function Servicios() {
                 <tbody>
 
                     {
-                        loading ? (
+                        loadingTable ? (
                             <TablaVacia
                                 mensaje="Buscando servicios..."
                                 submensaje="Estamos buscando los servicios"
@@ -105,15 +122,11 @@ export default function Servicios() {
             </table>
 
             {
-                modalAbierto &&
-                <div className="modal-overlay" onClick={() => setModalAbierto(false)}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <ServicioForm
-                            onSubmit={manejarNuevoServicio}
-                            onCancel={() => setModalAbierto(false)}
-                        />
-                    </div>
-                </div>
+                <ModalCrearServicio
+                    open={modalAbierto}
+                    onClose={() => setModalAbierto(false)}
+                    onSubmit={manejarNuevoServicio}
+                />
             }
         </div>
     );

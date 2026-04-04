@@ -19,7 +19,7 @@ export function useLogin() {
         setLoading(true);
 
         return await requestLogin(credenciales)
-            .catch((error: ApiError) => { setError(error.message); return null; })
+            .catch((error: ApiError) => { setError(error.message); throw error.message; })
             .finally(() => setLoading(false));
     }
 

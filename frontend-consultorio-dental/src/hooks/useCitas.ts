@@ -9,22 +9,22 @@ export function useCitas() {
         const [error, setError] = useState<string | null>(null);
         const [cargando, setCargando] = useState<boolean>(false);
 
-        async function obtenerCitas(): Promise<RespuestaCita[] | null> {
+        async function obtenerCitas(): Promise<RespuestaCita[]> {
 
                 setError(null);
                 setCargando(true);
                 return await requestObtenerCitas()
-                        .catch((error: ApiError) => { setError(error.message); return null; })
+                        .catch((error: ApiError) => { setError(error.message); throw error.message; })
                         .finally(() => setCargando(false));
         }
 
-        async function crearCita(nuevaCita: CrearCita) {
+        async function crearCita(nuevaCita: CrearCita): Promise<RespuestaCita> {
 
                 setError(null);
                 setCargando(true);
 
                 return await requestCrearCita(nuevaCita)
-                        .catch((error: ApiError) => { setError(error.message); return null; })
+                        .catch((error: ApiError) => { setError(error.message); throw error.message; })
                         .finally(() => setCargando(false));
         }
 

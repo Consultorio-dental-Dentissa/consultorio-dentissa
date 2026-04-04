@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { TituloPanel } from "../../components/TituloPanel";
+import { TituloPanel } from "../../components/common/TituloPanel";
 import { usePacientes } from "../../hooks/usePacientes";
 import type { RespuestaPaciente } from "../../types/api/responses/RespuestaPaciente";
-import TablaVacia from "../../components/TablaVacia";
+import TablaVacia from "../../components/common/TablaVacia";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 

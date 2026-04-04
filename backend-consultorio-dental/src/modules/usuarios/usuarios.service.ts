@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, Param } from '@nest
 import { RepositorioUsuario } from './repositories/usuarios.repository';
 import { RepositorioPaciente } from '../pacientes/repositories/pacientes.repository';
 import { CrearUsuarioDto } from './dto/CrearUsuarioDto';
+import type { ICrearUsuario } from './interfaces/crear-usuario.interface';
 import type { Usuario } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Rol } from './enums/rol.enum';
@@ -38,23 +39,23 @@ export class UsuariosService {
     }
 
 
-    async crearUsuario(crearUsuarioDto: CrearUsuarioDto) {
+    async crearUsuario(usuario: ICrearUsuario) {
 
-        const existeCorreo = await this.repositorioUsuario.existeCorreo(crearUsuarioDto.correo);
+        const existeCorreo = await this.repositorioUsuario.existeCorreo(usuario.correo);
 
         if (existeCorreo) {
             throw new BadRequestException('Este correo ya esta registrado');
         }
 
-        const existeTelefono = await this.repositorioUsuario.existeTelefono(crearUsuarioDto.telefono);
+        const existeTelefono = await this.repositorioUsuario.existeTelefono(usuario.telefono);
 
         if (existeTelefono) {
             throw new BadRequestException('Este telefono ya esta registrado');
         }
 
-        const contraseña_hasheada = await bcrypt.hash(crearUsuarioDto.contraseña, 10);
+        const contraseña_hasheada = await bcrypt.hash(usuario.contraseña, 10);
 
-        crearUsuarioDto.contraseña = contraseña_hasheada;
+        usuario.contraseña = contraseña_hasheada;
 
 
         /**
@@ -63,16 +64,16 @@ export class UsuariosService {
          * para no dejar al usuario registrado sin un registro de paciente relacionado.
          */
 
-        if (crearUsuarioDto.rol === Rol.PACIENTE) {
+        if (usuario.rol === Rol.PACIENTE) {
 
-            if (!crearUsuarioDto.paciente) {
+            if (!usuario.paciente) {
                 throw new BadRequestException('Debes llenar todos los campos del paciente');
             }
 
-            return await this.crearUsuarioYPaciente(crearUsuarioDto, crearUsuarioDto.paciente);
+            return await this.crearUsuarioYPaciente(usuario, usuario.paciente);
         }
 
-        return await this.repositorioUsuario.crear(crearUsuarioDto);
+        return await this.repositorioUsuario.crear(usuario);
     }
 
 

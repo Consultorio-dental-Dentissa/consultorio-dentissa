@@ -9,35 +9,36 @@ import type { CrearServicio } from "../types/api/request/CrearServicio";
 export function useServicios() {
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function crearServicio(crearServicio: CrearServicio): Promise<RespuestaServicio | null> {
+    async function crearServicio(crearServicio: CrearServicio): Promise<RespuestaServicio> {
         
         setError(null);
         setLoading(true);
 
         return await requestCrearServicio(crearServicio)
-            .catch((error: ApiError) => {setError(error.message); console.log(error); return null;})
+            .catch((error: ApiError) => {setError(error.message); console.log(error); throw error.message;})
             .finally(() => setLoading(false));
     }
 
-    async function obtenerServicios(): Promise<RespuestaServicio[] | null> {
+    async function obtenerServicios(): Promise<RespuestaServicio[]> {
 
         setError(null);
-        setLoading(true);
+        setLoadingTable(true);
 
         return await requestObtenerServicios()
-            .catch((error: ApiError) => {setError(error.message); return null})
-            .finally(() => setLoading(false));
+            .catch((error: ApiError) => {setError(error.message); throw error.message})
+            .finally(() => setLoadingTable(false));
     }
 
-    async function cambiarEstadoServicio(id: number, estado: boolean): Promise<boolean | null> {
+    async function cambiarEstadoServicio(id: number, estado: boolean): Promise<boolean> {
         
         setError(null);
 
         return await requestCambiarEstadoServicio(id, estado)
-            .catch((error: ApiError) => {setError(error.message); return null})
+            .catch((error: ApiError) => {setError(error.message); throw error.message})
     }
 
-    return { obtenerServicios, cambiarEstadoServicio, crearServicio, loading, error }
+    return { obtenerServicios, cambiarEstadoServicio, crearServicio, loading, loadingTable, error }
 }
