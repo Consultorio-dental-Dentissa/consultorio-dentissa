@@ -27,8 +27,6 @@ export default function Pacientes() {
     return (
         <div>
 
-            {error && toast.error(error)}
-
             <TituloPanel
                 titulo="Panel de pacientes"
                 subtitulo="Aqui puedes manejar tus pacientes"
