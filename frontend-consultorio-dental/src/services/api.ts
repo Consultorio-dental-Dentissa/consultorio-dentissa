@@ -1,25 +1,14 @@
 import { ApiError } from "../types/api/responses/ApiError";
 import axios from 'axios';
 
-
-
 const urlAPi = import.meta.env.VITE_API_URL
-// Utilizando Interceptores en lugar de defaults estáticos
-axios.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    // Para no enviar "Bearer null" si no hay token
-    token ? config.headers['Authorization'] = `Bearer ${token}` : delete config.headers['Authorization'];
-    return config;
-
-}, (error) => {
-    return Promise.reject(error);
-});
-
-
+const api = axios.create({
+    withCredentials: true
+})
 
 export async function get<T>(endpoint: string): Promise<T> {
     try {
-        const respuesta = await axios.get(`${urlAPi}${endpoint}`);
+        const respuesta = await api.get(`${urlAPi}${endpoint}`);
         return respuesta.data;
 
     } catch (error) {
@@ -29,7 +18,7 @@ export async function get<T>(endpoint: string): Promise<T> {
 
 export async function post<T>(endpoint: string, data: object): Promise<T> {
     try {
-        const respuesta = await axios.post(`${urlAPi}${endpoint}`, data);
+        const respuesta = await api.post(`${urlAPi}${endpoint}`, data);
         return respuesta.data;
 
     } catch (error) {
@@ -43,7 +32,7 @@ export async function put<T>() {
 
 export async function patch<T>(endpoint: string, data: object): Promise<T> {
     try {
-        const respuesta = await axios.patch(`${urlAPi}${endpoint}`, data);
+        const respuesta = await api.patch(`${urlAPi}${endpoint}`, data);
         return respuesta.data;
 
     } catch (error) {
@@ -51,8 +40,15 @@ export async function patch<T>(endpoint: string, data: object): Promise<T> {
     }
 }
 
-export async function deleteR() {
+export async function deleteR<T>(endpoint: string): Promise<T> {
+    try {
+        const repsuesta = await api.delete(`${urlAPi}${endpoint}`);
+        console.log(repsuesta);
+        return repsuesta.data;
 
+    } catch (error) {
+        manejarError(error);
+    }
 }
 
 

@@ -16,14 +16,13 @@ export default function Login() {
     
 
     const manejarSubmit = async (credenciales: IniciarSesion) => {
-        console.log(credenciales);
         
         try {
 
             const respuesta = await login(credenciales);
 
             if (respuesta.estado) {
-                await iniciarSesion(respuesta.usuario, respuesta.token);
+                await iniciarSesion(respuesta.usuario);
                 navigate('/dashboard');
             }
 

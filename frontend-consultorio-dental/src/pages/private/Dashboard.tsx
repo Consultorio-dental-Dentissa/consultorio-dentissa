@@ -8,16 +8,13 @@ import { TituloPanel } from "@/components/common/TituloPanel";
 
 export default function Dashboard() {
 
-  const { isAuthenticated, usuario } = useAuth()
-
-  console.log("autenticado = " + isAuthenticated);
-  console.log(usuario);
+  const { usuario } = useAuth();
 
   return (
     <div>
       
       <TituloPanel
-        titulo={`Bienvenid@, ${usuario.nombre}`}
+        titulo={`Bienvenid@, ${usuario && usuario.nombre}`}
         subtitulo="qui esta el resumen de tu consultorio dental"
       />
 
