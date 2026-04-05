@@ -1,13 +1,11 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IniciarSesionDto } from './dto/IniciarSesionDto';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt'
-import type { Response } from 'express';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { Rol } from '../usuarios/enums/rol.enum';
-import { CrearUsuarioDto } from '../usuarios/dto/CrearUsuarioDto';
 import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
-
+import type { Response } from 'express';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -39,8 +37,7 @@ export class AuthService {
             activo: usuario.activo
         };
 
-        const token = await this.crearToken(payload);
-
+        const token = await this.crearToken(payload);        
         
         response.cookie('access_token', token, {
             httpOnly: true,
@@ -51,7 +48,6 @@ export class AuthService {
 
         const usuarioAutenticado = {
             estado: true,
-            token: token,
             usuario: {
                 id: usuario.id,
                 nombre: usuario.nombre,
@@ -62,6 +58,17 @@ export class AuthService {
         }
 
         return usuarioAutenticado;
+    }
+
+    async cerrarSesion(response: Response) {
+
+        console.log(response.clearCookie('access_token', {
+            httpOnly: true,
+            secure: false,
+            maxAge: 3600000
+        }));
+
+        // return true;
     }
 
 

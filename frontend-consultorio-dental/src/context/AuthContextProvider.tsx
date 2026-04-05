@@ -1,8 +1,7 @@
 import type { RespuestaUsuario } from '@/types/api/responses/RespuestaUsuario';
 import { AuthContext, } from './AuthContext';
 import { useState, useContext, type ReactNode, useEffect } from 'react';
-
-
+import { useLogin } from '@/hooks/useLogin';
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -10,51 +9,59 @@ interface AuthProviderProps {
 
 
 export function AuthProvider({ children }: AuthProviderProps) {
+
     const [usuario, setUsuario] = useState<RespuestaUsuario | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
+    const { logout } = useLogin();
+
     useEffect(() => {
 
-        const usuario = JSON.parse(localStorage.getItem('usuario') ?? 'null');
+        try {
+            const usuario = JSON.parse(localStorage.getItem('usuario') ?? 'null');
 
-        if (!usuario) {
-            setUsuario(null);
-            setIsAuthenticated(false);
-            return;
+            if (!usuario) {
+                setUsuario(null);
+                setIsAuthenticated(false);
+                return;
+            }
+
+            setUsuario(usuario);
+            setIsAuthenticated(true);
+
+        } finally {
+            setLoading(false);
+
         }
 
-        setUsuario(usuario);
-        setIsAuthenticated(true);
-
-        setLoading(false);
     }, []);
 
-    
-    const iniciarSesion = (usuario: RespuestaUsuario, token: string) => {
+
+    const iniciarSesion = (usuario: RespuestaUsuario) => {
 
         // Autenticamos al usuario y guardamos sus datos
         setIsAuthenticated(true);
         setUsuario(usuario);
 
         // Guardamos lo datos en el localStorage
-        localStorage.setItem('token', token);
         localStorage.setItem('usuario', JSON.stringify(usuario));
         localStorage.setItem('isAuthenticated', 'true');
     };
 
-    
-    const cerrarSesion = () => {
+
+    const cerrarSesion = async () => {
         setUsuario(null);
         setIsAuthenticated(false);
 
-        localStorage.removeItem('token');
         localStorage.removeItem('usuario');
         localStorage.removeItem('isAuthenticated');
+
+        await logout();
     };
 
     return (
-        <AuthContext.Provider value={{ usuario, isAuthenticated, iniciarSesion, cerrarSesion, loading}}>
+        <AuthContext.Provider value={{ usuario, isAuthenticated, iniciarSesion, cerrarSesion, loading }}>
             {children}
         </AuthContext.Provider>
     );

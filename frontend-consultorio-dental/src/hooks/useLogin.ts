@@ -1,4 +1,4 @@
-import { requestLogin } from "../services/auth.service";
+import { requestLogin, requestLogout } from "../services/auth.service";
 import { useState } from "react";
 import type { ApiError } from "../types/api/responses/ApiError";
 import type { IniciarSesion } from "../types/api/request/IniciarSesion";
@@ -23,6 +23,13 @@ export function useLogin() {
             .finally(() => setLoading(false));
     }
 
-    return { login, loading, error, clearError }
+    async function logout() {
+        
+        return await requestLogout()
+            .catch((error: ApiError) => { setError(error.message); throw error.message })
+            .finally(() => setLoading(false));
+    }
+
+    return { login, logout, loading, error, clearError }
 
 }

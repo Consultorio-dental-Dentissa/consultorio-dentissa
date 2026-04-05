@@ -15,7 +15,7 @@ export default function Usuarios() {
     const [usuarios, setUsuarios] = useState<RespuestaUsuario[]>([])
     const [modalAbierto, setModalAbierto] = useState(false);
 
-    const { obtenerUsuarios, cambiarEstadoUsuario, registrarUsuario, loading, loadingTable } = useUsuarios();
+    const { obtenerUsuarios, cambiarEstadoUsuario, registrarUsuario, loadingTable } = useUsuarios();
 
     useEffect(() => {
 
