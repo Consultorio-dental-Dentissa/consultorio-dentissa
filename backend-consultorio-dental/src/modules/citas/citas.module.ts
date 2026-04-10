@@ -4,6 +4,7 @@ import { CitasService } from './citas.service';
 import { RepositorioCitas } from './repositories/citas.repository';
 import { RepositorioServicios } from '../servicios/repositories/servicios.repository';
 import { RepositorioPaciente } from '../pacientes/repositories/pacientes.repository';
+import { SecurityModule } from 'src/infrastructure/security/security.module';
 
 @Module({
   controllers: [CitasController],
@@ -11,7 +12,10 @@ import { RepositorioPaciente } from '../pacientes/repositories/pacientes.reposit
     CitasService, 
     RepositorioCitas, 
     RepositorioServicios, 
-    RepositorioPaciente
+    RepositorioPaciente,
+  ],
+  imports: [
+    SecurityModule
   ]
 })
 export class CitasModule {}

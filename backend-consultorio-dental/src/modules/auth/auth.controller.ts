@@ -23,9 +23,4 @@ export class AuthController {
     register(@Body() usuario: RegistrarUsuarioDto) {
         return this.authService.registrarUsuario(usuario);
     }
-    
-    @Post('verificar-prueba')
-    get(@Body() credenciales : any): Promise<any> {
-        return this.authService.verificar_token(credenciales)
-    }
 }
