@@ -29,6 +29,7 @@ export class AuthService {
         }
         
         const payload = {
+            id: usuario.id,
             nombre: usuario.nombre,
             apellido: usuario.apellido,
             correo: usuario.correo,
@@ -62,11 +63,11 @@ export class AuthService {
 
     async cerrarSesion(response: Response) {
 
-        console.log(response.clearCookie('access_token', {
+        response.clearCookie('access_token', {
             httpOnly: true,
             secure: false,
             maxAge: 3600000
-        }));
+        });
 
         // return true;
     }
@@ -75,12 +76,7 @@ export class AuthService {
     async crearToken(payload) {
         return await this.jwtService.signAsync(payload);
     }
-
     
-    async verificar_token(credenciales: any) {
-        return await this.jwtService.verifyAsync(credenciales.token);
-    }
-
 
     async registrarUsuario(usuario: RegistrarUsuarioDto) {
         

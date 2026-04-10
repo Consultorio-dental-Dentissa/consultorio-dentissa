@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { AuthGuard } from '../security/guards/auth.guard';
+import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { PacientesService } from './pacientes.service';
+import { IsActiveUserGuard } from 'src/infrastructure/security/guards/is-active-user.guard';
 
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('pacientes')
 export class PacientesController {
 

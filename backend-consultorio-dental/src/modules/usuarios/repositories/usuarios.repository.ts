@@ -121,4 +121,14 @@ export class RepositorioUsuario {
 
         return usuario ? true : false;
     }
+
+    async obtenerEstadoPorId(id: number) {
+        const estado = await this.prisma.usuario.findFirst({
+            where: {
+                id: id,
+            }
+        });
+
+        return estado?.activo;
+    }
 }
