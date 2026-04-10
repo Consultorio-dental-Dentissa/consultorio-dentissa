@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, ParseIntPipe, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, ParseIntPipe, Param, UseGuards } from '@nestjs/common';
 import { CitasService } from './citas.service';
+import { AuthGuard } from 'src/infrastructure/security/guards/auth.guard';
+import { IsActiveUserGuard } from 'src/infrastructure/security/guards/is-active-user.guard';
 import type { CrearCitaDto } from './dto/CrearCitaDto';
 
+@UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('citas')
 export class CitasController {
 

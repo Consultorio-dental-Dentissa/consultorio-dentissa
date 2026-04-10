@@ -1,9 +1,10 @@
 import { Controller, Get, UseGuards, Post, Body, Delete, ParseIntPipe, Param, Patch } from '@nestjs/common';
 import { ServiciosService } from './servicios.service';
-import { AuthGuard } from '../security/guards/auth.guard';
+import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { CrearServicioDto } from './dto/CrearServicioDto';
+import { IsActiveUserGuard } from '../../infrastructure/security/guards/is-active-user.guard';
 
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('servicios')
 export class ServiciosController {
 
