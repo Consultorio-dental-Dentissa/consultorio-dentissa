@@ -19,10 +19,10 @@ export class RepositorioPaciente {
                 telefono_emergencia: true,
                 usuario: {
                     select: {
-                        nombre: true,
-                        apellido: true,
-                        correo: true,
-                        telefono: true
+                        name: true,
+                        lastname: true,
+                        email: true,
+                        phone: true
                     }
                 }
             }
@@ -41,10 +41,10 @@ export class RepositorioPaciente {
                 telefono_emergencia: true,
                 usuario: {
                     select: {
-                        nombre: true,
-                        apellido: true,
-                        correo: true,
-                        telefono: true
+                        name: true,
+                        lastname: true,
+                        email: true,
+                        phone: true
                     }
                 }
             }

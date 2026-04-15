@@ -27,8 +27,8 @@ export class CitasService {
                 estado: cita.estado,
                 created_at: cita.created_at,
                 paciente: {
-                    nombre: cita.paciente.usuario.nombre,
-                    apellido: cita.paciente.usuario.apellido
+                    nombre: cita.paciente.usuario.name,
+                    apellido: cita.paciente.usuario.lastname
                 },
                 servicio: {
                     nombre: cita.servicio.nombre
@@ -79,8 +79,8 @@ export class CitasService {
             estado: cita.estado,
             created_at: cita.created_at,
             paciente: {
-                nombre: cita.paciente.usuario.nombre,
-                apellido: cita.paciente.usuario.apellido
+                nombre: cita.paciente.usuario.name,
+                apellido: cita.paciente.usuario.lastname
             },
             servicio: {
                 nombre: cita.servicio.nombre

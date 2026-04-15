@@ -25,8 +25,8 @@ export class RepositorioCitas {
                     select: {
                         usuario: {
                             select: {
-                                nombre: true,
-                                apellido: true
+                                name: true,
+                                lastname: true
                             }
                         }
                     }
@@ -70,8 +70,8 @@ export class RepositorioCitas {
                         usuario: {
                             select: {
                                 id: true,
-                                nombre: true,
-                                apellido: true
+                                name: true,
+                                lastname: true
                             }
                         }
                     }

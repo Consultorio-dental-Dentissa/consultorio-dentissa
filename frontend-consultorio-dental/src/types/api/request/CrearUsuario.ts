@@ -1,11 +1,11 @@
 export interface CrearUsuario {
-    nombre: string;
-    apellido: string;
-    correo: string;
-    telefono: string;
-    contraseña: string;
+    name: string;
+    lastname: string;
+    email: string;
+    phone: string;
+    password: string;
     rol: string;
-    paciente?: {
+    patient?: {
         direccion: string,
         fecha_nacimiento: string,
         telefono_emergencia: string

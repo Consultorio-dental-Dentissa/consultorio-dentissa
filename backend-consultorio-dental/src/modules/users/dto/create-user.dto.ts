@@ -5,26 +5,26 @@ import { Type } from 'class-transformer'
 import { Rol } from '../enums/rol.enum'
 import { CrearPacienteDto } from "src/modules/pacientes/dto/CrearPacienteDto";
 
-export class CrearUsuarioDto {
+export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty({ message: 'El nombre es requerido' })
-    nombre!: string
+    name!: string
 
     @IsString()
     @IsNotEmpty({ message: 'El apellido es requerido' })
-    apellido!: string
+    lastname!: string
 
     @IsString()
     @IsNotEmpty({ message: 'El telefono es requerido' })
-    telefono!: string
+    phone!: string
 
     @IsEmail({}, { message: 'El correo no es válido' })
-    correo!: string
+    email!: string
 
     @IsString()
     @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
-    contraseña!: string
+    password!: string
 
     @IsEnum(Rol, { message: 'El rol no es válido' })
     rol!: Rol
@@ -32,5 +32,5 @@ export class CrearUsuarioDto {
     @IsOptional()
     @ValidateNested() // valida el objeto anidado también
     @Type(() => CrearPacienteDto)
-    paciente?: CrearPacienteDto
+    patient?: CrearPacienteDto
 }

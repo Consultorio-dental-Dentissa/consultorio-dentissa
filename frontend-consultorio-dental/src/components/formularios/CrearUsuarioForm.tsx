@@ -36,9 +36,9 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
 
     const manejarSubmit = (data: CrearUsuario) => {
         if (!esPaciente) {
-            delete data.paciente;
+            delete data.patient;
         }
-        console.log(data);
+        console.log("Datos a ennviar: ", data);
         onSubmit(data);
     }
 
@@ -49,15 +49,15 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                 <InputForm
                     label="Nombre"
                     placeholder="Ingresa tu nombre"
-                    error={errors?.nombre?.message}
-                    registration={register('nombre', { required: 'El nombre es obligatorio' })}
+                    error={errors?.name?.message}
+                    registration={register('name', { required: 'El nombre es obligatorio' })}
                 />
 
                 <InputForm
                     label="Apellido"
                     placeholder="Ingresa tu apellido"
-                    error={errors?.apellido?.message}
-                    registration={register('apellido', { required: 'El apellido es obligatorio' })}
+                    error={errors?.lastname?.message}
+                    registration={register('lastname', { required: 'El apellido es obligatorio' })}
                 />
 
             </FieldGroup>
@@ -66,8 +66,8 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                 <InputForm
                     label="Correo electronico"
                     placeholder="Ingresa tu correo electronico"
-                    error={errors?.correo?.message}
-                    registration={register('correo', {
+                    error={errors?.email?.message}
+                    registration={register('email', {
                         required: 'El correo es obligatorio',
                         pattern: {
                             value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -79,8 +79,8 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                 <InputForm
                     label="Telefono"
                     placeholder="Ingresa tu telefono"
-                    error={errors?.telefono?.message}
-                    registration={register('telefono', { required: 'El telefono es obligatorio' })}
+                    error={errors?.phone?.message}
+                    registration={register('phone', { required: 'El telefono es obligatorio' })}
                 />
 
             </FieldGroup>
@@ -91,8 +91,8 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                     type="password"
                     label="Contraseña"
                     placeholder="La contraseña debe incluir minimo 8 caracteres"
-                    error={errors?.contraseña?.message}
-                    registration={register('contraseña', {
+                    error={errors?.password?.message}
+                    registration={register('password', {
                         required: 'La contraseña es obligatoria',
                         minLength: { value: 8, message: 'La contraseña debe tener minimo 8 caracteres' }
                     })}
@@ -125,15 +125,15 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                         <InputForm
                             label="Dirección"
                             placeholder="La dirección es obligatoria"
-                            error={errors?.paciente?.direccion?.message}
-                            registration={register('paciente.direccion', { required: 'La diraccion es obligatoria' })}
+                            error={errors?.patient?.direccion?.message}
+                            registration={register('patient.direccion', { required: 'La diraccion es obligatoria' })}
                         />
 
                         <InputForm
                             label="Telefono de emergencia"
                             placeholder="Ingrese su telefono de emergencia"
-                            error={errors?.paciente?.telefono_emergencia?.message}
-                            registration={register('paciente.telefono_emergencia', {
+                            error={errors?.patient?.telefono_emergencia?.message}
+                            registration={register('patient.telefono_emergencia', {
                                 required: 'El telefono de emergencia es obligatorio'
                             })}
                         />
@@ -146,8 +146,8 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                             type="date"
                             label="Fecha de nacimiento"
                             placeholder="Ingrese su fecha de nacimiento"
-                            error={errors?.paciente?.fecha_nacimiento?.message}
-                            registration={register('paciente.fecha_nacimiento', {
+                            error={errors?.patient?.fecha_nacimiento?.message}
+                            registration={register('patient.fecha_nacimiento', {
                                 required: 'La fecha de nacimiento es obligatoria'
                             })}
                         />

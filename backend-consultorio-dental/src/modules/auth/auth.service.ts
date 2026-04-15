@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IniciarSesionDto } from './dto/IniciarSesionDto';
 import { JwtService } from '@nestjs/jwt'
-import { UsuariosService } from '../usuarios/usuarios.service';
-import { Rol } from '../usuarios/enums/rol.enum';
-import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
+import { UsersService } from '../users/users.service';
+import { Rol } from '../users/enums/rol.enum';
+import { RegisterUserDto } from './dto/registrar-usuario.dto';
 import type { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 
@@ -11,31 +11,31 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
 
     constructor(
-        private usuariosService: UsuariosService,
+        private usersService: UsersService,
         private jwtService: JwtService
     ) { }
 
     async iniciarSesion(credenciales: IniciarSesionDto, response: Response) {
 
-        const usuario = await this.usuariosService.ObtenerUsuarioPorCorreoConContraseña(credenciales.correo);
-        const esContraseñaCorrecta = await bcrypt.compare(credenciales.contraseña, usuario?.contraseña ?? '');
+        const user = await this.usersService.getUserByEmailWithPassword(credenciales.correo);
+        const esContraseñaCorrecta = await bcrypt.compare(credenciales.contraseña, user?.password ?? '');
 
-        if (!usuario || !esContraseñaCorrecta) {
+        if (!user || !esContraseñaCorrecta) {
             throw new NotFoundException('Las credenciales son incorrectas');
         }
 
-        if (!usuario.activo) {
+        if (!user.status) {
             throw new UnauthorizedException('Tu cuenta ha sido desactivada');
         }
         
         const payload = {
-            id: usuario.id,
-            nombre: usuario.nombre,
-            apellido: usuario.apellido,
-            correo: usuario.correo,
-            telefono: usuario.telefono,
-            rol: usuario.rol.rol,
-            activo: usuario.activo
+            id: user.id,
+            nombre: user.name,
+            apellido: user.lastname,
+            correo: user.email,
+            telefono: user.phone,
+            rol: user.rol.rol,
+            activo: user.status
         };
 
         const token = await this.crearToken(payload);        
@@ -50,11 +50,12 @@ export class AuthService {
         const usuarioAutenticado = {
             estado: true,
             usuario: {
-                id: usuario.id,
-                nombre: usuario.nombre,
-                correo: usuario.correo,
-                telefono: usuario.telefono,
-                rol: usuario.rol.rol,
+                id: user.id,
+                nombre: user.name,
+                apellido: user.lastname,
+                correo: user.email,
+                telefono: user.phone,
+                rol: user.rol.rol,
             }
         }
 
@@ -78,12 +79,12 @@ export class AuthService {
     }
     
 
-    async registrarUsuario(usuario: RegistrarUsuarioDto) {
+    async registrarUsuario(user: RegisterUserDto) {
         
         const usuarioPaciente = {
-            ...usuario,
+            ...user,
             rol: Rol.PACIENTE
         }
-        return await this.usuariosService.crearUsuario(usuarioPaciente);
+        return await this.usersService.createUser(usuarioPaciente);
     }
 }

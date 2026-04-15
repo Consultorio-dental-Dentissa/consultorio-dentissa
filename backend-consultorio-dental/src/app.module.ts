@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsuariosModule } from './modules/usuarios/usuarios.module';
+import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { CitasModule } from './modules/citas/citas.module';
@@ -13,7 +13,7 @@ import { ServiciosModule } from './modules/servicios/servicios.module';
 @Module({
   imports: [
     PrismaModule,
-    UsuariosModule,
+    UsersModule,
     AuthModule,
     PrismaModule,
     CitasModule,

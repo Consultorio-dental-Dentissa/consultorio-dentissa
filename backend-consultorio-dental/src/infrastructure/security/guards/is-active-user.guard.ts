@@ -9,14 +9,14 @@ export class IsActiveUserGuard implements CanActivate {
     async canActivate(context: ExecutionContext) {
 
         const request = context.switchToHttp().getRequest();
-        const estado = await this.repositorio.usuario.count({
+        const status = await this.repositorio.user.count({
             where: {
-                id: request.usuario.id,
-                activo: true
+                id: request.user.id,
+                status: true
             }
         })
 
-        if (!estado) {
+        if (!status) {
             throw new UnauthorizedException('No tienes permitido acceder a este recurso');
         }
 

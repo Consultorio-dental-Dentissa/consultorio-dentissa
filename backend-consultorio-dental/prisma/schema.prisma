@@ -7,27 +7,27 @@ datasource db {
   provider = "postgresql"
 }
 
-model Usuario {
-  id             Int            @id @default(autoincrement())
-  nombre         String
-  apellido       String
-  correo         String         @unique
-  contraseña    String
-  telefono       String?
-  created_at     DateTime       @default(now())
-  rol_id         Int
-  activo         Boolean        @default(true)
-  notificaciones Notificacion[]
-  paciente       Paciente?
-  rol            Rol            @relation(fields: [rol_id], references: [id])
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  lastname      String
+  email         String         @unique
+  password      String
+  phone         String?
+  created_at    DateTime       @default(now())
+  rol_id        Int
+  status        Boolean        @default(true)
+  notifications Notificacion[]
+  patient       Paciente?
+  rol           Rol            @relation(fields: [rol_id], references: [id])
 
-  @@map("usuarios")
+  @@map("users")
 }
 
 model Rol {
   id       Int       @id @default(autoincrement())
   rol      String    @unique
-  usuarios Usuario[]
+  usuarios User[]
 
   @@map("roles")
 }
@@ -39,7 +39,7 @@ model Paciente {
   telefono_emergencia String?
   usuario_id          Int      @unique
   citas               Cita[]
-  usuario             Usuario  @relation(fields: [usuario_id], references: [id])
+  usuario             User  @relation(fields: [usuario_id], references: [id])
 
   @@map("pacientes")
 }
@@ -167,7 +167,7 @@ model Notificacion {
   cita_id    Int?
   created_at DateTime @default(now())
   cita       Cita?    @relation(fields: [cita_id], references: [id])
-  usuario    Usuario  @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
+  usuario    User  @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
 
   @@map("notificaciones")
 }

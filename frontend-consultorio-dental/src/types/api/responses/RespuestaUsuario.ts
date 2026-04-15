@@ -1,10 +1,10 @@
 export interface RespuestaUsuario {
     id: number;
-    nombre: string;
-    apellido: string;
-    correo: string;
-    telefono: string | null;
-    activo: boolean;
+    name: string;
+    lastname: string;
+    email: string;
+    phone: string | null;
+    status: boolean;
     rol: {
         id: number,
         rol: string

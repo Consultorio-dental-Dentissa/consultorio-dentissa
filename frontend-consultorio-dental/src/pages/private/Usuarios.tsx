@@ -51,7 +51,7 @@ export default function Usuarios() {
         try {
             await cambiarEstadoUsuario(id, nuevoEstado);
             setUsuarios(prev => {
-                return prev.map(u => u.id === id ? { ...u, activo: nuevoEstado } : u)
+                return prev.map(u => u.id === id ? { ...u, status: nuevoEstado } : u)
             });
 
             toast.success('El estado se actualizó correctamente');
@@ -105,14 +105,14 @@ export default function Usuarios() {
                         ) : (
                             usuarios.map((usuario) => (
                                 <tr key={usuario.id}>
-                                    <td style={{ fontWeight: '600' }}>{usuario.nombre}</td>
-                                    <td style={{ fontWeight: '500' }}>{usuario.apellido}</td>
-                                    <td>{usuario.telefono}</td>
-                                    <td>{usuario.correo}</td>
+                                    <td style={{ fontWeight: '600' }}>{usuario.name}</td>
+                                    <td style={{ fontWeight: '500' }}>{usuario.lastname}</td>
+                                    <td>{usuario.phone}</td>
+                                    <td>{usuario.email}</td>
 
                                     <td>
                                         <ToggleButton
-                                            estado={usuario.activo}
+                                            estado={usuario.status}
                                             onChange={(nuevoEstado) => manejarCambioDeEstado(usuario.id, nuevoEstado)}
                                         />
                                     </td>
