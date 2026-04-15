@@ -125,15 +125,15 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                         <InputForm
                             label="Dirección"
                             placeholder="La dirección es obligatoria"
-                            error={errors?.patient?.direccion?.message}
-                            registration={register('patient.direccion', { required: 'La diraccion es obligatoria' })}
+                            error={errors?.patient?.address?.message}
+                            registration={register('patient.address', { required: 'La diraccion es obligatoria' })}
                         />
 
                         <InputForm
                             label="Telefono de emergencia"
                             placeholder="Ingrese su telefono de emergencia"
-                            error={errors?.patient?.telefono_emergencia?.message}
-                            registration={register('patient.telefono_emergencia', {
+                            error={errors?.patient?.emergency_phone?.message}
+                            registration={register('patient.emergency_phone', {
                                 required: 'El telefono de emergencia es obligatorio'
                             })}
                         />
@@ -146,8 +146,8 @@ export default function CrearUsuarioForm({ onSubmit, onCancel }: UsuarioFormProp
                             type="date"
                             label="Fecha de nacimiento"
                             placeholder="Ingrese su fecha de nacimiento"
-                            error={errors?.patient?.fecha_nacimiento?.message}
-                            registration={register('patient.fecha_nacimiento', {
+                            error={errors?.patient?.birth_date?.message}
+                            registration={register('patient.birth_date', {
                                 required: 'La fecha de nacimiento es obligatoria'
                             })}
                         />

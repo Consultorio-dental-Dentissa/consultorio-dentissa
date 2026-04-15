@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { IsActiveUserGuard } from '../../infrastructure/security/guards/is-active-user.guard';
 
-//@UseGuards(AuthGuard, IsActiveUserGuard)
+// @UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('users')
 export class UsersController {
 

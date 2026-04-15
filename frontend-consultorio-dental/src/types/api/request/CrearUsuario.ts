@@ -6,8 +6,8 @@ export interface CrearUsuario {
     password: string;
     rol: string;
     patient?: {
-        direccion: string,
-        fecha_nacimiento: string,
-        telefono_emergencia: string
+        address: string,
+        birth_date: string,
+        emergency_phone: string
     }
 }

@@ -18,30 +18,30 @@ model User {
   rol_id        Int
   status        Boolean        @default(true)
   notifications Notificacion[]
-  patient       Paciente?
+  patient       Patient?
   rol           Rol            @relation(fields: [rol_id], references: [id])
 
   @@map("users")
 }
 
 model Rol {
-  id       Int       @id @default(autoincrement())
-  rol      String    @unique
+  id       Int    @id @default(autoincrement())
+  rol      String @unique
   usuarios User[]
 
   @@map("roles")
 }
 
-model Paciente {
-  id                  Int      @id @default(autoincrement())
-  direccion           String
-  fecha_nacimiento    DateTime
-  telefono_emergencia String?
-  usuario_id          Int      @unique
-  citas               Cita[]
-  usuario             User  @relation(fields: [usuario_id], references: [id])
+model Patient {
+  id             Int      @id @default(autoincrement())
+  address        String
+  birth_date     DateTime
+  emergency_phone String?
+  user_id        Int      @unique
+  appointments   Cita[]
+  user           User     @relation(fields: [user_id], references: [id])
 
-  @@map("pacientes")
+  @@map("patients")
 }
 
 model Servicio {
@@ -80,7 +80,7 @@ model Cita {
   updated_at       DateTime       @default(now())
   paciente_id      Int
   servicio_id      Int
-  paciente         Paciente       @relation(fields: [paciente_id], references: [id])
+  paciente         Patient       @relation(fields: [paciente_id], references: [id])
   servicio         Servicio       @relation(fields: [servicio_id], references: [id])
   consulta         Consulta?
   notificacions    Notificacion[]
@@ -167,7 +167,7 @@ model Notificacion {
   cita_id    Int?
   created_at DateTime @default(now())
   cita       Cita?    @relation(fields: [cita_id], references: [id])
-  usuario    User  @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
+  usuario    User     @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
 
   @@map("notificaciones")
 }

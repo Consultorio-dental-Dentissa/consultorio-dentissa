@@ -23,7 +23,7 @@ export class RepositorioCitas {
                 },
                 paciente: {
                     select: {
-                        usuario: {
+                        user: {
                             select: {
                                 name: true,
                                 lastname: true
@@ -67,7 +67,7 @@ export class RepositorioCitas {
                 },
                 paciente: {
                     select: {
-                        usuario: {
+                        user: {
                             select: {
                                 id: true,
                                 name: true,

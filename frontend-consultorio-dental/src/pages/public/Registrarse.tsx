@@ -107,13 +107,13 @@ export default function Registrarse() {
                             type="tel"
                             label="Telefono de emergencia"
                             placeholder='Ingresa tu telefono de emergencia'
-                            registration={register('patient.telefono_emergencia', {
+                            registration={register('patient.emergency_phone', {
                                 required: 'Este campo es obligatorio',
                                 minLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
                                 maxLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
                                 pattern: { value: /^\d+$/, message: 'El teléfono solo debe contener números' }
                             })}
-                            error={errors.patient?.telefono_emergencia?.message}
+                            error={errors.patient?.emergency_phone?.message}
                         />
 
                     </FieldGroup>
@@ -123,20 +123,20 @@ export default function Registrarse() {
                         <InputForm
                             label="Direccion"
                             placeholder='Ingresa tu direccion porfavor'
-                            registration={register('patient.direccion', {
+                            registration={register('patient.address', {
                                 required: 'Este campo es obligatorio',
                             })}
-                            error={errors.patient?.direccion?.message}
+                            error={errors.patient?.address?.message}
                         />
 
                         <InputForm
                             type='date'
                             label="Fecha de nacimiento"
                             placeholder='Ingresa tu fecha de nacimiento porfavor'
-                            registration={register('patient.fecha_nacimiento', {
+                            registration={register('patient.birth_date', {
                                 required: 'Este campo es obligatorio',
                             })}
-                            error={errors.patient?.fecha_nacimiento?.message}
+                            error={errors.patient?.birth_date?.message}
                         />
 
                     </FieldGroup>

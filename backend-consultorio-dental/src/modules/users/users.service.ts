@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException, Param } from '@nestjs/common';
 import { UsersRepository } from './repositories/users.repository';
-import { RepositorioPaciente } from '../pacientes/repositories/pacientes.repository';
+import { PatientsRepository } from '../patients/repositories/patients.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import type { ICreateUser } from './interfaces/create-user.interface';
 import type { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Rol } from './enums/rol.enum';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { CrearPacienteDto } from '../pacientes/dto/CrearPacienteDto';
+import { CreatePatientDto } from '../patients/dto/create-patient.dto';
 
 
 @Injectable()
@@ -15,7 +15,7 @@ export class UsersService {
 
     constructor(
         private usersRepository: UsersRepository,
-        private patientsRepository: RepositorioPaciente,
+        private patientsRepository: PatientsRepository,
         private prisma: PrismaService
     ) { }
 
@@ -75,15 +75,15 @@ export class UsersService {
     }
 
 
-    async createUserAndPatient(userData: CreateUserDto, patientData: CrearPacienteDto) {
+    async createUserAndPatient(userData: CreateUserDto, patientData: CreatePatientDto) {
 
         try {
             return await this.prisma.$transaction(async (tx) => {
 
                 const user = await this.usersRepository.create(userData, tx);
-                patientData.usuario_id = user.id;
+                patientData.user_id = user.id;
 
-                await this.patientsRepository.crear(patientData, tx);
+                await this.patientsRepository.create(patientData, tx);
 
                 return user;
             });

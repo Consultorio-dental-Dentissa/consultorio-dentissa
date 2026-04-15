@@ -6,7 +6,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { CitasModule } from './modules/citas/citas.module';
-import { PacientesModule } from './modules/pacientes/pacientes.module';
+import { PatientsModule } from './modules/patients/patients.module';
 import { SecurityModule } from './infrastructure/security/security.module';
 import { ServiciosModule } from './modules/servicios/servicios.module';
 
@@ -17,7 +17,7 @@ import { ServiciosModule } from './modules/servicios/servicios.module';
     AuthModule,
     PrismaModule,
     CitasModule,
-    PacientesModule,
+    PatientsModule,
     SecurityModule,
     ServiciosModule,
   ],

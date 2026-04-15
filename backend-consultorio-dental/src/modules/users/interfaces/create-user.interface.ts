@@ -1,5 +1,5 @@
 import { Rol } from '../enums/rol.enum';
-import { CrearPacienteDto } from '../../pacientes/dto/CrearPacienteDto'; // O mejor, otra interfaz
+import { CreatePatientDto } from '../../patients/dto/create-patient.dto'; // O mejor, otra interfaz
 
 export interface ICreateUser {
     name: string;
@@ -8,5 +8,5 @@ export interface ICreateUser {
     password: string;
     phone: string;
     rol: Rol;
-    patient?: CrearPacienteDto;
+    patient?: CreatePatientDto;
 }

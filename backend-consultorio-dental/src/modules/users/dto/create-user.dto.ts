@@ -3,7 +3,7 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength, ValidateNested } from 'class-validator'
 import { Type } from 'class-transformer'
 import { Rol } from '../enums/rol.enum'
-import { CrearPacienteDto } from "src/modules/pacientes/dto/CrearPacienteDto";
+import { CreatePatientDto } from "src/modules/patients/dto/create-patient.dto";
 
 export class CreateUserDto {
 
@@ -31,6 +31,6 @@ export class CreateUserDto {
 
     @IsOptional()
     @ValidateNested() // valida el objeto anidado también
-    @Type(() => CrearPacienteDto)
-    patient?: CrearPacienteDto
+    @Type(() => CreatePatientDto)
+    patient?: CreatePatientDto
 }

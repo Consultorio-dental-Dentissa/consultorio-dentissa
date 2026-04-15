@@ -1,12 +1,12 @@
 export interface RespuestaPaciente {
     id: number;
-    direccion: string;
-    fecha_nacimiento: string;
-    telefono_emergencia: string;
-    usuario: {
-        nombre: string,
-        apellido: string,
-        correo: string,
-        telefono: string
+    address: string;
+    birth_date: string;
+    emergency_phone: string;
+    user: {
+        name: string,
+        lastname: string,
+        email: string,
+        phone: string
     }
 }

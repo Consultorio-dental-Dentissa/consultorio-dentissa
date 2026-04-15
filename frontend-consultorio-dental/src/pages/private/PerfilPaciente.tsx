@@ -62,11 +62,11 @@ export default function PerfilPaciente() {
                 <div className="perfil-hero">
                     <div className="perfil-hero-left">
                         <div className="perfil-avatar">
-                            {iniciales(paciente.usuario.nombre, paciente.usuario.apellido)}
+                            {iniciales(paciente.user.name, paciente.user.lastname)}
                         </div>
                         <div>
                             <h1 className="perfil-nombre">
-                                {paciente.usuario.nombre} {paciente.usuario.apellido}
+                                {paciente.user.name} {paciente.user.lastname}
                             </h1>
                             <div className="perfil-meta">
                                 <span className="perfil-badge">
@@ -93,19 +93,19 @@ export default function PerfilPaciente() {
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Correo</span>
-                        <span className="perfil-row-val">{paciente.usuario.correo}</span>
+                        <span className="perfil-row-val">{paciente.user.email}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Teléfono</span>
-                        <span className="perfil-row-val">{paciente.usuario.telefono}</span>
+                        <span className="perfil-row-val">{paciente.user.phone}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Tel. emergencia</span>
-                        <span className="perfil-row-val">{paciente.telefono_emergencia}</span>
+                        <span className="perfil-row-val">{paciente.emergency_phone}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Dirección</span>
-                        <span className="perfil-row-val">{paciente.direccion}</span>
+                        <span className="perfil-row-val">{paciente.address}</span>
                     </div>
                 </div>
 
@@ -116,7 +116,7 @@ export default function PerfilPaciente() {
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Fecha de nacimiento</span>
-                        <span className="perfil-row-val">{formatearFecha(paciente.fecha_nacimiento)}</span>
+                        <span className="perfil-row-val">{formatearFecha(paciente.birth_date)}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">ID paciente</span>

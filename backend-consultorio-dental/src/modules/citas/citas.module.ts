@@ -3,7 +3,7 @@ import { CitasController } from './citas.controller';
 import { CitasService } from './citas.service';
 import { RepositorioCitas } from './repositories/citas.repository';
 import { RepositorioServicios } from '../servicios/repositories/servicios.repository';
-import { RepositorioPaciente } from '../pacientes/repositories/pacientes.repository';
+import { PatientsRepository } from '../patients/repositories/patients.repository';
 import { SecurityModule } from 'src/infrastructure/security/security.module';
 
 @Module({
@@ -12,7 +12,7 @@ import { SecurityModule } from 'src/infrastructure/security/security.module';
     CitasService, 
     RepositorioCitas, 
     RepositorioServicios, 
-    RepositorioPaciente,
+    PatientsRepository,
   ],
   imports: [
     SecurityModule

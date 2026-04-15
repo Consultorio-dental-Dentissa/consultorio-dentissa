@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { RepositorioCitas } from './repositories/citas.repository';
 import { CrearCitaDto } from './dto/CrearCitaDto';
 import { RepositorioServicios } from '../servicios/repositories/servicios.repository';
-import { RepositorioPaciente } from '../pacientes/repositories/pacientes.repository';
+import { PatientsRepository } from '../patients/repositories/patients.repository';
 
 @Injectable()
 export class CitasService {
@@ -10,7 +10,7 @@ export class CitasService {
     constructor(
         private repositorioCitas: RepositorioCitas,
         private repositorioServicios: RepositorioServicios,
-        private repositorioPaciente: RepositorioPaciente
+        private patientsRepository: PatientsRepository
 
     ) { }
 
@@ -27,8 +27,8 @@ export class CitasService {
                 estado: cita.estado,
                 created_at: cita.created_at,
                 paciente: {
-                    nombre: cita.paciente.usuario.name,
-                    apellido: cita.paciente.usuario.lastname
+                    nombre: cita.paciente.user.name,
+                    apellido: cita.paciente.user.lastname
                 },
                 servicio: {
                     nombre: cita.servicio.nombre
@@ -44,7 +44,7 @@ export class CitasService {
     async crearCita(crearCitaDto: CrearCitaDto) {
 
         const [existePaciente, servicio] = await Promise.all([
-            this.repositorioPaciente.existePacientePorId(crearCitaDto.paciente_id),
+            this.patientsRepository.existById(crearCitaDto.paciente_id),
             this.repositorioServicios.obtenerServicioPorId(crearCitaDto.servicio_id)
         ]);
 
@@ -79,8 +79,8 @@ export class CitasService {
             estado: cita.estado,
             created_at: cita.created_at,
             paciente: {
-                nombre: cita.paciente.usuario.name,
-                apellido: cita.paciente.usuario.lastname
+                nombre: cita.paciente.user.name,
+                apellido: cita.paciente.user.lastname
             },
             servicio: {
                 nombre: cita.servicio.nombre

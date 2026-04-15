@@ -4,12 +4,11 @@ import { usePacientes } from "../../hooks/usePacientes";
 import type { RespuestaPaciente } from "../../types/api/responses/RespuestaPaciente";
 import TablaVacia from "../../components/common/TablaVacia";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 
 export default function Pacientes() {
 
     const [pacientes, setPacientes] = useState<RespuestaPaciente[]>([])
-    const { obtenerPacientes, loading, error } = usePacientes();
+    const { obtenerPacientes, loading } = usePacientes();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -61,17 +60,17 @@ export default function Pacientes() {
                         ) :
                             pacientes.map((paciente) => {
 
-                                const fecha_nacimiento = new Date(paciente.fecha_nacimiento);
+                                const birthDate = new Date(paciente.birth_date);
 
                                 return (
                                     <tr key={paciente.id}>
-                                        <td>{paciente.usuario.nombre}</td>
-                                        <td>{paciente.usuario.apellido}</td>
-                                        <td>{paciente.usuario.correo}</td>
-                                        <td>{paciente.usuario.telefono}</td>
-                                        <td>{paciente.telefono_emergencia}</td>
-                                        <td>{fecha_nacimiento.toLocaleDateString('es-MX')}</td>
-                                        <td>{paciente.direccion}</td>
+                                        <td>{paciente.user.name}</td>
+                                        <td>{paciente.user.lastname}</td>
+                                        <td>{paciente.user.email}</td>
+                                        <td>{paciente.user.phone}</td>
+                                        <td>{paciente.emergency_phone}</td>
+                                        <td>{birthDate.toLocaleDateString('es-MX')}</td>
+                                        <td>{paciente.address}</td>
                                         <td>
                                             <div className="actions">
                                             
