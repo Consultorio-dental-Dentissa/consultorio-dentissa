@@ -32,10 +32,10 @@ export function CrearServicioForm({ onSubmit, onCancel }: CrearServicioFormProps
         }
 
         const nuevoServicio: CrearServicio = {
-            nombre: data.nombre,
-            precio: data.precio,
-            duracion_minutos: duracionTotal,
-            descripcion: data.descripcion
+            name: data.nombre,
+            price: data.precio,
+            durationMinutes: duracionTotal,
+            description: data.descripcion
         }
 
         await onSubmit(nuevoServicio);

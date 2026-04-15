@@ -32,11 +32,11 @@ export function useServicios() {
             .finally(() => setLoadingTable(false));
     }
 
-    async function cambiarEstadoServicio(id: number, estado: boolean): Promise<boolean> {
+    async function cambiarEstadoServicio(id: number, status: boolean): Promise<boolean> {
         
         setError(null);
 
-        return await requestCambiarEstadoServicio(id, estado)
+        return await requestCambiarEstadoServicio(id, status)
             .catch((error: ApiError) => {setError(error.message); throw error.message})
     }
 

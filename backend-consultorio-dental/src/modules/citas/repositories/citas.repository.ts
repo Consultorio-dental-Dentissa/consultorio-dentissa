@@ -18,7 +18,7 @@ export class RepositorioCitas {
                 created_at: true,
                 servicio: {
                     select: {
-                        nombre: true
+                        name: true
                     }
                 },
                 paciente: {
@@ -62,7 +62,7 @@ export class RepositorioCitas {
                 created_at: true,
                 servicio: {
                     select: {
-                        nombre: true
+                        name: true
                     }
                 },
                 paciente: {

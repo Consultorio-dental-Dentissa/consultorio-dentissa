@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { RepositorioCitas } from './repositories/citas.repository';
 import { CrearCitaDto } from './dto/CrearCitaDto';
-import { RepositorioServicios } from '../servicios/repositories/servicios.repository';
+import { ServicesRepository } from '../services/repositories/services.repository';
 import { PatientsRepository } from '../patients/repositories/patients.repository';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class CitasService {
 
     constructor(
         private repositorioCitas: RepositorioCitas,
-        private repositorioServicios: RepositorioServicios,
+        private repositorioServicios: ServicesRepository,
         private patientsRepository: PatientsRepository
 
     ) { }
@@ -31,7 +31,7 @@ export class CitasService {
                     apellido: cita.paciente.user.lastname
                 },
                 servicio: {
-                    nombre: cita.servicio.nombre
+                    nombre: cita.servicio.name
                 }
             }
         })
@@ -45,7 +45,7 @@ export class CitasService {
 
         const [existePaciente, servicio] = await Promise.all([
             this.patientsRepository.existById(crearCitaDto.paciente_id),
-            this.repositorioServicios.obtenerServicioPorId(crearCitaDto.servicio_id)
+            this.repositorioServicios.getById(crearCitaDto.servicio_id)
         ]);
 
         if (!existePaciente) throw new NotFoundException('Paciente no encontrado');
@@ -56,7 +56,7 @@ export class CitasService {
          * implementen multiples servicios en una sola cita
          */
 
-        crearCitaDto.duracion_minutos = servicio.duracion_minutos;
+        crearCitaDto.duracion_minutos = servicio.durationMinutes;
 
         const citasDelDia = await this.repositorioCitas.obtenerCitasPorFecha(new Date(crearCitaDto.fecha));
 
@@ -83,7 +83,7 @@ export class CitasService {
                 apellido: cita.paciente.user.lastname
             },
             servicio: {
-                nombre: cita.servicio.nombre
+                nombre: cita.servicio.name
             }
         }
     }

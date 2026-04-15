@@ -13,7 +13,7 @@ export default function Servicios() {
 
     const [servicios, setServicios] = useState<RespuestaServicio[]>([]);
     const [modalAbierto, setModalAbierto] = useState<boolean>(false);
-    const { obtenerServicios, crearServicio, cambiarEstadoServicio, loading, loadingTable } = useServicios();
+    const { obtenerServicios, crearServicio, cambiarEstadoServicio, loadingTable } = useServicios();
 
     useEffect(() => {
 
@@ -33,8 +33,9 @@ export default function Servicios() {
     const cambiarEstadoDelServicio = async (id: number, nuevoEstado: boolean) => {
 
         try {
-            await cambiarEstadoServicio(id, nuevoEstado);
-            setServicios(prev => prev.map((servicio) => servicio.id === id ? { ...servicio, activo: nuevoEstado } : servicio))
+            const respuesta = await cambiarEstadoServicio(id, nuevoEstado);
+            console.log(respuesta);
+            setServicios(prev => prev.map((servicio) => servicio.id === id ? { ...servicio, status: nuevoEstado } : servicio))
             toast.success('Se ha cambiado el estado del servicio');
 
         } catch (error) {
@@ -102,13 +103,13 @@ export default function Servicios() {
                             servicios.map((servicio) => {
                                 return (
                                     <tr key={servicio.id}>
-                                        <td>{servicio.nombre}</td>
-                                        <td>${parseFloat(servicio.precio).toFixed(2)}</td>
-                                        <td>{minutosAHoras(servicio.duracion_minutos)}</td>
-                                        <td>{servicio.descripcion}</td>
+                                        <td>{servicio.name}</td>
+                                        <td>${parseFloat(servicio.price).toFixed(2)}</td>
+                                        <td>{minutosAHoras(servicio.durationMinutes)}</td>
+                                        <td>{servicio.description}</td>
                                         <td>
                                             <ToggleButton
-                                                estado={servicio.activo}
+                                                estado={servicio.status}
                                                 onChange={(nuevoEstado) => cambiarEstadoDelServicio(servicio.id, nuevoEstado)}
                                             />
                                         </td>

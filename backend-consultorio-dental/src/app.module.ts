@@ -8,7 +8,7 @@ import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { CitasModule } from './modules/citas/citas.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { SecurityModule } from './infrastructure/security/security.module';
-import { ServiciosModule } from './modules/servicios/servicios.module';
+import { ServicesModule } from './modules/services/services.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { ServiciosModule } from './modules/servicios/servicios.module';
     CitasModule,
     PatientsModule,
     SecurityModule,
-    ServiciosModule,
+    ServicesModule,
   ],
   controllers: [AppController],
   providers: [

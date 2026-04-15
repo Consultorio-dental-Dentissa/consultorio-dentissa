@@ -3,7 +3,7 @@ import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { PatientsService } from './patients.service';
 import { IsActiveUserGuard } from 'src/infrastructure/security/guards/is-active-user.guard';
 
-// @UseGuards(AuthGuard, IsActiveUserGuard)
+@UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('patients')
 export class PacientesController {
 

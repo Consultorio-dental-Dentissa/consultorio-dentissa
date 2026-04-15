@@ -33,39 +33,39 @@ model Rol {
 }
 
 model Patient {
-  id             Int      @id @default(autoincrement())
-  address        String
-  birth_date     DateTime
+  id              Int      @id @default(autoincrement())
+  address         String
+  birth_date      DateTime
   emergency_phone String?
-  user_id        Int      @unique
-  appointments   Cita[]
-  user           User     @relation(fields: [user_id], references: [id])
+  user_id         Int      @unique
+  appointments    Cita[]
+  user            User     @relation(fields: [user_id], references: [id])
 
   @@map("patients")
 }
 
-model Servicio {
-  id               Int                @id @default(autoincrement())
-  nombre           String
-  duracion_minutos Int
-  precio           Decimal            @db.Decimal(10, 2)
-  descripcion      String
-  activo           Boolean            @default(true)
-  citas            Cita[]
-  imagenes         ImagenesServicio[]
-  ofertas          OfertaServicio[]
+model Service {
+  id              Int              @id @default(autoincrement())
+  name            String
+  durationMinutes Int
+  price           Decimal          @db.Decimal(10, 2)
+  description     String
+  status          Boolean          @default(true)
+  appointments    Cita[]
+  images          servicesImages[]
+  offerts         OfertaServicio[]
 
-  @@map("servicios")
+  @@map("services")
 }
 
-model ImagenesServicio {
-  id          Int      @id @default(autoincrement())
-  url         String
-  ubicacion   String?
-  servicio_id Int
-  servicio    Servicio @relation(fields: [servicio_id], references: [id])
+model servicesImages {
+  id         Int     @id @default(autoincrement())
+  url        String
+  ubication  String?
+  service_id Int
+  service    Service @relation(fields: [service_id], references: [id])
 
-  @@map("imagenes_servicio")
+  @@map("services_images")
 }
 
 model Cita {
@@ -80,8 +80,8 @@ model Cita {
   updated_at       DateTime       @default(now())
   paciente_id      Int
   servicio_id      Int
-  paciente         Patient       @relation(fields: [paciente_id], references: [id])
-  servicio         Servicio       @relation(fields: [servicio_id], references: [id])
+  paciente         Patient        @relation(fields: [paciente_id], references: [id])
+  servicio         Service        @relation(fields: [servicio_id], references: [id])
   consulta         Consulta?
   notificacions    Notificacion[]
 
@@ -123,11 +123,11 @@ model Oferta {
 }
 
 model OfertaServicio {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   oferta_id   Int
   servicio_id Int
-  oferta      Oferta   @relation(fields: [oferta_id], references: [id])
-  servicio    Servicio @relation(fields: [servicio_id], references: [id])
+  oferta      Oferta  @relation(fields: [oferta_id], references: [id])
+  servicio    Service @relation(fields: [servicio_id], references: [id])
 
   @@map("ofertas_servicios")
 }

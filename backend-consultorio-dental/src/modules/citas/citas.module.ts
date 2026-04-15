@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { CitasController } from './citas.controller';
 import { CitasService } from './citas.service';
 import { RepositorioCitas } from './repositories/citas.repository';
-import { RepositorioServicios } from '../servicios/repositories/servicios.repository';
+import { ServicesRepository } from '../services/repositories/services.repository';
 import { PatientsRepository } from '../patients/repositories/patients.repository';
 import { SecurityModule } from 'src/infrastructure/security/security.module';
 
@@ -11,7 +11,7 @@ import { SecurityModule } from 'src/infrastructure/security/security.module';
   providers: [
     CitasService, 
     RepositorioCitas, 
-    RepositorioServicios, 
+    ServicesRepository, 
     PatientsRepository,
   ],
   imports: [
