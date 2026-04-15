@@ -42,7 +42,7 @@ export default function LayoutPrivado() {
                         username={username}
                         userRol={rol ? rol : ''}
                     />
-                    <div className="p-5 bg-gray-50 h-full">
+                    <div className="p-5 bg-gray-100 h-full rounded-2xl">
                         <Outlet />
                     </div>
                 </main>
