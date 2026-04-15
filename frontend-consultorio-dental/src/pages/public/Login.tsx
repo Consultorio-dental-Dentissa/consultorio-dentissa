@@ -21,6 +21,8 @@ export default function Login() {
 
             const respuesta = await login(credenciales);
 
+            console.log(respuesta);
+
             if (respuesta.estado) {
                 await iniciarSesion(respuesta.usuario);
                 navigate('/dashboard');

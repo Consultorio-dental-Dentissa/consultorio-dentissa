@@ -31,20 +31,20 @@ interface SidebarAppProps {
 
 export function SidebarApp({logout}: SidebarAppProps) {
     return (
-        <Sidebar>
+        <Sidebar className="border-none px-5">
             <SidebarHeader className="flex items-center gap-0">
-                <h2 className="text-lg font-bold mt-5 text-white">Dentissa</h2>
+                <h2 className="text-lg font-bold mt-5 text-black">Dentissa</h2>
                 <h3 className="text-white">Panel de control</h3>
             </SidebarHeader>
 
-            <SidebarContent  className="[&_*]:text-white">
+            <SidebarContent  className="text-gray-400">
                 <SidebarGroup>
                     <SidebarGroupLabel className="mt-5">Manejo de negocio</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {negocioItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    <SidebarMenuButton asChild className="py-5 hover:text-white font-bold active:text-white">
+                                    <SidebarMenuButton asChild className="py-5 hover:text-white active:text-white font-medium">
                                         <a href={item.href} className="flex items-center gap-3">
                                             <item.icon size={18} />
                                             {item.label}
@@ -60,7 +60,7 @@ export function SidebarApp({logout}: SidebarAppProps) {
                         <SidebarMenu>
                             {publicidadItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    <SidebarMenuButton asChild className="py-5 hover:text-white font-bold active:text-white">
+                                    <SidebarMenuButton asChild className="py-5 hover:text-white font-medium active:text-white">
                                         <a href={item.href} className="flex items-center gap-3">
                                             <item.icon size={18} />
                                             {item.label}
@@ -75,7 +75,7 @@ export function SidebarApp({logout}: SidebarAppProps) {
 
             <SidebarFooter>
                 <button
-                    className="bg-red-600 text-white flex items-center justify-center gap-2 p-2 rounded-md hover:bg-red-700"
+                    className="text-gray-500 flex items-center gap-2 p-2 rounded-md hover:bg-red-700 hover:text-white"
                     onClick={logout}
                 >
                     <IoIosLogOut size={18} />

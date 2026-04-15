@@ -1,17 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContextProvider";
-import { Navigate } from "react-router-dom";
 import '../styles/theme.public.css'
 
 export default function LayoutPublico() {
-
-    
-    const { isAuthenticated } = useAuth();
-
-    if (isAuthenticated) {
-        return <Navigate to="/dashboard" replace />;
-    }
 
     return (
         <div className="public-layout">
