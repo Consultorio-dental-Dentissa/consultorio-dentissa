@@ -1,15 +1,15 @@
 export interface RespuestaCita {
     id: number;
-    fecha: Date;
-    hora: string;
-    duracion_minutos: number;
-    estado: string;
+    date: Date;
+    time: string;
+    durationMinutes: number;
+    status: string;
     created_at: Date;
-    paciente: {
-        nombre: string
-        apellido: string
+    patient: {
+        name: string
+        lastname: string
     },
-    servicio: {
-        nombre: string
+    service: {
+        name: string
     }
 }

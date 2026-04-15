@@ -1,4 +1,4 @@
-export interface EstadoCita {
+export interface AppointmentStatuses {
     PENDIENTE: 'PENDIENTE';
     CANCELADO: 'CANCELADO';
     CONFIRMADO: 'COMFIRMADO';

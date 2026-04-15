@@ -1,7 +1,7 @@
 export interface CrearCita {
-    fecha: string;
-    hora: string;
-    nota_previa: string;
-    paciente_id: number;
-    servicio_id: number;
+    date: string;
+    time: string;
+    notes: string;
+    patient_id: number;
+    service_id: number;
 }

@@ -83,11 +83,11 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
         }
 
         const registrarCita: CrearCita = {
-            fecha: form.fecha,
-            hora: form.hora,
-            nota_previa: form.notaPrevia,
-            paciente_id: Number(form.paciente),
-            servicio_id: Number(form.servicio)
+            date: form.fecha,
+            time: form.hora,
+            notes: form.notaPrevia,
+            patient_id: Number(form.paciente),
+            service_id: Number(form.servicio)
         }
 
         try {
@@ -134,7 +134,7 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
 
                                         return (
                                             <option value={servicio.id}>
-                                                {servicio.nombre}
+                                                {servicio.name}
                                             </option>
                                         )
                                     })
@@ -148,7 +148,7 @@ export default function CitaForm({ onSubmit, onCancel }: Props) {
                                 {
                                     pacientes.map((paciente) => {
                                         return (
-                                            <option value={paciente.id}>{paciente.usuario.nombre} {paciente.usuario.apellido} | {paciente.usuario.correo}</option>
+                                            <option value={paciente.id}>{paciente.user.name} {paciente.user.lastname} | {paciente.user.email}</option>
                                         )
                                     })
                                 }

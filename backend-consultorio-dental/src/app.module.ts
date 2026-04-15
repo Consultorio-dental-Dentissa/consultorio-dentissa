@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
-import { CitasModule } from './modules/citas/citas.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { SecurityModule } from './infrastructure/security/security.module';
 import { ServicesModule } from './modules/services/services.module';
@@ -16,7 +16,7 @@ import { ServicesModule } from './modules/services/services.module';
     UsersModule,
     AuthModule,
     PrismaModule,
-    CitasModule,
+    AppointmentsModule,
     PatientsModule,
     SecurityModule,
     ServicesModule,

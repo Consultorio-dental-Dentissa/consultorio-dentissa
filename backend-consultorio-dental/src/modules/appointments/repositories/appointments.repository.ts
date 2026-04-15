@@ -1,27 +1,27 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
-import { CrearCitaDto } from "../dto/CrearCitaDto";
+import { CreateAppointmentDto } from "../dto/create-appointment.dto";
 
 @Injectable()
-export class RepositorioCitas {
+export class AppointmentsRepository {
 
     constructor(private prisma: PrismaService) { }
 
-    async obtenerTodos() {
-        return await this.prisma.cita.findMany({
+    async getAll() {
+        return await this.prisma.appointment.findMany({
             select: {
                 id: true,
-                fecha: true,
-                hora: true,
-                duracion_minutos: true,
-                estado: true,
+                date: true,
+                time: true,
+                durationMinutes: true,
+                status: true,
                 created_at: true,
-                servicio: {
+                service: {
                     select: {
                         name: true
                     }
                 },
-                paciente: {
+                patient: {
                     select: {
                         user: {
                             select: {
@@ -35,37 +35,37 @@ export class RepositorioCitas {
         });
     }
 
-    async obtenerCitaPorId(id: number) {
-        return await this.prisma.cita.findFirst({
+    async getById(id: number) {
+        return await this.prisma.appointment.findFirst({
             where: {
                 id: id
             }
         });
     }
 
-    async crear(crearCitaDto: CrearCitaDto) {
-        return await this.prisma.cita.create({
+    async create(crearCitaDto: CreateAppointmentDto) {
+        return await this.prisma.appointment.create({
             data: {
-                fecha: new Date(crearCitaDto.fecha),
-                hora: crearCitaDto.hora,
-                nota_previa: crearCitaDto.nota_previa,
-                paciente_id: crearCitaDto.paciente_id,
-                servicio_id: crearCitaDto.servicio_id,
-                duracion_minutos: crearCitaDto.duracion_minutos
+                date: new Date(crearCitaDto.date),
+                time: crearCitaDto.time,
+                notes: crearCitaDto.notes,
+                patient_id: crearCitaDto.patient_id,
+                service_id: crearCitaDto.service_id,
+                durationMinutes: crearCitaDto.durationMinutes
             },
             select: {
                 id: true,
-                fecha: true,
-                hora: true,
-                estado: true,
-                duracion_minutos: true,
+                date: true,
+                time: true,
+                status: true,
+                durationMinutes: true,
                 created_at: true,
-                servicio: {
+                service: {
                     select: {
                         name: true
                     }
                 },
-                paciente: {
+                patient: {
                     select: {
                         user: {
                             select: {
@@ -80,19 +80,19 @@ export class RepositorioCitas {
         })
     }
 
-    async obtenerCitasPorFecha(fecha: Date, excluirCitaId?: number) {
+    async getAppointmentsByDate(date: Date, excluirCitaId?: number) {
 
-        return await this.prisma.cita.findMany({
+        return await this.prisma.appointment.findMany({
             where: {
-                fecha: {
-                    gte: new Date(fecha.setHours(0, 0, 0, 0)),
-                    lt: new Date(fecha.setHours(23, 59, 59, 999)),
+                date: {
+                    gte: new Date(date.setHours(0, 0, 0, 0)),
+                    lt: new Date(date.setHours(23, 59, 59, 999)),
                 },
                 id: excluirCitaId ? { not: excluirCitaId } : undefined,
             },
             select: {
-                hora: true,
-                duracion_minutos: true,
+                time: true,
+                durationMinutes: true,
             }
 
 
