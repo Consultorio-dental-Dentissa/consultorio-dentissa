@@ -3,7 +3,7 @@ export interface RespuestaUsuario {
     name: string;
     lastname: string;
     email: string;
-    phone: string | null;
+    phone: string;
     status: boolean;
     rol: {
         id: number,

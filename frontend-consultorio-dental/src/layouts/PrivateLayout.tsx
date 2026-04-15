@@ -20,8 +20,13 @@ export default function LayoutPrivado() {
         navigate('/login');
     }
 
-    const username = `${usuario?.nombre} ${usuario?.apellido}`;
-    const rol = usuario?.rol.rol;
+    const username = `${usuario?.name} ${usuario?.lastname}`;
+    const rol = usuario?.rol;
+
+    console.log("usuario: ", usuario);
+
+    console.log("username: ", username);
+    console.log(rol);
 
     return (
         <div>
@@ -32,7 +37,7 @@ export default function LayoutPrivado() {
                     logout={manejarCerrarSesion}
                 />
 
-                <main className="w-full">
+                <main className="flex-1 min-w-0">
                     <Header
                         username={username}
                         userRol={rol ? rol : ''}

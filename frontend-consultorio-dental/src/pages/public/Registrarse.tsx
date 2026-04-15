@@ -14,7 +14,6 @@ export default function Registrarse() {
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CrearUsuario>()
 
     const manejarSubmit = async (usuario: CrearUsuario) => {
-        console.log(usuario);
 
         try {
             await registerHook.register(usuario);
@@ -45,15 +44,15 @@ export default function Registrarse() {
                         <InputForm
                             label="Nombre"
                             placeholder='Ingresa tu nombre porfavor'
-                            registration={register('nombre', { required: 'El nombre es obligatorio' })}
-                            error={errors.nombre?.message}
+                            registration={register('name', { required: 'El nombre es obligatorio' })}
+                            error={errors.name?.message}
                         />
 
                         <InputForm
                             label="Apellido"
                             placeholder='Ingresa tu apellido porfavor'
-                            registration={register('apellido', { required: 'El apellido es obligatorio' })}
-                            error={errors.apellido?.message}
+                            registration={register('lastname', { required: 'El apellido es obligatorio' })}
+                            error={errors.lastname?.message}
                         />
 
                     </FieldGroup>
@@ -63,14 +62,14 @@ export default function Registrarse() {
                         <InputForm
                             label="Correo electronico"
                             placeholder='Ingresa tu correo porfavor'
-                            registration={register('correo', {
+                            registration={register('email', {
                                 required: 'El correo es obligatorio',
                                 pattern: {
                                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                     message: 'El correo debe tener el formato de nombre@dominio.com'
                                 }
                             })}
-                            error={errors.correo?.message}
+                            error={errors.email?.message}
                         />
 
                     </FieldGroup>
@@ -80,11 +79,11 @@ export default function Registrarse() {
                         <InputForm
                             label="Contraseña"
                             placeholder='La contraseña debe tener minimo 8 caracteres'
-                            registration={register('contraseña', {
+                            registration={register('password', {
                                 required: 'La contraseña es obligatoria',
                                 minLength: { value: 8, message: 'La contraseña debe tener minimo 8 caracteres' }
                             })}
-                            error={errors.contraseña?.message}
+                            error={errors.password?.message}
                         />
 
                     </FieldGroup>
@@ -95,26 +94,26 @@ export default function Registrarse() {
                             type="tel"
                             label="Telefono"
                             placeholder='Ingresa tu telefono porfavor'
-                            registration={register('telefono', {
+                            registration={register('phone', {
                                 required: 'Este campo es obligatorio',
                                 minLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
                                 maxLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
                                 pattern: { value: /^\d+$/, message: 'El teléfono solo debe contener números' }
                             })}
-                            error={errors.telefono?.message}
+                            error={errors.phone?.message}
                         />
 
                         <InputForm
                             type="tel"
                             label="Telefono de emergencia"
                             placeholder='Ingresa tu telefono de emergencia'
-                            registration={register('paciente.telefono_emergencia', {
+                            registration={register('patient.telefono_emergencia', {
                                 required: 'Este campo es obligatorio',
                                 minLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
                                 maxLength: { value: 10, message: 'El teléfono debe tener exactamente 10 dígitos' },
                                 pattern: { value: /^\d+$/, message: 'El teléfono solo debe contener números' }
                             })}
-                            error={errors.paciente?.telefono_emergencia?.message}
+                            error={errors.patient?.telefono_emergencia?.message}
                         />
 
                     </FieldGroup>
@@ -124,20 +123,20 @@ export default function Registrarse() {
                         <InputForm
                             label="Direccion"
                             placeholder='Ingresa tu direccion porfavor'
-                            registration={register('paciente.direccion', {
+                            registration={register('patient.direccion', {
                                 required: 'Este campo es obligatorio',
                             })}
-                            error={errors.paciente?.direccion?.message}
+                            error={errors.patient?.direccion?.message}
                         />
 
                         <InputForm
                             type='date'
                             label="Fecha de nacimiento"
                             placeholder='Ingresa tu fecha de nacimiento porfavor'
-                            registration={register('paciente.fecha_nacimiento', {
+                            registration={register('patient.fecha_nacimiento', {
                                 required: 'Este campo es obligatorio',
                             })}
-                            error={errors.paciente?.fecha_nacimiento?.message}
+                            error={errors.patient?.fecha_nacimiento?.message}
                         />
 
                     </FieldGroup>

@@ -4,12 +4,12 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 @Injectable()
 export class IsActiveUserGuard implements CanActivate {
 
-    constructor(private readonly repositorio: PrismaService) {}
+    constructor(private readonly repository: PrismaService) {}
 
     async canActivate(context: ExecutionContext) {
 
         const request = context.switchToHttp().getRequest();
-        const status = await this.repositorio.user.count({
+        const status = await this.repository.user.count({
             where: {
                 id: request.user.id,
                 status: true

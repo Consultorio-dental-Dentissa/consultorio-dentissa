@@ -1,7 +1,7 @@
-import type { RespuestaUsuario } from '@/types/api/responses/RespuestaUsuario';
 import { AuthContext, } from './AuthContext';
 import { useState, useContext, type ReactNode, useEffect } from 'react';
 import { useLogin } from '@/hooks/useLogin';
+import type { User } from '@/types/models/User';
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -10,7 +10,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
 
-    const [usuario, setUsuario] = useState<RespuestaUsuario | null>(null);
+    const [usuario, setUsuario] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, []);
 
 
-    const iniciarSesion = (usuario: RespuestaUsuario) => {
+    const iniciarSesion = (usuario: User) => {
 
         // Autenticamos al usuario y guardamos sus datos
         setIsAuthenticated(true);

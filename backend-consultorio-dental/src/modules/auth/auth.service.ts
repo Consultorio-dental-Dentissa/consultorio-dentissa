@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { IniciarSesionDto } from './dto/IniciarSesionDto';
+import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt'
 import { UsersService } from '../users/users.service';
 import { Rol } from '../users/enums/rol.enum';
-import { RegisterUserDto } from './dto/registrar-usuario.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 import type { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 
@@ -15,12 +15,12 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
 
-    async iniciarSesion(credenciales: IniciarSesionDto, response: Response) {
+    async login(credentials: LoginDto, response: Response) {
 
-        const user = await this.usersService.getUserByEmailWithPassword(credenciales.correo);
-        const esContraseñaCorrecta = await bcrypt.compare(credenciales.contraseña, user?.password ?? '');
+        const user = await this.usersService.getUserByEmailWithPassword(credentials.email);
+        const isCorrectPassword = await bcrypt.compare(credentials.password, user?.password ?? '');
 
-        if (!user || !esContraseñaCorrecta) {
+        if (!user || !isCorrectPassword) {
             throw new NotFoundException('Las credenciales son incorrectas');
         }
 
@@ -30,15 +30,15 @@ export class AuthService {
         
         const payload = {
             id: user.id,
-            nombre: user.name,
-            apellido: user.lastname,
-            correo: user.email,
-            telefono: user.phone,
+            name: user.name,
+            lastname: user.lastname,
+            email: user.email,
+            phone: user.phone,
             rol: user.rol.rol,
-            activo: user.status
+            status: user.status
         };
 
-        const token = await this.crearToken(payload);        
+        const token = await this.createToken(payload);        
         
         response.cookie('access_token', token, {
             httpOnly: true,
@@ -47,22 +47,22 @@ export class AuthService {
         });
         
 
-        const usuarioAutenticado = {
-            estado: true,
-            usuario: {
+        const loggedUser = {
+            logged: true,
+            user: {
                 id: user.id,
-                nombre: user.name,
-                apellido: user.lastname,
-                correo: user.email,
-                telefono: user.phone,
+                name: user.name,
+                lastname: user.lastname,
+                email: user.email,
+                phone: user.phone,
                 rol: user.rol.rol,
             }
         }
 
-        return usuarioAutenticado;
+        return loggedUser;
     }
 
-    async cerrarSesion(response: Response) {
+    async logout(response: Response) {
 
         response.clearCookie('access_token', {
             httpOnly: true,
@@ -74,17 +74,17 @@ export class AuthService {
     }
 
 
-    async crearToken(payload) {
+    async createToken(payload) {
         return await this.jwtService.signAsync(payload);
     }
     
 
-    async registrarUsuario(user: RegisterUserDto) {
+    async registerUser(user: RegisterUserDto) {
         
-        const usuarioPaciente = {
+        const patientUser = {
             ...user,
             rol: Rol.PACIENTE
         }
-        return await this.usersService.createUser(usuarioPaciente);
+        return await this.usersService.createUser(patientUser);
     }
 }

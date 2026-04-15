@@ -6,13 +6,13 @@ import type { IniciarSesion } from "../types/api/request/IniciarSesion";
 import { deleteR, post } from "./api"
 
 export async function requestLogin(credenciales : IniciarSesion): Promise<RespuestaLogin> {
-    return await post<RespuestaLogin>('/auth/iniciar-sesion', credenciales);
+    return await post<RespuestaLogin>('/auth/login', credenciales);
 }
 
 export async function requestRegister(usuario: CrearUsuario) : Promise<RespuestaUsuario> {
-    return await post<RespuestaUsuario>('/auth/registrar', usuario);
+    return await post<RespuestaUsuario>('/auth/register', usuario);
 }
 
 export async function requestLogout() {
-    return await deleteR('/auth/cerrar-sesion');
+    return await deleteR('/auth/logout');
 }

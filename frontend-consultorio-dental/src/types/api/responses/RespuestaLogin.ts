@@ -1,6 +1,6 @@
-import type { RespuestaUsuario } from "./RespuestaUsuario";
+import type { User } from "@/types/models/User";
 
 export interface RespuestaLogin {
-    estado: boolean;
-    usuario: RespuestaUsuario
+    logged: boolean;
+    user: User
 }

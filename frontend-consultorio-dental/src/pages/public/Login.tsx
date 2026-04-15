@@ -4,8 +4,9 @@ import { useAuth } from "../../context/AuthContextProvider";
 import { FieldGroup } from '@/components/ui/field'
 import { InputForm } from '@/components/common/Input'
 import { useForm } from "react-hook-form"
-import type { IniciarSesion } from "@/types/api/request/IniciarSesion";
 import toast from "react-hot-toast";
+
+import type { IniciarSesion } from "@/types/api/request/IniciarSesion";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -21,10 +22,8 @@ export default function Login() {
 
             const respuesta = await login(credenciales);
 
-            console.log(respuesta);
-
-            if (respuesta.estado) {
-                await iniciarSesion(respuesta.usuario);
+            if (respuesta.logged) {
+                await iniciarSesion(respuesta.user);
                 navigate('/dashboard');
             }
 
@@ -48,8 +47,8 @@ export default function Login() {
                         <InputForm
                             label="Correo electronico"
                             placeholder='Ingresa tu correo porfavor'
-                            registration={register('correo', { required: 'El correo es obligatorio' })}
-                            error={errors.correo?.message}
+                            registration={register('email', { required: 'El correo es obligatorio' })}
+                            error={errors.email?.message}
                         />
 
                     </FieldGroup>
@@ -58,8 +57,8 @@ export default function Login() {
                         <InputForm
                             label="Contraseña"
                             placeholder='Ingresa tu contraseña porfavor'
-                            registration={register('contraseña', { required: 'La contraseña es obligatoria' })}
-                            error={errors.contraseña?.message}
+                            registration={register('password', { required: 'La contraseña es obligatoria' })}
+                            error={errors.password?.message}
                         />
                     </FieldGroup>
 

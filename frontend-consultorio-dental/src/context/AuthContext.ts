@@ -1,11 +1,11 @@
 import { createContext } from 'react';
-import type { RespuestaUsuario } from '@/types/api/responses/RespuestaUsuario';
+import type { User } from '@/types/models/User';
 
 
 interface AuthContextType {
-  usuario: RespuestaUsuario | null;
+  usuario: User | null;
   isAuthenticated: boolean;
-  iniciarSesion(datosUsuario : RespuestaUsuario) : void,
+  iniciarSesion(usuario : User) : void,
   cerrarSesion() : void,
   loading: boolean
 }
