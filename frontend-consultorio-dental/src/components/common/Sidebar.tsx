@@ -9,6 +9,7 @@ import { FaUserMd, FaCalendarAlt, FaStethoscope } from "react-icons/fa"
 import { IoNotifications } from "react-icons/io5"
 import { BiSolidOffer } from "react-icons/bi"
 import { FaQuestion } from "react-icons/fa"
+import { FaTooth } from "react-icons/fa";
 
 const negocioItems = [
     { href: '/dashboard', label: 'Resumen', icon: MdDashboard },
@@ -29,22 +30,24 @@ interface SidebarAppProps {
     logout: () => void
 }
 
-export function SidebarApp({logout}: SidebarAppProps) {
+export function SidebarApp({ logout }: SidebarAppProps) {
     return (
-        <Sidebar className="border-none px-5">
-            <SidebarHeader className="flex items-center gap-0">
-                <h2 className="text-lg font-bold mt-5 text-black">Dentissa</h2>
-                <h3 className="text-white">Panel de control</h3>
+        <Sidebar className="border-none">
+            <SidebarHeader className="mt-3 flex flex-row justify-center items-center gap-1">
+                <div className="bg-white p-2 rounded-sm">
+                    <FaTooth className="text-rose-400 text-xl" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Consultorio</h2>
             </SidebarHeader>
 
-            <SidebarContent  className="text-gray-400">
+            <SidebarContent className="text-white">
                 <SidebarGroup>
-                    <SidebarGroupLabel className="mt-5">Manejo de negocio</SidebarGroupLabel>
+                    <SidebarGroupLabel className="mt-5 text-white">Manejo de negocio</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {negocioItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    <SidebarMenuButton asChild className="py-5 hover:text-white active:text-white font-medium">
+                                    <SidebarMenuButton asChild className="py-5 hover:text-rose-500 active:text-rose-600 font-medium">
                                         <a href={item.href} className="flex items-center gap-3">
                                             <item.icon size={18} />
                                             {item.label}
@@ -55,12 +58,12 @@ export function SidebarApp({logout}: SidebarAppProps) {
                         </SidebarMenu>
                     </SidebarGroupContent>
 
-                    <SidebarGroupLabel className="mt-5">Publicidad</SidebarGroupLabel>
+                    <SidebarGroupLabel className="mt-5 text-white">Publicidad</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {publicidadItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    <SidebarMenuButton asChild className="py-5 hover:text-white font-medium active:text-white">
+                                    <SidebarMenuButton asChild className="py-5 hover:text-rose-500 font-medium active:text-rose-600">
                                         <a href={item.href} className="flex items-center gap-3">
                                             <item.icon size={18} />
                                             {item.label}

@@ -37,12 +37,12 @@ export default function LayoutPrivado() {
                     logout={manejarCerrarSesion}
                 />
 
-                <main className="flex-1 min-w-0">
+                <main className="flex-1 min-w-0 px-3">
                     <Header
                         username={username}
                         userRol={rol ? rol : ''}
                     />
-                    <div className="p-5 bg-gray-100 h-full rounded-2xl">
+                    <div className="px-7 py-7 bg-gray-100 h-full rounded-2xl">
                         <Outlet />
                     </div>
                 </main>
