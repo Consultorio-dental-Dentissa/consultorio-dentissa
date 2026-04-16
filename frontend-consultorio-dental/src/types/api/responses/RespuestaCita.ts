@@ -4,6 +4,7 @@ export interface RespuestaCita {
     time: string;
     durationMinutes: number;
     status: string;
+    notes: string;
     created_at: Date;
     patient: {
         name: string
