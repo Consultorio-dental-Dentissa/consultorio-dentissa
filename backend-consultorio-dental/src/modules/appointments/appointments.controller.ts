@@ -4,7 +4,7 @@ import { AuthGuard } from 'src/infrastructure/security/guards/auth.guard';
 import { IsActiveUserGuard } from 'src/infrastructure/security/guards/is-active-user.guard';
 import type { CreateAppointmentDto } from './dto/create-appointment.dto';
 
-//@UseGuards(AuthGuard, IsActiveUserGuard)
+@UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('appointments')
 export class AppointmentsController {
 

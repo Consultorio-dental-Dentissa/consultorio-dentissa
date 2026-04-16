@@ -16,6 +16,7 @@ export class AppointmentsRepository {
                 durationMinutes: true,
                 status: true,
                 created_at: true,
+                notes: true,
                 service: {
                     select: {
                         name: true
@@ -60,6 +61,7 @@ export class AppointmentsRepository {
                 status: true,
                 durationMinutes: true,
                 created_at: true,
+                notes: true,
                 service: {
                     select: {
                         name: true

@@ -26,6 +26,7 @@ export class AppointmentsService {
                 durationMinutes: appointment.durationMinutes,
                 status: appointment.status,
                 created_at: appointment.created_at,
+                notes: appointment.notes,
                 patient: {
                     name: appointment.patient.user.name,
                     lastname: appointment.patient.user.lastname
@@ -77,6 +78,7 @@ export class AppointmentsService {
             time: appointment.time,
             durationMinutes: appointment.durationMinutes,
             status: appointment.status,
+            notes: appointment.notes,
             created_at: appointment.created_at,
             patient: {
                 name: appointment.patient.user.name,
