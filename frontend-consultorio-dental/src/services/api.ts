@@ -1,4 +1,4 @@
-import { ApiError } from "../types/api/responses/ApiError";
+import { ApiError } from "../types/api/responses/api-error";
 import axios from 'axios';
 
 const urlAPi = import.meta.env.VITE_API_URL

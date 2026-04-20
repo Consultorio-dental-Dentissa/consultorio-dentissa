@@ -1,10 +1,10 @@
-import type { RespuestaPaciente } from '../types/api/responses/RespuestaPaciente';
+import type { PatientResponse } from '../types/api/responses/patient.response';
 import { get } from './api'
 
-export async function requestObtenerPacientes(): Promise<RespuestaPaciente[]> {
-    return await get<RespuestaPaciente[]>('/patients');
+export async function requestObtenerPacientes(): Promise<PatientResponse[]> {
+    return await get<PatientResponse[]>('/patients');
 }
 
-export async function requestObtenerPaciente(id: number): Promise<RespuestaPaciente> {
-    return await get<RespuestaPaciente>(`/patients/${id}`);
+export async function requestObtenerPaciente(id: number): Promise<PatientResponse> {
+    return await get<PatientResponse>(`/patients/${id}`);
 }

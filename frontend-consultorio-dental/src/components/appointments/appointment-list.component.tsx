@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppointmentCard } from "./appointment-card.component";
 import { AppointmentInfoModal } from "./appointment-info-modal.component";
-import type { Appointment } from "@/types/models/Appointment"
+import type { Appointment } from "@/types/models/appointment"
 
 export interface AppoimentListProps {
     appointments: Appointment[]

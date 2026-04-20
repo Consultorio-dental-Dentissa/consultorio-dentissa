@@ -1,5 +1,5 @@
-import { StatusSpan } from "@/components/common/Span";
-import type { Appointment } from "@/types/models/Appointment"
+import { StatusSpan } from "@/components/common/span.component";
+import type { Appointment } from "@/types/models/appointment"
 
 export interface AppointmentCardProps {
     appointment: Appointment;

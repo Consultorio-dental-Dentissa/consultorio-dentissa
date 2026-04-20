@@ -1,8 +1,8 @@
-import { Modal } from "@/components/common/Modal"
+import { Modal } from "@/components/common/modal.component"
 import { Separator } from "@/components/ui/separator"
 
-import type { Appointment } from "@/types/models/Appointment";
-import { StatusSpan } from "@/components/common/Span";
+import type { Appointment } from "@/types/models/appointment";
+import { StatusSpan } from "@/components/common/span.component";
 
 interface AppointmentInfoModalProps {
     open: boolean;

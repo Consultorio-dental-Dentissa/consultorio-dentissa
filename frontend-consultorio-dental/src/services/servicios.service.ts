@@ -1,8 +1,8 @@
-import type { RespuestaServicio } from '../types/api/responses/RespuestaServicio';
-import type { CrearServicio } from '../types/api/request/CrearServicio';
+import type { ServiceResponse } from '../types/api/responses/service.response';
+import type { CreateServiceDto } from '../types/api/request/create-service.dto';
 import { get, patch, post } from './api';
 
-export async function requestObtenerServicios(): Promise<RespuestaServicio[]> {
+export async function requestObtenerServicios(): Promise<ServiceResponse[]> {
     return await get('/services');
 }
 
@@ -10,6 +10,6 @@ export async function requestCambiarEstadoServicio(id: number, estado: boolean):
     return await patch(`/services/status/${id}`, { "status": estado })
 }
 
-export async function requestCrearServicio(crearServicio: CrearServicio): Promise<RespuestaServicio> {
+export async function requestCrearServicio(crearServicio: CreateServiceDto): Promise<ServiceResponse> {
     return await post('/services', crearServicio);
 }

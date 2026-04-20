@@ -1,16 +1,16 @@
-import type { RespuestaLogin } from "../types/api/responses/RespuestaLogin";
-import type { RespuestaUsuario } from "../types/api/responses/RespuestaUsuario"
-import type { CrearUsuario } from "../types/api/request/CrearUsuario";
-import type { IniciarSesion } from "../types/api/request/IniciarSesion";
+import type { LoginResponse } from "../types/api/responses/login.response";
+import type { UserResponse } from "../types/api/responses/user.response"
+import type { CreateUserDto } from "../types/api/request/create-user.dto";
+import type { LoginDto } from "../types/api/request/login.dto";
 
 import { deleteR, post } from "./api"
 
-export async function requestLogin(credenciales : IniciarSesion): Promise<RespuestaLogin> {
-    return await post<RespuestaLogin>('/auth/login', credenciales);
+export async function requestLogin(credenciales : LoginDto): Promise<LoginResponse> {
+    return await post<LoginResponse>('/auth/login', credenciales);
 }
 
-export async function requestRegister(usuario: CrearUsuario) : Promise<RespuestaUsuario> {
-    return await post<RespuestaUsuario>('/auth/register', usuario);
+export async function requestRegister(usuario: CreateUserDto) : Promise<UserResponse> {
+    return await post<UserResponse>('/auth/register', usuario);
 }
 
 export async function requestLogout() {
