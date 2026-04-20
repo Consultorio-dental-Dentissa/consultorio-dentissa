@@ -3,9 +3,10 @@ import type { Appointment } from "@/types/models/Appointment"
 
 export interface AppointmentCardProps {
     appointment: Appointment;
+    onClick?: () => void;
 }
 
-export function AppointmentCard({ appointment }: AppointmentCardProps) {
+export function AppointmentCard({ appointment, onClick }: AppointmentCardProps) {
 
     const formatedDate = new Intl.DateTimeFormat('es-MX', {
         day: '2-digit',
@@ -15,7 +16,8 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
     return (
         <>
-            <div className="bg-white flex flec-col justify-between w-64 min-h-[250px] rounded-lg px-7 py-6 cursor-pointer shadow-[0_2px_20px_rgba(0,0,0,0.15)] flex-col transition transform duration-300 hover:scale-103 active:scale-97">
+            <div className="bg-white flex flec-col justify-between w-64 min-h-[250px] rounded-lg px-7 py-6 cursor-pointer shadow-[0_2px_20px_rgba(0,0,0,0.15)] flex-col transition transform duration-300 hover:scale-103 active:scale-97"
+            onClick={onClick}>
                 <div>
                     <StatusSpan status={appointment.status} />
                     <h2 className="mt-3 font-medium text-lg">

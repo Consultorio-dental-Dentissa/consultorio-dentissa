@@ -47,7 +47,7 @@ export default function Citas() {
 
                 <div className="flex flex-row gap-2">
                     <Button variant="outline">Filtros</Button>
-                    <Button variant="outline">Agendar cita</Button>
+                    <Button variant="outline" onClick={() => {}}>Agendar cita</Button>
                 </div>
             </div>
 
