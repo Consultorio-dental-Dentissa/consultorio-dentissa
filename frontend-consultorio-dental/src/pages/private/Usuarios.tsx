@@ -5,7 +5,7 @@ import TablaVacia from "../../components/common/TablaVacia";
 import { ToggleButton } from "../../components/common/ToggleButton";
 import toast from "react-hot-toast";
 import { type RespuestaUsuario } from "../../types/api/responses/RespuestaUsuario";
-import { ModalCrearUsuario } from "@/components/modals/ModalCrearUsuario";
+import { ModalCrearUsuario } from "@/components/users/ModalCrearUsuario";
 import { Button } from "@/components/ui/button"
 import type { CrearUsuario } from "@/types/api/request/CrearUsuario";
 import { PrimaryButton } from "@/components/common/Button";

@@ -1,5 +1,5 @@
 import { Modal } from '@/components/common/Modal'
-import { CrearServicioForm } from '@/components/formularios/CrearServicioForm'
+import { CrearServicioForm } from '@/components/services/CrearServicioForm'
 import type { CrearServicio } from '@/types/api/request/CrearServicio';
 
 interface ModalServicioProps {

@@ -1,6 +1,6 @@
 import { useAuth } from "../../context/AuthContextProvider";
 import { TituloPanel } from "@/components/common/TituloPanel";
-import { CardSection } from "@/components/modules/dashboard/card-section.component";
+import { CardSection } from "@/components/dashboard/card-section.component";
 
 export default function Dashboard() {
 

@@ -2,7 +2,7 @@ import { TituloPanel } from "@/components/common/TituloPanel"
 import { Button } from "@/components/ui/button"
 import { useCitas } from "@/hooks/useCitas";
 import { useEffect, useState } from "react"
-import { AppointmentList } from "@/components/modules/appointments/appointment-list.component";
+import { AppointmentList } from "@/components/appointments/appointment-list.component";
 import { AppointmentMap } from "@/types/mappers/AppoimentMap.mapper";
 
 import type { Appointment } from "@/types/models/Appointment";

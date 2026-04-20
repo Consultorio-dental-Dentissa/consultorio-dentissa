@@ -1,4 +1,4 @@
-import CrearUsuarioForm from '@/components/formularios/CrearUsuarioForm';
+import CrearUsuarioForm from '@/components/users/CrearUsuarioForm';
 import { Modal } from '@/components/common/Modal'
 import type { CrearUsuario } from '@/types/api/request/CrearUsuario';
 

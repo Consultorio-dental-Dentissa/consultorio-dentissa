@@ -3,7 +3,7 @@ import { TituloPanel } from "../../components/common/TituloPanel";
 import { useServicios } from "../../hooks/useServicios";
 import TablaVacia from "../../components/common/TablaVacia";
 import { ToggleButton } from "../../components/common/ToggleButton";
-import { ModalCrearServicio } from "@/components/modals/ModalCrearServicio";
+import { ModalCrearServicio } from "@/components/services/ModalCrearServicio";
 import { PrimaryButton } from "@/components/common/Button";
 import type { RespuestaServicio } from "../../types/api/responses/RespuestaServicio";
 import toast from "react-hot-toast";
