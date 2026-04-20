@@ -3,10 +3,10 @@ import type { User } from '@/types/models/user';
 
 
 interface AuthContextType {
-  usuario: User | null;
+  user: User | null;
   isAuthenticated: boolean;
-  iniciarSesion(usuario : User) : void,
-  cerrarSesion() : void,
+  saveUserData(usuario : User) : void,
+  logOut() : void,
   loading: boolean
 }
 

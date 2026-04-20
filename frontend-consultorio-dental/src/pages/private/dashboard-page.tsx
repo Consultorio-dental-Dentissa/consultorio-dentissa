@@ -4,13 +4,13 @@ import { CardSection } from "@/components/dashboard/card-section.component";
 
 export default function DashboardPage() {
 
-  const { usuario } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div>
 
       <PageTitle
-        titulo={`Bienvenid@, ${usuario && usuario.name}`}
+        titulo={`Bienvenid@, ${user && user.name}`}
         subtitulo="Aqui esta el resumen de tu consultorio dental"
       />
 

@@ -11,19 +11,19 @@ import type { LoginDto } from "@/types/api/request/login.dto";
 export default function LoginPage() {
     const navigate = useNavigate();
     const { login } = useLogin();
-    const { iniciarSesion } = useAuth();
+    const { saveUserData } = useAuth();
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginDto>()
     
 
-    const manejarSubmit = async (credenciales: LoginDto) => {
+    const handleFormSubmit = async (credentials: LoginDto) => {
         
         try {
 
-            const respuesta = await login(credenciales);
+            const response = await login(credentials);
 
-            if (respuesta.logged) {
-                await iniciarSesion(respuesta.user);
+            if (response.logged) {
+                await saveUserData(response.user);
                 navigate('/dashboard');
             }
 
@@ -40,7 +40,7 @@ export default function LoginPage() {
                     <p>Inicia sesión para acceder a tu cuenta</p>
                 </div>
 
-                <form onSubmit={handleSubmit(manejarSubmit)} className="auth-form">
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="auth-form">
                     
                     <FieldGroup>
 

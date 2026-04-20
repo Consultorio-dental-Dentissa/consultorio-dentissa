@@ -1,10 +1,10 @@
 
-type TituloPanelProps = {
+type PageTitleProps = {
     titulo: string;
     subtitulo: string;
 }
 
-export function PageTitle ({titulo, subtitulo} : TituloPanelProps) {
+export function PageTitle ({titulo, subtitulo} : PageTitleProps) {
 
     return (
         <div>

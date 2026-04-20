@@ -13,12 +13,12 @@ export function useRegister() {
         setError(null);
     }
 
-    async function register(usuario : CreateUserDto) {
+    async function register(user : CreateUserDto) {
         
         setError(null);
         setLoading(true);
 
-        return await requestRegister(usuario)
+        return await requestRegister(user)
             .catch((error: ApiError) => {setError(error.message); throw error.message;})
             .finally(() => setLoading(false));
     }

@@ -12,46 +12,44 @@ import { PrimaryButton } from "@/components/common/button.component";
 
 export default function UsersPage() {
 
-    const [usuarios, setUsuarios] = useState<UserResponse[]>([])
-    const [modalAbierto, setModalAbierto] = useState(false);
+    const [users, setUsers] = useState<UserResponse[]>([])
+    const [openModal, setOpenModal] = useState(false);
 
-    const { obtenerUsuarios, cambiarEstadoUsuario, registrarUsuario, loadingTable } = useUsers();
+    const { getUsers, updateUserStatus, registerUser, loadingTable } = useUsers();
 
     useEffect(() => {
 
-        async function cargarUsuarios() {
+        async function fetchUsers() {
             try {
-                const usuarios = await obtenerUsuarios();
-                setUsuarios(usuarios);
+                const users = await getUsers();
+                setUsers(users);
             } catch (error) {
                 toast.error((error as string))
             }
         }
 
-        cargarUsuarios();
+        fetchUsers();
     }, []);
 
 
-    const manejarUsuarioCreado = async (usuario: CreateUserDto) => {
+    const handleNewUser = async (user: CreateUserDto) => {
         try {
-            const nuevoUsuario = await registrarUsuario(usuario);
-            setUsuarios(prev => [...prev, nuevoUsuario]);
-            setModalAbierto(false);
+            const newUser = await registerUser(user);
+            setUsers(prev => [...prev, newUser]);
+            setOpenModal(false);
             toast.success('Se ha creado un nuevo usuario');
 
         } catch (error) {
             toast.error((error as string));
         }
-
-
     }
 
-    const manejarCambioDeEstado = async (id: number, nuevoEstado: boolean) => {
+    const handleUpdatedUserStatus = async (id: number, newStatus: boolean) => {
 
         try {
-            await cambiarEstadoUsuario(id, nuevoEstado);
-            setUsuarios(prev => {
-                return prev.map(u => u.id === id ? { ...u, status: nuevoEstado } : u)
+            await updateUserStatus(id, newStatus);
+            setUsers(prev => {
+                return prev.map(u => u.id === id ? { ...u, status: newStatus } : u)
             });
 
             toast.success('El estado se actualizó correctamente');
@@ -71,7 +69,7 @@ export default function UsersPage() {
 
                 <PrimaryButton
                     message="Registrar nuevo usuario"
-                    onClick={() => { setModalAbierto(true) }}
+                    onClick={() => { setOpenModal(true) }}
                 />
             </div>
 
@@ -96,14 +94,14 @@ export default function UsersPage() {
                                 submensaje="Buscando usuarios"
                                 colSpan={7}
                             />
-                        ) : usuarios.length === 0 ? (
+                        ) : users.length === 0 ? (
                             <EmptyTable
                                 mensaje="No se encontraron usuarios"
                                 submensaje="Intenta agregar un nuevo usuario"
                                 colSpan={7}
                             />
                         ) : (
-                            usuarios.map((usuario) => (
+                            users.map((usuario) => (
                                 <tr key={usuario.id}>
                                     <td style={{ fontWeight: '600' }}>{usuario.name}</td>
                                     <td style={{ fontWeight: '500' }}>{usuario.lastname}</td>
@@ -112,8 +110,8 @@ export default function UsersPage() {
 
                                     <td>
                                         <ToggleButton
-                                            estado={usuario.status}
-                                            onChange={(nuevoEstado) => manejarCambioDeEstado(usuario.id, nuevoEstado)}
+                                            status={usuario.status}
+                                            onChange={(nuevoEstado) => handleUpdatedUserStatus(usuario.id, nuevoEstado)}
                                         />
                                     </td>
 
@@ -133,9 +131,9 @@ export default function UsersPage() {
             </table>
 
             <CreateUserModal
-                open={modalAbierto}
-                onClose={() => setModalAbierto(false)}
-                onSubmit={manejarUsuarioCreado}
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                onSubmit={handleNewUser}
             />
 
         </div>

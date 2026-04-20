@@ -7,23 +7,23 @@ import '../styles/theme.private.css';
 
 export default function PrivateLayout() {
 
-    const { isAuthenticated, usuario, cerrarSesion } = useAuth();
+    const { isAuthenticated, user, logOut } = useAuth();
     const navigate = useNavigate();
 
-    if (!isAuthenticated || !usuario) {
+    if (!isAuthenticated || !user) {
         navigate('/login');
         return;
     }
 
-    const manejarCerrarSesion = () => {
-        cerrarSesion();
+    const handleLogout = () => {
+        logOut();
         navigate('/login');
     }
 
-    const username = `${usuario?.name} ${usuario?.lastname}`;
-    const rol = usuario?.rol;
+    const username = `${user?.name} ${user?.lastname}`;
+    const rol = user?.rol;
 
-    console.log("usuario: ", usuario);
+    console.log("user: ", user);
 
     console.log("username: ", username);
     console.log(rol);
@@ -34,7 +34,7 @@ export default function PrivateLayout() {
             <SidebarProvider>
 
                 <SidebarApp
-                    logout={manejarCerrarSesion}
+                    logout={handleLogout}
                 />
 
                 <main className="flex-1 min-w-0 px-3">

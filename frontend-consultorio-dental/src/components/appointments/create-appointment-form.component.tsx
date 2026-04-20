@@ -9,23 +9,23 @@ import type { CreateAppointmentDto } from '../../types/api/request/create-appoin
 import type { AppointmentResponse } from '../../types/api/responses/appointment.response'
 
 interface FormData {
-    fecha: string
-    hora: string
-    notaPrevia: string
-    servicio: string
-    paciente: string
+    date: string
+    time: string
+    notes: string
+    service: string
+    patient: string
 }
 
 const initialState: FormData = {
-    fecha: '',
-    hora: '',
-    notaPrevia: '',
-    servicio: '',
-    paciente: '',
+    date: '',
+    time: '',
+    notes: '',
+    service: '',
+    patient: '',
 }
 
 interface CreateAppointmentFormProps {
-    onSubmit: (nuevaCita: AppointmentResponse) => void
+    onSubmit: (newAppointment: AppointmentResponse) => void
     onCancel?: () => void
 }
 
@@ -33,36 +33,36 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
 
     const [form, setForm] = useState<FormData>(initialState);
 
-    const [servicios, setServicios] = useState<ServiceResponse[]>([]);
-    const [pacientes, setPacientes] = useState<PatientResponse[]>([]);
+    const [services, setServices] = useState<ServiceResponse[]>([]);
+    const [patients, setPatients] = useState<PatientResponse[]>([]);
 
-    const { crearCita, cargando, error } = useAppointments();
-    const { obtenerServicios } = useServices();
-    const { obtenerPacientes } = usePatients();
+    const { createAppointment, loading, error } = useAppointments();
+    const { getServices } = useServices();
+    const { getPatients } = usePatients();
 
-    const hoy = new Date();
-    const fechaLocal = new Date(
-        hoy.getFullYear(),
-        hoy.getMonth(),
-        hoy.getDate()
+    const today = new Date();
+    const localDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
     ).toISOString().split('T')[0];
 
     useEffect(() => {
 
-        async function cargarDatos() {
+        async function fetchData() {
 
             try {
-                const respuestaServicios = await obtenerServicios();
-                const respuestaPacientes = await obtenerPacientes();
+                const services = await getServices();
+                const patients = await getPatients();
 
-                setServicios(respuestaServicios);
-                setPacientes(respuestaPacientes);
+                setServices(services);
+                setPatients(patients);
             } catch(error) {
                 toast.error((error as string))
             }
         }
 
-        cargarDatos();
+        fetchData();
 
     }, []);
 
@@ -74,26 +74,26 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        Object.values(form).some(campo => !campo) && toast.error('Debes llenar todos los campos');
+        Object.values(form).some(field => !field) && toast.error('Debes llenar todos los campos');
         console.log(form);
 
-        if (form.fecha < fechaLocal) {
+        if (form.date < localDate) {
             toast.error('No puedes seleccionar una fecha pasada');
             return;
         }
 
-        const registrarCita: CreateAppointmentDto = {
-            date: form.fecha,
-            time: form.hora,
-            notes: form.notaPrevia,
-            patient_id: Number(form.paciente),
-            service_id: Number(form.servicio)
+        const appointment: CreateAppointmentDto = {
+            date: form.date,
+            time: form.time,
+            notes: form.notes,
+            patient_id: Number(form.patient),
+            service_id: Number(form.service)
         }
 
         try {
-            const cita = await crearCita(registrarCita);
+            const newAppointment = await createAppointment(appointment);
             toast.success('La cita se ha agendado exitosamente');
-            onSubmit(cita);
+            onSubmit(newAppointment);
         } catch (error) {
             toast.error((error as string));
         }
@@ -118,19 +118,19 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
 
                         <div className="field">
                             <label>Fecha de la cita</label>
-                            <input name="fecha" type='date' value={form.fecha} onChange={handleChange} placeholder="Seleccione la fecha en la que quiera realizar su cita" />
+                            <input name="fecha" type='date' value={form.date} onChange={handleChange} placeholder="Seleccione la fecha en la que quiera realizar su cita" />
                         </div>
 
                         <div className="field">
                             <label>Hora</label>
-                            <input name="hora" type='time' value={form.hora} onChange={handleChange} placeholder="Seleccione la hora" />
+                            <input name="hora" type='time' value={form.time} onChange={handleChange} placeholder="Seleccione la hora" />
                         </div>
 
                         <div className="field">
                             <label>Servicio</label>
-                            <select name="servicio" id="servicio" value={form.servicio} onChange={handleChange}>
+                            <select name="servicio" id="servicio" value={form.service} onChange={handleChange}>
                                 {
-                                    servicios.map((servicio) => {
+                                    services.map((servicio) => {
 
                                         return (
                                             <option value={servicio.id}>
@@ -146,7 +146,7 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
                             <label>Paciente</label>
                             <select name="paciente" id="paciente" onChange={handleChange}>
                                 {
-                                    pacientes.map((paciente) => {
+                                    patients.map((paciente) => {
                                         return (
                                             <option value={paciente.id}>{paciente.user.name} {paciente.user.lastname} | {paciente.user.email}</option>
                                         )
@@ -162,7 +162,7 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
 
                         <div className="field">
                             <label>Descripción</label>
-                            <textarea name="notaPrevia" value={form.notaPrevia} onChange={handleChange} id="notaPrevia" placeholder='Porfavor escriba porque quiere realizar su cita'>
+                            <textarea name="notaPrevia" value={form.notes} onChange={handleChange} id="notaPrevia" placeholder='Porfavor escriba porque quiere realizar su cita'>
                             </textarea>
                         </div>
                     </div>
@@ -171,7 +171,7 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
 
                 <div className="form-footer">
                     <button className="btn-cancel" type="button" onClick={onCancel}>Cancelar</button>
-                    <button className="btn-registrar" type="submit" disabled={cargando}>Agendar cita</button>
+                    <button className="btn-registrar" type="submit" disabled={loading}>Agendar cita</button>
                 </div>
 
             </form>

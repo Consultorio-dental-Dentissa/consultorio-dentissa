@@ -10,7 +10,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
 
-    const [usuario, setUsuario] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -19,15 +19,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     useEffect(() => {
 
         try {
-            const usuario = JSON.parse(localStorage.getItem('usuario') ?? 'null');
+            const user = JSON.parse(localStorage.getItem('user') ?? 'null');
 
-            if (!usuario) {
-                setUsuario(null);
+            if (!user) {
+                setUser(null);
                 setIsAuthenticated(false);
                 return;
             }
 
-            setUsuario(usuario);
+            setUser(user);
             setIsAuthenticated(true);
 
         } finally {
@@ -38,30 +38,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, []);
 
 
-    const iniciarSesion = (usuario: User) => {
+    const saveUserData = (user: User) => {
 
         // Autenticamos al usuario y guardamos sus datos
         setIsAuthenticated(true);
-        setUsuario(usuario);
+        setUser(user);
 
         // Guardamos lo datos en el localStorage
-        localStorage.setItem('usuario', JSON.stringify(usuario));
+        localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('isAuthenticated', 'true');
     };
 
 
-    const cerrarSesion = async () => {
-        setUsuario(null);
+    const logOut = async () => {
+        setUser(null);
         setIsAuthenticated(false);
 
-        localStorage.removeItem('usuario');
+        localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
 
         await logout();
     };
 
     return (
-        <AuthContext.Provider value={{ usuario, isAuthenticated, iniciarSesion, cerrarSesion, loading }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, saveUserData, logOut, loading }}>
             {children}
         </AuthContext.Provider>
     );

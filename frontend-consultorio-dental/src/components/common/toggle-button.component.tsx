@@ -1,16 +1,16 @@
 interface ToggleButtonProps {
-    estado: boolean
+    status: boolean
     onChange: (nuevoEstado: boolean) => void
 }
 
 
-export function ToggleButton({ estado, onChange }: ToggleButtonProps) {
+export function ToggleButton({ status, onChange }: ToggleButtonProps) {
 
     return (
         <label className="toggle">
             <input
                 type="checkbox"
-                checked= { estado }
+                checked= { status }
                 onChange={(e) => onChange(e.target.checked)}
             />
             <span className="toggle-slider" />

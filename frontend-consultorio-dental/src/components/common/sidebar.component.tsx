@@ -11,7 +11,7 @@ import { BiSolidOffer } from "react-icons/bi"
 import { FaQuestion } from "react-icons/fa"
 import { FaTooth } from "react-icons/fa";
 
-const negocioItems = [
+const businessItems = [
     { href: '/dashboard', label: 'Resumen', icon: MdDashboard },
     { href: '/usuarios', label: 'Usuarios', icon: MdPeople },
     { href: '/pacientes', label: 'Pacientes', icon: FaUserMd },
@@ -20,7 +20,7 @@ const negocioItems = [
     { href: '/servicios', label: 'Servicios', icon: MdMedicalServices },
 ]
 
-const publicidadItems = [
+const publicityItems = [
     { href: '/preguntas', label: 'Preguntas frecuentes', icon: FaQuestion },
     { href: '/ofertas', label: 'Ofertas', icon: BiSolidOffer },
     { href: '/notificaciones', label: 'Notificaciones', icon: IoNotifications },
@@ -45,7 +45,7 @@ export function SidebarApp({ logout }: SidebarAppProps) {
                     <SidebarGroupLabel className="mt-5 text-white">Manejo de negocio</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {negocioItems.map((item) => (
+                            {businessItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton asChild className="py-5 hover:text-rose-500 active:text-rose-600 font-medium">
                                         <a href={item.href} className="flex items-center gap-3">
@@ -61,7 +61,7 @@ export function SidebarApp({ logout }: SidebarAppProps) {
                     <SidebarGroupLabel className="mt-5 text-white">Publicidad</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {publicidadItems.map((item) => (
+                            {publicityItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton asChild className="py-5 hover:text-rose-500 font-medium active:text-rose-600">
                                         <a href={item.href} className="flex items-center gap-3">

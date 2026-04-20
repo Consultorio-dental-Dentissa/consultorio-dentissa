@@ -1,8 +1,7 @@
-// Servicios.tsx
 import { Link } from "react-router-dom";
 
 export default function PublicServicesPage() {
-    const servicios = [
+    const services = [
         {
             id: 1,
             icon: "🫀",
@@ -103,7 +102,7 @@ export default function PublicServicesPage() {
             <section className="servicios-lista-section">
                 <h2>Servicios disponibles</h2>
                 <div className="servicios-grid">
-                    {servicios.map(servicio => (
+                    {services.map(servicio => (
                         <div key={servicio.id} className="servicio-card">
                             <div className="servicio-icon">{servicio.icon}</div>
                             <h3>{servicio.titulo}</h3>

@@ -31,19 +31,19 @@ export default function CreateUserForm({ onSubmit, onCancel }: CreateUserFormPro
 
     const { register, handleSubmit, control, watch, formState: { errors, isSubmitting } } = useForm<CreateUserDto>()
 
-    const rolActual = watch('rol');
-    const esPaciente = rolActual === Rol.PACIENTE;
+    const actualRol = watch('rol');
+    const isPatient = actualRol === Rol.PACIENTE;
 
-    const manejarSubmit = (data: CreateUserDto) => {
-        if (!esPaciente) {
+    const handleSubmitForm = (data: CreateUserDto) => {
+        if (!isPatient) {
             delete data.patient;
         }
-        console.log("Datos a ennviar: ", data);
+        console.log("Datos a enviar: ", data);
         onSubmit(data);
     }
 
     return (
-        <form className="flex flex-col gap-7" onSubmit={handleSubmit(manejarSubmit)}>
+        <form className="flex flex-col gap-7" onSubmit={handleSubmit(handleSubmitForm)}>
             <FieldGroup className="flex-row">
 
                 <InputForm
@@ -119,7 +119,7 @@ export default function CreateUserForm({ onSubmit, onCancel }: CreateUserFormPro
 
             <hr />
 
-            {esPaciente && (
+            {isPatient && (
                 <>
                     <FieldGroup className="flex-row">
                         <InputForm

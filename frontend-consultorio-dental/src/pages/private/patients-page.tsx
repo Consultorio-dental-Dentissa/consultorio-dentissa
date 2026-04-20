@@ -7,18 +7,18 @@ import { useNavigate } from "react-router-dom";
 
 export default function PatientsPage() {
 
-    const [pacientes, setPacientes] = useState<PatientResponse[]>([])
-    const { obtenerPacientes, loading } = usePatients();
+    const [patients, setPatients] = useState<PatientResponse[]>([])
+    const { getPatients, loading } = usePatients();
     const navigate = useNavigate();
 
     useEffect(() => {
 
-        async function cargarPacientes() {
-            const pacientes = await obtenerPacientes();
-            pacientes && setPacientes(pacientes);
+        async function fetchPatients() {
+            const patients = await getPatients();
+            patients && setPatients(patients);
         }
 
-        cargarPacientes();
+        fetchPatients();
 
     }, []);
 
@@ -52,13 +52,13 @@ export default function PatientsPage() {
                                 submensaje="Estamos buscando los pacientes"
                                 colSpan={8}
                             />
-                        ) : pacientes.length === 0 ? (
+                        ) : patients.length === 0 ? (
                             <EmptyTable mensaje="No hay pacientes"
                                 submensaje="No se han encontrado pacientes"
                                 colSpan={8}
                             />
                         ) :
-                            pacientes.map((paciente) => {
+                            patients.map((paciente) => {
 
                                 const birthDate = new Date(paciente.birth_date);
 

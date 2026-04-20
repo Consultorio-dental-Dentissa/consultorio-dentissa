@@ -5,37 +5,38 @@ import EmptyTable from "../../components/common/empty-table.component";
 import { ToggleButton } from "../../components/common/toggle-button.component";
 import { CreateServiceModal } from "@/components/services/create-service-modal.component";
 import { PrimaryButton } from "@/components/common/button.component";
-import type { ServiceResponse } from "../../types/api/responses/service.response";
 import toast from "react-hot-toast";
+
 import type { CreateServiceDto } from "@/types/api/request/create-service.dto";
+import type { ServiceResponse } from "../../types/api/responses/service.response";
 
 export default function ServicesPage() {
 
-    const [servicios, setServicios] = useState<ServiceResponse[]>([]);
-    const [modalAbierto, setModalAbierto] = useState<boolean>(false);
-    const { obtenerServicios, crearServicio, cambiarEstadoServicio, loadingTable } = useServices();
+    const [services, setServices] = useState<ServiceResponse[]>([]);
+    const [openModal, setOpenModal] = useState<boolean>(false);
+    const { getServices, createService, updateServiceStatus, loadingTable } = useServices();
 
     useEffect(() => {
 
-        async function cargarServicios() {
+        async function fetchServices() {
 
             try {
-                const servicios = await obtenerServicios();
-                setServicios(servicios);
+                const services = await getServices();
+                setServices(services);
             } catch (error) {
                 toast.error((error as string));
             }
         }
 
-        cargarServicios();
+        fetchServices();
     }, []);
 
-    const cambiarEstadoDelServicio = async (id: number, nuevoEstado: boolean) => {
+    const handleUpdateServiceStatus = async (id: number, newStatus: boolean) => {
 
         try {
-            const respuesta = await cambiarEstadoServicio(id, nuevoEstado);
-            console.log(respuesta);
-            setServicios(prev => prev.map((servicio) => servicio.id === id ? { ...servicio, status: nuevoEstado } : servicio))
+            const response = await updateServiceStatus(id, newStatus);
+            console.log(response);
+            setServices(prev => prev.map((service) => service.id === id ? { ...service, status: newStatus } : service))
             toast.success('Se ha cambiado el estado del servicio');
 
         } catch (error) {
@@ -43,12 +44,12 @@ export default function ServicesPage() {
         }
     }
 
-    const manejarNuevoServicio = async (nuevoServicio: CreateServiceDto): Promise<void> => {
+    const handleNewService = async (newService: CreateServiceDto): Promise<void> => {
 
         try {
-            const servicio = await crearServicio(nuevoServicio);
-            setServicios(prev => [...prev, servicio]);
-            setModalAbierto(false);
+            const service = await createService(newService);
+            setServices(prev => [...prev, service]);
+            setOpenModal(false);
             toast.success('Se ha registrado un nuevo servicio exitosamente');
 
         } catch (error) {
@@ -56,10 +57,10 @@ export default function ServicesPage() {
         }
     }
 
-    function minutosAHoras(minutos: number): string {
-        const horas = Math.floor(minutos / 60)
-        const mins = minutos % 60
-        return `${horas}h ${mins}m`
+    function totalMinutesToHours(minutes: number): string {
+        const hours = Math.floor(minutes / 60)
+        const mins = minutes % 60
+        return `${hours}h ${mins}m`
     }
 
     return (
@@ -72,7 +73,7 @@ export default function ServicesPage() {
 
                 <PrimaryButton
                     message="Registrar nuevo servicio"
-                    onClick={() => { setModalAbierto(true) }}
+                    onClick={() => { setOpenModal(true) }}
                 />
             </div>
 
@@ -94,23 +95,23 @@ export default function ServicesPage() {
                                 mensaje="Buscando servicios..."
                                 submensaje="Estamos buscando los servicios"
                             />
-                        ) : servicios.length === 0 ? (
+                        ) : services.length === 0 ? (
                             <EmptyTable
                                 mensaje="No hay servicios"
                                 submensaje="No se han encontrado servicios. Por favor, agrega uno nuevo"
                             />
                         ) : (
-                            servicios.map((servicio) => {
+                            services.map((servicio) => {
                                 return (
                                     <tr key={servicio.id}>
                                         <td>{servicio.name}</td>
                                         <td>${parseFloat(servicio.price).toFixed(2)}</td>
-                                        <td>{minutosAHoras(servicio.durationMinutes)}</td>
+                                        <td>{totalMinutesToHours(servicio.durationMinutes)}</td>
                                         <td>{servicio.description}</td>
                                         <td>
                                             <ToggleButton
-                                                estado={servicio.status}
-                                                onChange={(nuevoEstado) => cambiarEstadoDelServicio(servicio.id, nuevoEstado)}
+                                                status={servicio.status}
+                                                onChange={(nuevoEstado) => handleUpdateServiceStatus(servicio.id, nuevoEstado)}
                                             />
                                         </td>
                                     </tr>
@@ -124,9 +125,9 @@ export default function ServicesPage() {
 
             {
                 <CreateServiceModal
-                    open={modalAbierto}
-                    onClose={() => setModalAbierto(false)}
-                    onSubmit={manejarNuevoServicio}
+                    open={openModal}
+                    onClose={() => setOpenModal(false)}
+                    onSubmit={handleNewService}
                 />
             }
         </div>

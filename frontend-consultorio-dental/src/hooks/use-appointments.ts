@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { requestCrearCita, requestObtenerCitas } from "../services/citas.service"
+import { requestCreateAppointment, requestGetAppointments } from "../services/appointments.service"
 import type { ApiError } from "../types/api/responses/api-error";
 import type { AppointmentResponse } from "../types/api/responses/appointment.response";
 import type { CreateAppointmentDto } from "../types/api/request/create-appointment.dto";
@@ -7,26 +7,26 @@ import type { CreateAppointmentDto } from "../types/api/request/create-appointme
 export function useAppointments() {
 
         const [error, setError] = useState<string | null>(null);
-        const [cargando, setCargando] = useState<boolean>(false);
+        const [loading, setLoading] = useState<boolean>(false);
 
-        async function obtenerCitas(): Promise<AppointmentResponse[]> {
-
-                setError(null);
-                setCargando(true);
-                return await requestObtenerCitas()
-                        .catch((error: ApiError) => { setError(error.message); throw error.message; })
-                        .finally(() => setCargando(false));
-        }
-
-        async function crearCita(nuevaCita: CreateAppointmentDto): Promise<AppointmentResponse> {
+        async function getAppointments(): Promise<AppointmentResponse[]> {
 
                 setError(null);
-                setCargando(true);
-
-                return await requestCrearCita(nuevaCita)
+                setLoading(true);
+                return await requestGetAppointments()
                         .catch((error: ApiError) => { setError(error.message); throw error.message; })
-                        .finally(() => setCargando(false));
+                        .finally(() => setLoading(false));
         }
 
-        return { obtenerCitas, crearCita, cargando, error }
+        async function createAppointment(newAppointment: CreateAppointmentDto): Promise<AppointmentResponse> {
+
+                setError(null);
+                setLoading(true);
+
+                return await requestCreateAppointment(newAppointment)
+                        .catch((error: ApiError) => { setError(error.message); throw error.message; })
+                        .finally(() => setLoading(false));
+        }
+
+        return { getAppointments, createAppointment, loading, error }
 }

@@ -10,50 +10,50 @@ interface CreateServiceFormProps {
     onCancel: () => void
 }
 
-interface CrearServicioFormData {
-    nombre: string;
-    precio: number;
-    duracion_horas: number;
-    duracion_minutos: number;
-    descripcion: string;
+interface CreateServiceFormData {
+    name: string;
+    price: number;
+    duration_hours: number;
+    duration_minutes: number;
+    description: string;
 }
 
 export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps) {
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CrearServicioFormData>()
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CreateServiceFormData>()
 
-    const manejarSubmit = async (data: CrearServicioFormData) => {
+    const handleFormSubmit = async (data: CreateServiceFormData) => {
         
-        const duracionTotal = (data.duracion_horas * 60) + data.duracion_minutos;
+        const totalDuration = (data.duration_hours * 60) + data.duration_minutes;
 
-        if (duracionTotal > 120) {
+        if (totalDuration > 120) {
             toast.error('La duración total debe ser maximo de 2 horas');
             return;
         }
 
-        const nuevoServicio: CreateServiceDto = {
-            name: data.nombre,
-            price: data.precio,
-            durationMinutes: duracionTotal,
-            description: data.descripcion
+        const newService: CreateServiceDto = {
+            name: data.name,
+            price: data.price,
+            durationMinutes: totalDuration,
+            description: data.description
         }
 
-        await onSubmit(nuevoServicio);
+        await onSubmit(newService);
     }
 
     return (
-        <form onSubmit={handleSubmit(manejarSubmit)} className='flex flex-col gap-7'>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className='flex flex-col gap-7'>
 
             <FieldGroup className='flex-row'>
 
                 <InputForm
                     label="Nombre"
                     placeholder="Ingresa tu nombre"
-                    registration={register('nombre', {
+                    registration={register('name', {
                         required: 'El nombre es obligatorio',
                     })
                     }
-                    error={errors.nombre?.message}
+                    error={errors.name?.message}
                 />
 
                 <InputForm
@@ -61,13 +61,13 @@ export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps
                     type='number'
                     step='0.01'
                     placeholder="0.00"
-                    registration={register('precio', {
+                    registration={register('price', {
                         required: 'El precio es obligatorio',
                         min: { value: 0, message: 'El precio debe ser mayor a cero' },
                         valueAsNumber: true,
                     })
                     }
-                    error={errors.precio?.message}
+                    error={errors.price?.message}
                 />
 
             </FieldGroup>
@@ -76,26 +76,26 @@ export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps
                 <InputForm
                     label="Duracion en horas"
                     placeholder="El servicio debe durar un maximo de 2 horas"
-                    registration={register('duracion_horas', {
+                    registration={register('duration_hours', {
                             required: 'La duracion en horas es obligatoria (ingresa cero en caso de no querer disponer de mas de 1 hora de duración)',
                             min: { value: 0, message: 'Las horas no deben ser menos de cero' },
                             max: { value: 2, message: 'ELas horas no pueden ser mas de 2' },
                             valueAsNumber: true,
                         })
                     }
-                    error={errors.duracion_horas?.message}
+                    error={errors.duration_hours?.message}
                 />
 
                 <InputForm
                     label="Duración en minutos"
                     placeholder="Debe durar un minimo de 30 minutos"
-                    registration={register('duracion_minutos', {
+                    registration={register('duration_minutes', {
                             required: 'La duracion en minutos es obligatoria (ingresa cero en caso de no querer ingresar minutos fijos)',
                             min: { value: 0, message: 'Los minutos no deben ser menos de cero' },
                             valueAsNumber: true,
                         })
                     }
-                    error={errors.duracion_minutos?.message}
+                    error={errors.duration_minutes?.message}
                 />
 
             </FieldGroup>
@@ -105,12 +105,12 @@ export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps
                 <InputForm
                     label="Descripción"
                     placeholder="Ingresa una descripción del servicio"
-                    registration={register('descripcion', {
+                    registration={register('description', {
                             required: 'La descripción es obligatoria',
                             maxLength: {value: 255, message: 'La descripción debe contener maximo 500 caracteres'}
                         })
                     }
-                    error={errors.descripcion?.message}
+                    error={errors.description?.message}
                 />
 
             </FieldGroup>

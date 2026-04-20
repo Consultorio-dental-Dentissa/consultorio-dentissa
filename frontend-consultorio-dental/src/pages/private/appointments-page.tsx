@@ -10,18 +10,18 @@ import type { Appointment } from "@/types/models/appointment";
 export default function AppointmentsPage() {
 
     const [appointments, setAppointments] = useState<Appointment[]>([]);
-    const { obtenerCitas } = useAppointments();
+    const { getAppointments } = useAppointments();
 
     useEffect(() => {
 
-        async function cargarCitas() {
+        async function fetchAppointments() {
 
-            const appointments = await obtenerCitas();
+            const appointments = await getAppointments();
             const appointmentsMap = appointments.map(appointment => AppointmentMap(appointment));
             setAppointments(appointmentsMap);
         }
 
-        cargarCitas();
+        fetchAppointments();
     }, []);
 
     return (

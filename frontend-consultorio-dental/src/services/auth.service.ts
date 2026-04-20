@@ -5,12 +5,12 @@ import type { LoginDto } from "../types/api/request/login.dto";
 
 import { deleteR, post } from "./api"
 
-export async function requestLogin(credenciales : LoginDto): Promise<LoginResponse> {
-    return await post<LoginResponse>('/auth/login', credenciales);
+export async function requestLogin(credentials : LoginDto): Promise<LoginResponse> {
+    return await post<LoginResponse>('/auth/login', credentials);
 }
 
-export async function requestRegister(usuario: CreateUserDto) : Promise<UserResponse> {
-    return await post<UserResponse>('/auth/register', usuario);
+export async function requestRegister(user: CreateUserDto) : Promise<UserResponse> {
+    return await post<UserResponse>('/auth/register', user);
 }
 
 export async function requestLogout() {

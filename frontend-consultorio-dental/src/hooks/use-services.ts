@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { requestObtenerServicios, requestCambiarEstadoServicio, requestCrearServicio } from "../services/servicios.service";
+import { requestGetServices, requestUpdateServiceStatus, requestCreateService } from "../services/services.service";
 
 import type { ServiceResponse } from "../types/api/responses/service.response";
 import type { ApiError } from "../types/api/responses/api-error";
@@ -12,33 +12,33 @@ export function useServices() {
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function crearServicio(crearServicio: CreateServiceDto): Promise<ServiceResponse> {
+    async function createService(createService: CreateServiceDto): Promise<ServiceResponse> {
         
         setError(null);
         setLoading(true);
 
-        return await requestCrearServicio(crearServicio)
+        return await requestCreateService(createService)
             .catch((error: ApiError) => {setError(error.message); console.log(error); throw error.message;})
             .finally(() => setLoading(false));
     }
 
-    async function obtenerServicios(): Promise<ServiceResponse[]> {
+    async function getServices(): Promise<ServiceResponse[]> {
 
         setError(null);
         setLoadingTable(true);
 
-        return await requestObtenerServicios()
+        return await requestGetServices()
             .catch((error: ApiError) => {setError(error.message); throw error.message})
             .finally(() => setLoadingTable(false));
     }
 
-    async function cambiarEstadoServicio(id: number, status: boolean): Promise<boolean> {
+    async function updateServiceStatus(id: number, status: boolean): Promise<boolean> {
         
         setError(null);
 
-        return await requestCambiarEstadoServicio(id, status)
+        return await requestUpdateServiceStatus(id, status)
             .catch((error: ApiError) => {setError(error.message); throw error.message})
     }
 
-    return { obtenerServicios, cambiarEstadoServicio, crearServicio, loading, loadingTable, error }
+    return { getServices, updateServiceStatus, createService, loading, loadingTable, error }
 }

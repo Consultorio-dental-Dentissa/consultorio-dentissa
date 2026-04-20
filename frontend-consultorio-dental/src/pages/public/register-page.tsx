@@ -13,10 +13,10 @@ export default function RegisterPage() {
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CreateUserDto>()
 
-    const manejarSubmit = async (usuario: CreateUserDto) => {
+    const handleFormSubmit = async (user: CreateUserDto) => {
 
         try {
-            await registerHook.register(usuario);
+            await registerHook.register(user);
             toast.success('Te has registrado exitosamente');
 
             setTimeout(() => {
@@ -37,7 +37,7 @@ export default function RegisterPage() {
                     <p>Completa tus datos para registrarte</p>
                 </div>
 
-                <form onSubmit={handleSubmit(manejarSubmit)} className="auth-form">
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="auth-form">
 
                     <FieldGroup className="flex-row">
 

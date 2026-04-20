@@ -31,20 +31,20 @@ const IconClinico = () => (
 export default function PatientProfilePage() {
 
     const { id } = useParams()
-    const idPaciente = Number(id)
+    const idPatient = Number(id)
     const navigate = useNavigate()
-    const { obtenerPaciente } = usePatients()
-    const [paciente, setPaciente] = useState<PatientResponse | null>(null);
+    const { getPatient } = usePatients()
+    const [patient, setPatient] = useState<PatientResponse | null>(null);
 
     useEffect(() => {
-        async function cargarDatosDelPaciente() {
-            const data = await obtenerPaciente(idPaciente)
-            setPaciente(data)
+        async function fetchPatientData() {
+            const data = await getPatient(idPatient)
+            setPatient(data)
         }
-        cargarDatosDelPaciente()
+        fetchPatientData()
     }, [])
 
-    if (!paciente) return <div className="perfil-loading">Cargando paciente...</div>
+    if (!patient) return <div className="perfil-loading">Cargando paciente...</div>
 
     return (
         <div className="perfil-page">
@@ -62,11 +62,11 @@ export default function PatientProfilePage() {
                 <div className="perfil-hero">
                     <div className="perfil-hero-left">
                         <div className="perfil-avatar">
-                            {iniciales(paciente.user.name, paciente.user.lastname)}
+                            {iniciales(patient.user.name, patient.user.lastname)}
                         </div>
                         <div>
                             <h1 className="perfil-nombre">
-                                {paciente.user.name} {paciente.user.lastname}
+                                {patient.user.name} {patient.user.lastname}
                             </h1>
                             <div className="perfil-meta">
                                 <span className="perfil-badge">
@@ -74,7 +74,7 @@ export default function PatientProfilePage() {
                                     Paciente
                                 </span>
                                 <span className="perfil-id">
-                                    #{paciente.id.toString().padStart(4, '0')}
+                                    #{patient.id.toString().padStart(4, '0')}
                                 </span>
                             </div>
                         </div>
@@ -93,19 +93,19 @@ export default function PatientProfilePage() {
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Correo</span>
-                        <span className="perfil-row-val">{paciente.user.email}</span>
+                        <span className="perfil-row-val">{patient.user.email}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Teléfono</span>
-                        <span className="perfil-row-val">{paciente.user.phone}</span>
+                        <span className="perfil-row-val">{patient.user.phone}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Tel. emergencia</span>
-                        <span className="perfil-row-val">{paciente.emergency_phone}</span>
+                        <span className="perfil-row-val">{patient.emergency_phone}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Dirección</span>
-                        <span className="perfil-row-val">{paciente.address}</span>
+                        <span className="perfil-row-val">{patient.address}</span>
                     </div>
                 </div>
 
@@ -116,11 +116,11 @@ export default function PatientProfilePage() {
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Fecha de nacimiento</span>
-                        <span className="perfil-row-val">{formatearFecha(paciente.birth_date)}</span>
+                        <span className="perfil-row-val">{formatearFecha(patient.birth_date)}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">ID paciente</span>
-                        <span className="perfil-row-val">#{paciente.id.toString().padStart(4, '0')}</span>
+                        <span className="perfil-row-val">#{patient.id.toString().padStart(4, '0')}</span>
                     </div>
                 </div>
 

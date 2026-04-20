@@ -1,8 +1,5 @@
-// SobreNosotros.tsx
-import { Link } from "react-router-dom";
-
 export default function AboutUsPage() {
-    const equipo = [
+    const team = [
         {
             id: 1,
             nombre: "Dra. María González",
@@ -37,7 +34,7 @@ export default function AboutUsPage() {
         }
     ];
 
-    const valores = [
+    const values = [
         {
             titulo: "Excelencia médica",
             descripcion: "Nos comprometemos con la actualización constante y la mejor práctica clínica."
@@ -140,7 +137,7 @@ export default function AboutUsPage() {
             <section className="valores-section">
                 <h2>Nuestros valores</h2>
                 <div className="valores-grid">
-                    {valores.map((valor, index) => (
+                    {values.map((valor, index) => (
                         <div key={index} className="valor-card">
                             <h3>{valor.titulo}</h3>
                             <p>{valor.descripcion}</p>
@@ -153,7 +150,7 @@ export default function AboutUsPage() {
             <section className="equipo-section">
                 <h2>Equipo médico</h2>
                 <div className="equipo-grid">
-                    {equipo.map(miembro => (
+                    {team.map(miembro => (
                         <div key={miembro.id} className="miembro-card">
                             <div className="miembro-imagen">{miembro.imagen}</div>
                             <h3>{miembro.nombre}</h3>
