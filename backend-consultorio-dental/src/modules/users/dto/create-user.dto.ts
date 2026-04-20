@@ -2,7 +2,7 @@
 // crear-usuario.dto.ts
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength, ValidateNested } from 'class-validator'
 import { Type } from 'class-transformer'
-import { Rol } from '../enums/rol.enum'
+import { Role } from '../enums/rol.enum'
 import { CreatePatientDto } from "src/modules/patients/dto/create-patient.dto";
 
 export class CreateUserDto {
@@ -26,8 +26,8 @@ export class CreateUserDto {
     @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
     password!: string
 
-    @IsEnum(Rol, { message: 'El rol no es válido' })
-    rol!: Rol
+    @IsEnum(Role, { message: 'El rol no es válido' })
+    rol!: Role
 
     @IsOptional()
     @ValidateNested() // valida el objeto anidado también

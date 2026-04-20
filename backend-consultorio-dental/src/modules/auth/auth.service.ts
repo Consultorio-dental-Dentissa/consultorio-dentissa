@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt'
 import { UsersService } from '../users/users.service';
-import { Rol } from '../users/enums/rol.enum';
+import { Role } from '../users/enums/rol.enum';
 import { RegisterUserDto } from './dto/register-user.dto';
 import type { Response } from 'express';
 import * as bcrypt from 'bcrypt';
@@ -34,7 +34,7 @@ export class AuthService {
             lastname: user.lastname,
             email: user.email,
             phone: user.phone,
-            rol: user.rol.rol,
+            role: user.role.role,
             status: user.status
         };
 
@@ -55,7 +55,7 @@ export class AuthService {
                 lastname: user.lastname,
                 email: user.email,
                 phone: user.phone,
-                rol: user.rol.rol,
+                rol: user.role.role,
             }
         }
 
@@ -83,8 +83,9 @@ export class AuthService {
         
         const patientUser = {
             ...user,
-            rol: Rol.PACIENTE
+            rol: Role.PACIENTE
         }
+        
         return await this.usersService.createUser(patientUser);
     }
 }

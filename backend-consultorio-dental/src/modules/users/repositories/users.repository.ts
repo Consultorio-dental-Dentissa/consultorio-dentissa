@@ -11,7 +11,7 @@ export class UsersRepository {
     async getAll() {
         return await this.prisma.user.findMany({
             include: {
-                rol: true
+                role: true
             }
         });
     }
@@ -22,7 +22,7 @@ export class UsersRepository {
                 id: id
             },
             include: {
-                rol: true
+                role: true
             }
         });
     }
@@ -59,9 +59,9 @@ export class UsersRepository {
 
         const client = transaction ?? this.prisma;
 
-        const rol = await client.rol.findFirst({
+        const rol = await client.role.findFirst({
             where: {
-                rol: createUserDto.rol
+                role: createUserDto.rol
             }
         });
 
@@ -76,7 +76,7 @@ export class UsersRepository {
                 email: createUserDto.email,
                 password: createUserDto.password,
                 phone: createUserDto.phone,
-                rol_id: rol.id
+                role_id: rol.id
             },
             select: {
                 id: true,
@@ -85,9 +85,9 @@ export class UsersRepository {
                 email: true,
                 phone: true,
                 status: true,
-                rol: {
+                role: {
                     select: {
-                        rol: true
+                        role: true
                     }
                 }
             }
@@ -104,7 +104,7 @@ export class UsersRepository {
                 password: false
             },
             include: {
-                rol: true
+                role: true
             }
         });
     }

@@ -8,166 +8,185 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  name          String
-  lastname      String
-  email         String         @unique
-  password      String
-  phone         String?
-  created_at    DateTime       @default(now())
-  rol_id        Int
-  status        Boolean        @default(true)
-  notifications Notificacion[]
+  id         Int      @id @default(autoincrement())
+  name       String
+  lastname   String
+  email      String   @unique
+  password   String
+  phone      String?
+  created_at DateTime @default(now())
+  role_id    Int
+  status     Boolean  @default(true)
+
+  notifications Notification[]
   patient       Patient?
-  rol           Rol            @relation(fields: [rol_id], references: [id])
+  role          Role           @relation(fields: [role_id], references: [id])
 
   @@map("users")
 }
 
-model Rol {
-  id       Int    @id @default(autoincrement())
-  rol      String @unique
-  usuarios User[]
+model Role {
+  id   Int    @id @default(autoincrement())
+  role String @unique
+
+  users User[]
 
   @@map("roles")
 }
 
 model Patient {
-  id              Int           @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   address         String
   birth_date      DateTime
   emergency_phone String?
-  user_id         Int           @unique
-  appointments    Appointment[]
-  user            User          @relation(fields: [user_id], references: [id])
+  user_id         Int      @unique
+
+  appointments Appointment[]
+  user         User          @relation(fields: [user_id], references: [id])
 
   @@map("patients")
 }
 
 model Service {
-  id              Int              @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   name            String
   durationMinutes Int
-  price           Decimal          @db.Decimal(10, 2)
+  price           Decimal @db.Decimal(10, 2)
   description     String
-  status          Boolean          @default(true)
-  appointments    Appointment[]
-  images          servicesImages[]
-  offerts         OfertaServicio[]
+  status          Boolean @default(true)
+
+  appointments Appointment[]
+  images       ServiceImage[]
+  offers       ServiceOffer[]
 
   @@map("services")
 }
 
-model servicesImages {
+model ServiceImage {
   id         Int     @id @default(autoincrement())
   url        String
-  ubication  String?
+  location  String?
   service_id Int
-  service    Service @relation(fields: [service_id], references: [id])
+
+  service Service @relation(fields: [service_id], references: [id])
 
   @@map("services_images")
 }
 
+enum AppointmentStatus {
+  PENDIENTE
+  COMPLETADA
+  CANCELADA
+  REPROGRAMADA
+  CONFIRMADA
+}
+
 model Appointment {
-  id              Int            @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   date            DateTime
   time            String
   durationMinutes Int
-  status          String         @default("PENDIENTE")
+  status          AppointmentStatus   @default(PENDIENTE)
   notes           String
   reason          String?
-  created_at      DateTime       @default(now())
-  updated_at      DateTime       @default(now())
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
   patient_id      Int
   service_id      Int
-  patient         Patient        @relation(fields: [patient_id], references: [id])
-  service         Service        @relation(fields: [service_id], references: [id])
-  medicalRecord   Consulta?
-  notificacions   Notificacion[]
+
+  patient       Patient        @relation(fields: [patient_id], references: [id])
+  service       Service        @relation(fields: [service_id], references: [id])
+  consultation  Consultation?
+  notifications Notification[]
 
   @@map("appointments")
 }
 
-model Consulta {
-  id            Int                @id @default(autoincrement())
-  notas         String
-  observaciones String
-  created_at    DateTime           @default(now())
-  cita_id       Int                @unique
-  cita          Appointment        @relation(fields: [cita_id], references: [id])
-  imagenes      ImagenesConsulta[]
+model Consultation {
+  id             Int      @id @default(autoincrement())
+  notes          String
+  observations   String
+  created_at     DateTime @default(now())
+  appointment_id Int      @unique
 
-  @@map("consultas")
+  appointment Appointment           @relation(fields: [appointment_id], references: [id])
+  images      ConsultationImage[]
+
+  @@map("consultations")
 }
 
-model ImagenesConsulta {
+model ConsultationImage {
+  id              Int     @id @default(autoincrement())
+  url             String
+  location        String?
+  consultation_id Int
+
+  consultation Consultation @relation(fields: [consultation_id], references: [id])
+
+  @@map("consultations_images")
+}
+
+model Offer {
   id          Int      @id @default(autoincrement())
-  url         String
-  ubicacion   String?
-  consulta_id Int
-  consulta    Consulta @relation(fields: [consulta_id], references: [id])
+  name        String
+  description String
+  start_date  DateTime
+  end_date    DateTime
+  status      Boolean  @default(false)
 
-  @@map("imagenes_consultas")
+  services ServiceOffer[]
+
+  @@map("offers")
 }
 
-model Oferta {
-  id           Int              @id @default(autoincrement())
-  nombre       String
-  descripcion  String
-  fecha_inicio DateTime
-  fecha_fin    DateTime
-  activa       Boolean          @default(false)
-  servicios    OfertaServicio[]
+model ServiceOffer {
+  offer_id   Int
+  service_id Int
 
-  @@map("ofertas")
+  offer   Offer   @relation(fields: [offer_id], references: [id])
+  service Service @relation(fields: [service_id], references: [id])
+
+  @@id([offer_id, service_id])
+  @@map("services_offers")
 }
 
-model OfertaServicio {
-  id          Int     @id @default(autoincrement())
-  oferta_id   Int
-  servicio_id Int
-  oferta      Oferta  @relation(fields: [oferta_id], references: [id])
-  servicio    Service @relation(fields: [servicio_id], references: [id])
+model AvailableTimeSlots {
+  id         Int     @id @default(autoincrement())
+  week_day   Int
+  start_time String
+  end_time   String
+  status     Boolean
 
-  @@map("ofertas_servicios")
+  @@map("available_time_slots")
 }
 
-model HorarioDisponible {
-  id          Int     @id @default(autoincrement())
-  dia_semana  Int
-  hora_inicio String
-  hora_fin    String
-  estado      Boolean
-
-  @@map("horarios_disponibles")
-}
-
-model FechaBloqueada {
+model UnavailableTimeSlots {
   id     Int      @id @default(autoincrement())
-  fecha  DateTime
-  motivo String
+  date   DateTime
+  reason String
 
-  @@map("fechas_bloqueadas")
+  @@map("unavailable_time_slots")
 }
 
-model PreguntaFrecuente {
-  id        Int    @id @default(autoincrement())
-  pregunta  String
-  respuesta String
+model FrequentlyAskedQuestion {
+  id       Int    @id @default(autoincrement())
+  question String
+  response String
 
-  @@map("preguntas_frecuentes")
+  @@map("frequently_asked_questions")
 }
 
-model Notificacion {
-  id         Int          @id @default(autoincrement())
-  tipo       String
-  mensaje    String
-  leida      Boolean      @default(false)
-  usuario_id Int
-  cita_id    Int?
-  created_at DateTime     @default(now())
-  cita       Appointment? @relation(fields: [cita_id], references: [id])
-  usuario    User         @relation(fields: [usuario_id], references: [id], onUpdate: NoAction)
+model Notification {
+  id             Int      @id @default(autoincrement())
+  type           String
+  message        String
+  is_read        Boolean  @default(false)
+  user_id        Int
+  appointment_id Int?
+  created_at     DateTime @default(now())
 
-  @@map("notificaciones")
+  appointment Appointment? @relation(fields: [appointment_id], references: [id])
+  user        User         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@map("notifications")
 }
