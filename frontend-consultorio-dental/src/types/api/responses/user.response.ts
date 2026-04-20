@@ -5,9 +5,9 @@ export interface UserResponse {
     email: string;
     phone: string;
     status: boolean;
-    rol: {
+    role: {
         id: number,
-        rol: string
+        role: string
     };
 
 }

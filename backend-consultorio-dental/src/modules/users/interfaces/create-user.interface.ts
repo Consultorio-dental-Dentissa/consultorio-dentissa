@@ -7,6 +7,6 @@ export interface ICreateUser {
     email: string;
     password: string;
     phone: string;
-    rol: Role;
+    role: Role;
     patient?: CreatePatientDto;
 }

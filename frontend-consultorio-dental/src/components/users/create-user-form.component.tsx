@@ -1,5 +1,5 @@
 import { FieldGroup } from "@/components/ui/field"
-import { Rol } from "@/types/enums/rol.enum"
+import { Role } from "@/types/enums/rol.enum"
 import { useForm, Controller } from "react-hook-form"
 import { InputForm, SelectForm } from "@/components/common/input.component"
 import { PrimaryButton, SecondaryButton } from "../common/button.component"
@@ -31,8 +31,8 @@ export default function CreateUserForm({ onSubmit, onCancel }: CreateUserFormPro
 
     const { register, handleSubmit, control, watch, formState: { errors, isSubmitting } } = useForm<CreateUserDto>()
 
-    const actualRol = watch('rol');
-    const isPatient = actualRol === Rol.PACIENTE;
+    const actualRol = watch('role');
+    const isPatient = actualRol === Role.PACIENTE;
 
     const handleSubmitForm = (data: CreateUserDto) => {
         if (!isPatient) {
@@ -100,7 +100,7 @@ export default function CreateUserForm({ onSubmit, onCancel }: CreateUserFormPro
 
                     <Controller
                         control={control}
-                        name="rol"
+                        name="role"
                         rules={{ required: 'El rol es obligatorio' }}
                         render={({ field }) => (
 
@@ -111,7 +111,7 @@ export default function CreateUserForm({ onSubmit, onCancel }: CreateUserFormPro
                                 DATA={roles}
                                 onChange={field.onChange}
                                 value={field.value}
-                                error={errors.rol?.message}
+                                error={errors.role?.message}
                             />
                         )}
                     />

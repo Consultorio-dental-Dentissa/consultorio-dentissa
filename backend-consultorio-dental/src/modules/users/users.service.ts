@@ -21,27 +21,8 @@ export class UsersService {
     ) { }
 
 
-    async getAllUsers()/*: Promise<User[]>*/ {
-        const users = await this.usersRepository.getAll();
-        //return users;
-        const customizedUsers = users.map(user => {
-            return {
-                id: user.id,
-                name: user.name,
-                lastname: user.lastname,
-                email: user.email,
-                phone: user.phone,
-                created_at: user.created_at,
-                status: user.status,
-                role_id: user.role_id,
-                rol: {
-                    id: user.role.id,
-                    rol: user.role.role
-                }
-            }
-        });
-
-        return customizedUsers;
+    async getAllUsers(): Promise<User[]> {
+        return await this.usersRepository.getAll();
     }
 
 
@@ -82,7 +63,7 @@ export class UsersService {
          * para no dejar al usuario registrado sin un registro de paciente relacionado.
          */
 
-        if (user.rol === Role.PACIENTE) {
+        if (user.role === Role.PACIENTE) {
 
             if (!user.patient) {
                 throw new BadRequestException('Debes llenar todos los campos del paciente');
@@ -91,19 +72,7 @@ export class UsersService {
             return await this.createUserAndPatient(user, user.patient);
         }
 
-        const returnedUser = await this.usersRepository.create(user);
-
-        return {
-            id: returnedUser.id,
-            name: returnedUser.name,
-            lastname: returnedUser.lastname,
-            email: returnedUser.email,
-            phone: returnedUser.phone,
-            status: returnedUser.status,
-            rol: {
-                rol: returnedUser.role.role
-            }
-        }
+        return await this.usersRepository.create(user);
     }
 
 
@@ -112,22 +81,12 @@ export class UsersService {
         try {
             return await this.prisma.$transaction(async (tx) => {
 
-                const returnedUser = await this.usersRepository.create(userData, tx);
-                patientData.user_id = returnedUser.id;
+                const user = await this.usersRepository.create(userData, tx);
+                patientData.user_id = user.id;
 
                 await this.patientsRepository.create(patientData, tx);
 
-                return {
-                    id: returnedUser.id,
-                    name: returnedUser.name,
-                    lastname: returnedUser.lastname,
-                    email: returnedUser.email,
-                    phone: returnedUser.phone,
-                    status: returnedUser.status,
-                    rol: {
-                        rol: returnedUser.role.role
-                    }
-                }
+                return user;
             });
 
         } catch (error) {

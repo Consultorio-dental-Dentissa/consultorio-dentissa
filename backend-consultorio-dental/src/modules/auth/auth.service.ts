@@ -55,7 +55,7 @@ export class AuthService {
                 lastname: user.lastname,
                 email: user.email,
                 phone: user.phone,
-                rol: user.role.role,
+                role: user.role.role,
             }
         }
 
@@ -83,9 +83,9 @@ export class AuthService {
         
         const patientUser = {
             ...user,
-            rol: Role.PACIENTE
+            role: Role.PACIENTE
         }
-        
+
         return await this.usersService.createUser(patientUser);
     }
 }

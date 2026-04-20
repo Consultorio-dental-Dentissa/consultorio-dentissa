@@ -21,12 +21,10 @@ export default function PrivateLayout() {
     }
 
     const username = `${user?.name} ${user?.lastname}`;
-    const rol = user?.rol;
+    const role = user?.role;
 
     console.log("user: ", user);
-
-    console.log("username: ", username);
-    console.log(rol);
+    console.log("user role: ", role);
 
     return (
         <div>
@@ -40,7 +38,7 @@ export default function PrivateLayout() {
                 <main className="flex-1 min-w-0 px-3">
                     <Header
                         username={username}
-                        userRol={rol ? rol : ''}
+                        userRol={role ? role : ''}
                     />
                     <div className="px-7 py-7 bg-gray-100 h-full rounded-2xl">
                         <Outlet />

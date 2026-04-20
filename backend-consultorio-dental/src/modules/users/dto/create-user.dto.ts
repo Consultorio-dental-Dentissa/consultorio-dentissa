@@ -27,7 +27,7 @@ export class CreateUserDto {
     password!: string
 
     @IsEnum(Role, { message: 'El rol no es válido' })
-    rol!: Role
+    role!: Role
 
     @IsOptional()
     @ValidateNested() // valida el objeto anidado también

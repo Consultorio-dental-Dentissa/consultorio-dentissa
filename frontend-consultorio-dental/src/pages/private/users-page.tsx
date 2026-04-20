@@ -115,7 +115,7 @@ export default function UsersPage() {
                                         />
                                     </td>
 
-                                    <td>{usuario.rol.rol}</td>
+                                    <td>{usuario.role.role}</td>
 
                                     <td>
                                         <div className="actions">

@@ -61,7 +61,7 @@ export class UsersRepository {
 
         const rol = await client.role.findFirst({
             where: {
-                role: createUserDto.rol
+                role: createUserDto.role
             }
         });
 

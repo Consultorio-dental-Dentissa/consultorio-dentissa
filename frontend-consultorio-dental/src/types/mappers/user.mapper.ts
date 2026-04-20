@@ -5,7 +5,7 @@ export function userMap(data: UserResponse): User {
     return {
         name: data.name,
         lastname: data.lastname,
-        rol: data.rol.rol,
+        role: data.role.role,
         email: data.email,
         phone: data.phone,
         status: data.status,

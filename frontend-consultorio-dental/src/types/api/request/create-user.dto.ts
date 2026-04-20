@@ -4,7 +4,7 @@ export interface CreateUserDto {
     email: string;
     phone: string;
     password: string;
-    rol: string;
+    role: string;
     patient?: {
         address: string,
         birth_date: string,
