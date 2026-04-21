@@ -2,24 +2,24 @@ import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsuariosModule } from './modules/usuarios/usuarios.module';
+import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
-import { CitasModule } from './modules/citas/citas.module';
-import { PacientesModule } from './modules/pacientes/pacientes.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
+import { PatientsModule } from './modules/patients/patients.module';
 import { SecurityModule } from './infrastructure/security/security.module';
-import { ServiciosModule } from './modules/servicios/servicios.module';
+import { ServicesModule } from './modules/services/services.module';
 
 @Module({
   imports: [
     PrismaModule,
-    UsuariosModule,
+    UsersModule,
     AuthModule,
     PrismaModule,
-    CitasModule,
-    PacientesModule,
+    AppointmentsModule,
+    PatientsModule,
     SecurityModule,
-    ServiciosModule,
+    ServicesModule,
   ],
   controllers: [AppController],
   providers: [
