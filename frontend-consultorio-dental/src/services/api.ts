@@ -1,4 +1,4 @@
-import { ApiError } from "../types/api/responses/ApiError";
+import { ApiError } from "../types/api/responses/api-error";
 import axios from 'axios';
 
 const urlAPi = import.meta.env.VITE_API_URL
@@ -8,21 +8,21 @@ const api = axios.create({
 
 export async function get<T>(endpoint: string): Promise<T> {
     try {
-        const respuesta = await api.get(`${urlAPi}${endpoint}`);
-        return respuesta.data;
+        const response = await api.get(`${urlAPi}${endpoint}`);
+        return response.data;
 
     } catch (error) {
-        manejarError(error);
+        handleError(error);
     }
 }
 
 export async function post<T>(endpoint: string, data: object): Promise<T> {
     try {
-        const respuesta = await api.post(`${urlAPi}${endpoint}`, data);
-        return respuesta.data;
+        const response = await api.post(`${urlAPi}${endpoint}`, data);
+        return response.data;
 
     } catch (error) {
-        manejarError(error);
+        handleError(error);
     }
 }
 
@@ -32,29 +32,29 @@ export async function put<T>() {
 
 export async function patch<T>(endpoint: string, data: object): Promise<T> {
     try {
-        const respuesta = await api.patch(`${urlAPi}${endpoint}`, data);
-        return respuesta.data;
+        const response = await api.patch(`${urlAPi}${endpoint}`, data);
+        return response.data;
 
     } catch (error) {
-        manejarError(error);
+        handleError(error);
     }
 }
 
 export async function deleteR<T>(endpoint: string): Promise<T> {
     try {
-        const repsuesta = await api.delete(`${urlAPi}${endpoint}`);
-        console.log(repsuesta);
-        return repsuesta.data;
+        const response = await api.delete(`${urlAPi}${endpoint}`);
+        console.log(response);
+        return response.data;
 
     } catch (error) {
-        manejarError(error);
+        handleError(error);
     }
 }
 
 
 
 
-function manejarError(error: unknown): never {
+function handleError(error: unknown): never {
     if (axios.isAxiosError(error)) {
         if (error.response) {
             throw new ApiError(

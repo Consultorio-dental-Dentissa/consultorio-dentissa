@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { IniciarSesionDto } from './dto/IniciarSesionDto';
+import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt'
-import { UsuariosService } from '../usuarios/usuarios.service';
-import { Rol } from '../usuarios/enums/rol.enum';
-import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
+import { UsersService } from '../users/users.service';
+import { Role } from '../users/enums/rol.enum';
+import { RegisterUserDto } from './dto/register-user.dto';
 import type { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 
@@ -11,34 +11,34 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
 
     constructor(
-        private usuariosService: UsuariosService,
+        private usersService: UsersService,
         private jwtService: JwtService
     ) { }
 
-    async iniciarSesion(credenciales: IniciarSesionDto, response: Response) {
+    async login(credentials: LoginDto, response: Response) {
 
-        const usuario = await this.usuariosService.ObtenerUsuarioPorCorreoConContraseña(credenciales.correo);
-        const esContraseñaCorrecta = await bcrypt.compare(credenciales.contraseña, usuario?.contraseña ?? '');
+        const user = await this.usersService.getUserByEmailWithPassword(credentials.email);
+        const isCorrectPassword = await bcrypt.compare(credentials.password, user?.password ?? '');
 
-        if (!usuario || !esContraseñaCorrecta) {
+        if (!user || !isCorrectPassword) {
             throw new NotFoundException('Las credenciales son incorrectas');
         }
 
-        if (!usuario.activo) {
+        if (!user.status) {
             throw new UnauthorizedException('Tu cuenta ha sido desactivada');
         }
         
         const payload = {
-            id: usuario.id,
-            nombre: usuario.nombre,
-            apellido: usuario.apellido,
-            correo: usuario.correo,
-            telefono: usuario.telefono,
-            rol: usuario.rol.rol,
-            activo: usuario.activo
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+            email: user.email,
+            phone: user.phone,
+            role: user.role.role,
+            status: user.status
         };
 
-        const token = await this.crearToken(payload);        
+        const token = await this.createToken(payload);        
         
         response.cookie('access_token', token, {
             httpOnly: true,
@@ -47,21 +47,22 @@ export class AuthService {
         });
         
 
-        const usuarioAutenticado = {
-            estado: true,
-            usuario: {
-                id: usuario.id,
-                nombre: usuario.nombre,
-                correo: usuario.correo,
-                telefono: usuario.telefono,
-                rol: usuario.rol.rol,
+        const loggedUser = {
+            logged: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                lastname: user.lastname,
+                email: user.email,
+                phone: user.phone,
+                role: user.role.role,
             }
         }
 
-        return usuarioAutenticado;
+        return loggedUser;
     }
 
-    async cerrarSesion(response: Response) {
+    async logout(response: Response) {
 
         response.clearCookie('access_token', {
             httpOnly: true,
@@ -73,17 +74,18 @@ export class AuthService {
     }
 
 
-    async crearToken(payload) {
+    async createToken(payload) {
         return await this.jwtService.signAsync(payload);
     }
     
 
-    async registrarUsuario(usuario: RegistrarUsuarioDto) {
+    async registerUser(user: RegisterUserDto) {
         
-        const usuarioPaciente = {
-            ...usuario,
-            rol: Rol.PACIENTE
+        const patientUser = {
+            ...user,
+            role: Role.PACIENTE
         }
-        return await this.usuariosService.crearUsuario(usuarioPaciente);
+
+        return await this.usersService.createUser(patientUser);
     }
 }

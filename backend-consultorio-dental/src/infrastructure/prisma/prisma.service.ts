@@ -21,8 +21,8 @@ export class PrismaService extends PrismaClient
       adapter,
       log: ['error', 'warn'],
       omit: {
-        usuario: {
-          contraseña: true,
+        user: {
+          password: true,
         },
       },
 
