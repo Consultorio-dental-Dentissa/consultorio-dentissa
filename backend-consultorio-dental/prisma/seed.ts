@@ -1,9 +1,12 @@
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { Role } from "src/modules/users/enums/rol.enum";
+import * as bcrypt from "bcrypt";
 
 const prisma = new PrismaService();
 
 async function main() {
+
+    // Create roles
 
     const rolesArray = Object.values(Role);
     const roles = rolesArray.map(role => {
@@ -23,6 +26,40 @@ async function main() {
     } else {
         console.log("Info: roles already exitst");
     }
+
+    // Create admin user
+
+    const adminRole = await prisma.role.findUnique({
+        where: { role: Role.ADMINISTRADOR },
+        select: { id: true }
+    });
+
+    if (!adminRole) {
+        console.log(`Error: ${Role.ADMINISTRADOR} role does not exist`);
+        return;
+    }
+
+    const admin = {
+        name: "Alfonso Gutierrez",
+        lastname: "Perez Peralta",
+        email: "administrador@gmail.com",
+        phone: "1111111111",
+        password: await bcrypt.hash("12345678", 10),
+        role_id: adminRole?.id
+    }
+    
+    const user = await prisma.user.upsert({
+        where: { email: admin.email},
+        update: {},
+        create: admin
+    });
+
+    if (!user) {
+        console.log("Error: admin user has not been created");
+        return;
+    }
+    
+    console.log("Success: admin user created successfully");    
 }
 
 main()
