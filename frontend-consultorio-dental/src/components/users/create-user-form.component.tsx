@@ -2,10 +2,10 @@ import { FieldGroup } from "@/components/ui/field"
 import { Role } from "@/types/enums/rol.enum"
 import { useForm, Controller } from "react-hook-form"
 import { InputForm, SelectForm } from "@/components/common/input.component"
-import { PrimaryButton, SecondaryButton } from "../common/button.component"
 
 import type { SelectData } from "@/components/common/select.component"
 import type { CreateUserDto } from "@/types/api/request/create-user.dto"
+import { Button } from "../ui/button"
 
 interface CreateUserFormProps {
     onSubmit: (data: CreateUserDto) => void
@@ -158,11 +158,8 @@ export default function CreateUserForm({ onSubmit, onCancel }: CreateUserFormPro
             }
 
             <div className="flex justify-end gap-2 mt-2">
-                {/* <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
-                <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Cargando...' : 'Crear usuario'}</Button> */}
-
-                <SecondaryButton message="Cancelar" onClick={onCancel} type="button"/>
-                <PrimaryButton message="Crear usuario" disabled={isSubmitting} type="submit"/>
+                <Button variant="secondary" type="button" onClick={onCancel}>Cancelar</Button>
+                <Button variant="primary" type="submit" disabled={isSubmitting}>Registrar usuario</Button>
             </div>
         </form>
     )

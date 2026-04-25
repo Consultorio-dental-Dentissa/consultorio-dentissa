@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { PageTitle } from "../../components/common/page-title.component";
-import { usePatients } from "../../hooks/use-patients";
-import type { PatientResponse } from "../../types/api/responses/patient.response";
-import EmptyTable from "../../components/common/empty-table.component";
 import { useNavigate } from "react-router-dom";
 import { formatPhone } from "@/utils/formatters";
+
+import { usePatients } from "../../hooks/use-patients";
+
+import { PageTitle } from "../../components/common/page-title.component";
+import EmptyTable from "../../components/common/empty-table.component";
+import { Button } from "@/components/ui/button";
+
+import type { PatientResponse } from "../../types/api/responses/patient.response";
 
 export default function PatientsPage() {
 
@@ -75,7 +79,7 @@ export default function PatientsPage() {
                                         <td>
                                             <div className="actions">
                                             
-                                                <button className="btn-registrar" onClick={() => {navigate(`/pacientes/${paciente.id}`)}}>Ver perfil</button>
+                                                <Button variant="secondary" onClick={() => navigate(`/pacientes/${paciente.id}`)}>Ver perfil</Button>
                                                 
                                             </div>
                                         </td>

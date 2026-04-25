@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { PageTitle } from "../../components/common/page-title.component";
-import { useServices } from "../../hooks/use-services";
-import EmptyTable from "../../components/common/empty-table.component";
-import { ToggleButton } from "../../components/common/toggle-button.component";
-import { CreateServiceModal } from "@/components/services/create-service-modal.component";
-import { PrimaryButton } from "@/components/common/button.component";
 import toast from "react-hot-toast";
+
+import { useServices } from "../../hooks/use-services";
+
+import EmptyTable from "../../components/common/empty-table.component";
+import { PageTitle } from "../../components/common/page-title.component";
+import { CreateServiceModal } from "@/components/services/create-service-modal.component";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 import type { CreateServiceDto } from "@/types/api/request/create-service.dto";
 import type { ServiceResponse } from "../../types/api/responses/service.response";
@@ -71,10 +73,7 @@ export default function ServicesPage() {
                     subtitulo="Aqui puedes manejar tus servicios"
                 />
 
-                <PrimaryButton
-                    message="Registrar nuevo servicio"
-                    onClick={() => { setOpenModal(true) }}
-                />
+                <Button variant="primary" onClick={() => setOpenModal(true)}>Agregar nuevo servicio</Button>
             </div>
 
             <table>
@@ -109,10 +108,7 @@ export default function ServicesPage() {
                                         <td>{totalMinutesToHours(servicio.durationMinutes)}</td>
                                         <td>{servicio.description}</td>
                                         <td>
-                                            <ToggleButton
-                                                status={servicio.status}
-                                                onChange={(nuevoEstado) => handleUpdateServiceStatus(servicio.id, nuevoEstado)}
-                                            />
+                                            <Switch checked={servicio.status} onClick={() => handleUpdateServiceStatus(servicio.id, !servicio.status)}/>
                                         </td>
                                     </tr>
                                 )

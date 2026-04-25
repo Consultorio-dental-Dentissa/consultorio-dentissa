@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import type { ServiceResponse } from '../../types/api/responses/service.response'
-import type { PatientResponse } from '../../types/api/responses/patient.response'
 import { usePatients } from '../../hooks/use-patients'
 import { useServices } from '../../hooks/use-services'
 import { useAppointments } from '../../hooks/use-appointments'
+
+import { Button } from '../ui/button'
+
+import type { ServiceResponse } from '../../types/api/responses/service.response'
+import type { PatientResponse } from '../../types/api/responses/patient.response'
 import type { CreateAppointmentDto } from '../../types/api/request/create-appointment.dto'
 import type { AppointmentResponse } from '../../types/api/responses/appointment.response'
 
@@ -170,8 +173,8 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
                 </div>
 
                 <div className="form-footer">
-                    <button className="btn-cancel" type="button" onClick={onCancel}>Cancelar</button>
-                    <button className="btn-registrar" type="submit" disabled={loading}>Agendar cita</button>
+                    <Button type="button" onClick={onCancel}>Cancelar</Button>
+                    <Button type="submit" disabled={loading}>Agendar cita</Button>
                 </div>
 
             </form>
