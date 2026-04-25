@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { PageTitle } from "../../components/common/page-title.component";
 import { useUsers } from "../../hooks/use-users";
+
+import { PageTitle } from "../../components/common/page-title.component";
 import EmptyTable from "../../components/common/empty-table.component";
-import { ToggleButton } from "../../components/common/toggle-button.component";
-import toast from "react-hot-toast";
-import { type UserResponse } from "../../types/api/responses/user.response";
 import { CreateUserModal } from "@/components/users/create-user-modal.component";
 import { Button } from "@/components/ui/button"
-import type { CreateUserDto } from "@/types/api/request/create-user.dto";
-import { PrimaryButton } from "@/components/common/button.component";
+import { Switch } from "@/components/ui/switch";
+
 import { formatFirstLetterUppercase, formatPhone } from "@/utils/formatters";
+import toast from "react-hot-toast";
+
+import type { UserResponse } from "../../types/api/responses/user.response";
+import type { CreateUserDto } from "@/types/api/request/create-user.dto";
 
 export default function UsersPage() {
 
@@ -68,10 +70,9 @@ export default function UsersPage() {
                     subtitulo="Aqui puedes manejar tus usuarios"
                 />
 
-                <PrimaryButton
-                    message="Registrar nuevo usuario"
-                    onClick={() => { setOpenModal(true) }}
-                />
+                <Button variant="primary" onClick={() => setOpenModal(true)}>
+                    Agregar nuevo usuario
+                </Button>
             </div>
 
             <table>
@@ -110,18 +111,15 @@ export default function UsersPage() {
                                     <td>{usuario.email}</td>
 
                                     <td>
-                                        <ToggleButton
-                                            status={usuario.status}
-                                            onChange={(nuevoEstado) => handleUpdatedUserStatus(usuario.id, nuevoEstado)}
-                                        />
+                                        <Switch checked={usuario.status} onClick={() => handleUpdatedUserStatus(usuario.id, !usuario.status)}/>
                                     </td>
 
                                     <td>{formatFirstLetterUppercase(usuario.role.role)}</td>
 
                                     <td>
                                         <div className="actions">
-                                            <Button >Editar</Button>
-                                            <Button variant="outline">Eliminar</Button>
+                                            <Button variant="secondary">Editar</Button>
+                                            <Button variant="destructive">Eliminar</Button>
                                         </div>
                                     </td>
                                 </tr>
