@@ -1,4 +1,6 @@
 import { StatusAppointment } from "@/types/enums/status-appointment.enum";
+import { Badge, type BadgeVariant } from "../ui/badge";
+import { formatFirstLetterUppercase } from "@/utils/formatters";
 
 interface SpanProps {
     message: string
@@ -16,44 +18,29 @@ interface StatusSpanProps {
 
 export function StatusSpan({ status }: StatusSpanProps) {
     
-    let styles: {backgroundColor: string; textColor: string; };
+    let variant: BadgeVariant;
 
     switch(status) {
         case StatusAppointment.PENDIENTE:
-            styles = {
-                backgroundColor: 'bg-gray-500',
-                textColor: 'text-white'
-            }
+            variant = "base";
             break;
         case StatusAppointment.CONFIRMADA:
-            styles = {
-                backgroundColor: 'bg-green-200',
-                textColor: 'text-green-700'
-            }
+            variant = "primary";
             break;
         case StatusAppointment.CANCELADA:
-            styles = {
-                backgroundColor: 'bg-red-200',
-                textColor: 'text-red-600'
-            }
+            variant = "destructive";
             break;
         case StatusAppointment.REPROGRAMADA: {
-            styles = {
-                backgroundColor: 'bg-yellow-200',
-                textColor: 'text-yellow-700'
-            }
+            variant = "warning";
             break;
         }
 
         default:
-            styles = {
-                backgroundColor: 'bg-gray-400',
-                textColor: 'bg-gray-600'
-            }
+            variant = "base";
             break;
     }
     
     return (
-        <span className={`py-1 rounded-full font-medium px-3 ${styles.backgroundColor} ${styles.textColor}`}> { status.toLowerCase().charAt(0).toUpperCase() + status.slice(1).toLowerCase() } </span>
+        <Badge variant={variant}>{ formatFirstLetterUppercase(status) }</Badge>
     )
 }
