@@ -1,8 +1,11 @@
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast";
+
 import { PageTitle } from "@/components/common/page-title.component"
 import { Button } from "@/components/ui/button"
 import { useAppointments } from "@/hooks/use-appointments";
-import { useEffect, useState } from "react"
 import { AppointmentList } from "@/components/appointments/appointment-list.component";
+
 import { AppointmentMap } from "@/types/mappers/appointment.mapper";
 
 import type { Appointment } from "@/types/models/appointment";
@@ -15,10 +18,14 @@ export default function AppointmentsPage() {
     useEffect(() => {
 
         async function fetchAppointments() {
+            try {
+                const appointments = await getAppointments();
+                const appointmentsMap = appointments.map(appointment => AppointmentMap(appointment));
+                setAppointments(appointmentsMap);
 
-            const appointments = await getAppointments();
-            const appointmentsMap = appointments.map(appointment => AppointmentMap(appointment));
-            setAppointments(appointmentsMap);
+            } catch(error) {
+                toast.error(error as string);
+            }
         }
 
         fetchAppointments();
@@ -33,21 +40,21 @@ export default function AppointmentsPage() {
                 />
 
                 <div className="flex flex-row justify-end mb-5">
-                    <Button className="mt-5 bg-rose-500">Exportar citas</Button>
+                    <Button variant="primary">Exportar citas</Button>
                 </div>
             </div>
 
-            <div className="flex flex-row justify-between bg-white w-full px-5 py-3 rounded-xl shadow-[0_2px_10px_0px_rgba(0,0,0,0.15)]">
+            <div className="flex flex-row justify-between bg-white w-full px-5 py-3 mt-5 rounded-xl shadow-[0_2px_10px_0px_rgba(0,0,0,0.15)]">
                 <div className="flex flex-row gap-5">
-                    <button className="text-gray-500 focus:text-rose-500 focus:border-b focus:border-b-rose-500 focus:border-b-2 focus:font-medium">Todos</button>
-                    <button className="text-gray-500 focus:text-rose-500 focus:border-b focus:border-b-rose-500 focus:border-b-2 focus:font-medium">Pendientes</button>
-                    <button className="text-gray-500 focus:text-rose-500 focus:border-b focus:border-b-rose-500 focus:border-b-2 focus:font-medium">Confirmadas</button>
-                    <button className="text-gray-500 focus:text-rose-500 focus:border-b focus:border-b-rose-500 focus:border-b-2 focus:font-medium">Canceladas</button>
+                    <Button variant="ghost">Todos</Button>
+                    <Button variant="ghost">Pendientes</Button>
+                    <Button variant="ghost">Confirmadas</Button>
+                    <Button variant="ghost">Canceladas</Button>
                 </div>
 
                 <div className="flex flex-row gap-2">
                     <Button variant="outline">Filtros</Button>
-                    <Button variant="outline" onClick={() => {}}>Agendar cita</Button>
+                    <Button variant="outline" onClick={() => { }}>Agendar cita</Button>
                 </div>
             </div>
 

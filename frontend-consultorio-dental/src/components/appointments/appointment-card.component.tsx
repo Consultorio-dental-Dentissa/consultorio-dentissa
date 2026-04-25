@@ -1,4 +1,5 @@
 import { StatusSpan } from "@/components/common/span.component";
+import { Badge } from "@/components/ui/badge";
 import type { Appointment } from "@/types/models/appointment"
 
 export interface AppointmentCardProps {
@@ -27,7 +28,7 @@ export function AppointmentCard({ appointment, onClick }: AppointmentCardProps) 
                 </div>
                 <div>
                     <div className="mt-3">
-                        <span className="bg-gray-200 p-1 rounded-full text-sm"> {appointment.service.name} </span>
+                        <Badge variant="base"> {appointment.service.name} </Badge>
                     </div>
 
                     <div className="py-2 border-t-1 mt-3 text-gray-600 text-sm font-medium flex justify-end">
