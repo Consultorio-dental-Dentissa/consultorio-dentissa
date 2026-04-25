@@ -4,6 +4,7 @@ import { usePatients } from "../../hooks/use-patients";
 import type { PatientResponse } from "../../types/api/responses/patient.response";
 import EmptyTable from "../../components/common/empty-table.component";
 import { useNavigate } from "react-router-dom";
+import { formatPhone } from "@/utils/formatters";
 
 export default function PatientsPage() {
 
@@ -67,8 +68,8 @@ export default function PatientsPage() {
                                         <td>{paciente.user.name}</td>
                                         <td>{paciente.user.lastname}</td>
                                         <td>{paciente.user.email}</td>
-                                        <td>{paciente.user.phone}</td>
-                                        <td>{paciente.emergency_phone}</td>
+                                        <td>{formatPhone(paciente.user.phone)}</td>
+                                        <td>{formatPhone(paciente.emergency_phone)}</td>
                                         <td>{birthDate.toLocaleDateString('es-MX')}</td>
                                         <td>{paciente.address}</td>
                                         <td>
