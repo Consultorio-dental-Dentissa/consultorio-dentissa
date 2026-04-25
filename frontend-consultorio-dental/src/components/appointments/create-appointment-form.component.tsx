@@ -6,7 +6,7 @@ import { useAppointments } from '../../hooks/use-appointments'
 
 import { Button } from '../ui/button'
 
-import type { ServiceResponse } from '@/types/api/responses/service.response'
+import type { Service } from '@/types/models/service'
 import type { Patient } from '@/types/models/patient'
 import type { CreateAppointmentDto } from '../../types/api/request/create-appointment.dto'
 import type { Appointment } from '@/types/models/appointment'
@@ -36,7 +36,7 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
 
     const [form, setForm] = useState<FormData>(initialState);
 
-    const [services, setServices] = useState<ServiceResponse[]>([]);
+    const [services, setServices] = useState<Service[]>([]);
     const [patients, setPatients] = useState<Patient[]>([]);
 
     const { createAppointment, loading, error } = useAppointments();

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { requestGetServices, requestUpdateServiceStatus, requestCreateService } from "../services/services.service";
 
-import type { ServiceResponse } from "../types/api/responses/service.response";
+import type { Service } from "@/types/models/service";
 import type { ApiError } from "../types/api/responses/api-error";
 import type { CreateServiceDto } from "../types/api/request/create-service.dto";
-
 
 export function useServices() {
 
@@ -12,7 +11,7 @@ export function useServices() {
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function createService(createService: CreateServiceDto): Promise<ServiceResponse> {
+    async function createService(createService: CreateServiceDto): Promise<Service> {
         
         setError(null);
         setLoading(true);
@@ -22,7 +21,7 @@ export function useServices() {
             .finally(() => setLoading(false));
     }
 
-    async function getServices(): Promise<ServiceResponse[]> {
+    async function getServices(): Promise<Service[]> {
 
         setError(null);
         setLoadingTable(true);
