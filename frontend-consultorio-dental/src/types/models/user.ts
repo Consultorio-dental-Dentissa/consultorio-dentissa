@@ -5,5 +5,6 @@ export interface User {
     email: string;
     phone: string;
     status: boolean;
+    created_at: Date;
     role: string;
 }
