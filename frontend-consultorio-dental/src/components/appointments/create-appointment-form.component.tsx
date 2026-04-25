@@ -9,7 +9,7 @@ import { Button } from '../ui/button'
 import type { ServiceResponse } from '../../types/api/responses/service.response'
 import type { PatientResponse } from '../../types/api/responses/patient.response'
 import type { CreateAppointmentDto } from '../../types/api/request/create-appointment.dto'
-import type { AppointmentResponse } from '../../types/api/responses/appointment.response'
+import type { Appointment } from '@/types/models/appointment'
 
 interface FormData {
     date: string
@@ -28,7 +28,7 @@ const initialState: FormData = {
 }
 
 interface CreateAppointmentFormProps {
-    onSubmit: (newAppointment: AppointmentResponse) => void
+    onSubmit: (newAppointment: Appointment) => void
     onCancel?: () => void
 }
 

@@ -3,13 +3,14 @@ import { requestCreateAppointment, requestGetAppointments } from "../services/ap
 import type { ApiError } from "../types/api/responses/api-error";
 import type { AppointmentResponse } from "../types/api/responses/appointment.response";
 import type { CreateAppointmentDto } from "../types/api/request/create-appointment.dto";
+import type { Appointment } from "@/types/models/appointment";
 
 export function useAppointments() {
 
         const [error, setError] = useState<string | null>(null);
         const [loading, setLoading] = useState<boolean>(false);
 
-        async function getAppointments(): Promise<AppointmentResponse[]> {
+        async function getAppointments(): Promise<Appointment[]> {
 
                 setError(null);
                 setLoading(true);
@@ -18,7 +19,7 @@ export function useAppointments() {
                         .finally(() => setLoading(false));
         }
 
-        async function createAppointment(newAppointment: CreateAppointmentDto): Promise<AppointmentResponse> {
+        async function createAppointment(newAppointment: CreateAppointmentDto): Promise<Appointment> {
 
                 setError(null);
                 setLoading(true);
