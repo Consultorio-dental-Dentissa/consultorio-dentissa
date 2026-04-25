@@ -1,9 +1,11 @@
-import type { CreateServiceDto } from '../../types/api/request/create-service.dto'
-import { FieldGroup } from "@/components/ui/field"
-import { InputForm } from "@/components/common/input.component"
-import { PrimaryButton, SecondaryButton } from "../common/button.component"
 import { useForm } from "react-hook-form"
 import toast from 'react-hot-toast'
+
+import { FieldGroup } from "@/components/ui/field"
+import { InputForm } from "@/components/common/input.component"
+import { Button } from '../ui/button'
+
+import type { CreateServiceDto } from '../../types/api/request/create-service.dto'
 
 interface CreateServiceFormProps {
     onSubmit: (nuevoServicio: CreateServiceDto) => Promise<void>
@@ -125,12 +127,8 @@ export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps
             </FieldGroup>
 
             <div className="flex justify-end gap-2 mt-2">
-                <SecondaryButton message="Cancelar" onClick={onCancel} type="button" />
-                <PrimaryButton
-                    message={isSubmitting ? "Cargando..." : "Crear servicio"}
-                    disabled={isSubmitting}
-                    type="submit"
-                />
+                <Button variant="secondary" onClick={onCancel} type="button">Cancelar</Button>
+                <Button variant="primary" type="submit" disabled={isSubmitting}>Guardar servicio</Button>
             </div>
 
         </form>
