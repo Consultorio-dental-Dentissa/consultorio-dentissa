@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { usePatients } from "../../hooks/use-patients"
 import type { PatientResponse } from "../../types/api/responses/patient.response"
+import { formatPhone } from "@/utils/formatters"
 
 
 function iniciales(nombre: string, apellido: string) {
@@ -97,11 +98,11 @@ export default function PatientProfilePage() {
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Teléfono</span>
-                        <span className="perfil-row-val">{patient.user.phone}</span>
+                        <span className="perfil-row-val">{formatPhone(patient.user.phone)}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Tel. emergencia</span>
-                        <span className="perfil-row-val">{patient.emergency_phone}</span>
+                        <span className="perfil-row-val">{formatPhone(patient.emergency_phone)}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Dirección</span>

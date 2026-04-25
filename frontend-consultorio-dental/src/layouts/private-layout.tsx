@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 import { SidebarApp } from "@/components/common/sidebar.component"
 import { Header } from "@/components/common/header.component"
 import '../styles/theme.private.css';
+import { formatFirstLetterUppercase } from "@/utils/formatters"
 
 export default function PrivateLayout() {
 
@@ -21,7 +22,7 @@ export default function PrivateLayout() {
     }
 
     const username = `${user?.name} ${user?.lastname}`;
-    const role = user?.role;
+    const role = formatFirstLetterUppercase(user?.role);
 
     console.log("user: ", user);
     console.log("user role: ", role);

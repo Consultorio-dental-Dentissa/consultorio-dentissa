@@ -9,6 +9,7 @@ import { CreateUserModal } from "@/components/users/create-user-modal.component"
 import { Button } from "@/components/ui/button"
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
 import { PrimaryButton } from "@/components/common/button.component";
+import { formatFirstLetterUppercase, formatPhone } from "@/utils/formatters";
 
 export default function UsersPage() {
 
@@ -105,7 +106,7 @@ export default function UsersPage() {
                                 <tr key={usuario.id}>
                                     <td style={{ fontWeight: '600' }}>{usuario.name}</td>
                                     <td style={{ fontWeight: '500' }}>{usuario.lastname}</td>
-                                    <td>{usuario.phone}</td>
+                                    <td>{formatPhone(usuario.phone)}</td>
                                     <td>{usuario.email}</td>
 
                                     <td>
@@ -115,7 +116,7 @@ export default function UsersPage() {
                                         />
                                     </td>
 
-                                    <td>{usuario.role.role}</td>
+                                    <td>{formatFirstLetterUppercase(usuario.role.role)}</td>
 
                                     <td>
                                         <div className="actions">

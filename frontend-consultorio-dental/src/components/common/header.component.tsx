@@ -13,7 +13,7 @@ export function Header({ username, userRol }: HeaderProps) {
 
             <div className="flex-col justify-center">
                 <button className="text-black">{username}</button>
-                <p className="text-gray-500 text-xs">{userRol.toLocaleLowerCase()}</p>
+                <p className="text-gray-500 text-xs">{userRol}</p>
             </div>
         </div>
     );
