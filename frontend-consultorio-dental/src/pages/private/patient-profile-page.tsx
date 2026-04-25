@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import { usePatients } from "../../hooks/use-patients"
 import type { PatientResponse } from "../../types/api/responses/patient.response"
 import { formatPhone } from "@/utils/formatters"
+import { Badge } from "@/components/ui/badge"
 
 
 function iniciales(nombre: string, apellido: string) {
@@ -70,10 +71,7 @@ export default function PatientProfilePage() {
                                 {patient.user.name} {patient.user.lastname}
                             </h1>
                             <div className="perfil-meta">
-                                <span className="perfil-badge">
-                                    <span className="perfil-badge-dot" />
-                                    Paciente
-                                </span>
+                                <Badge variant="base">Paciente</Badge>
                                 <span className="perfil-id">
                                     #{patient.id.toString().padStart(4, '0')}
                                 </span>
