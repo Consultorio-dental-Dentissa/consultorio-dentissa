@@ -10,11 +10,11 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 
 import type { CreateServiceDto } from "@/types/api/request/create-service.dto";
-import type { ServiceResponse } from "../../types/api/responses/service.response";
+import type { Service } from "@/types/models/service";
 
 export default function ServicesPage() {
 
-    const [services, setServices] = useState<ServiceResponse[]>([]);
+    const [services, setServices] = useState<Service[]>([]);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const { getServices, createService, updateServiceStatus, loadingTable } = useServices();
 

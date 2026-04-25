@@ -1,5 +1,7 @@
 import { requestGetPatients, requestGetPatient } from "../services/patients.service"
 import { useState } from "react";
+
+import type { Patient } from "@/types/models/patient";
 import type { ApiError } from "../types/api/responses/api-error";
 
 export function usePatients() {
@@ -7,7 +9,7 @@ export function usePatients() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function getPatients() {
+    async function getPatients(): Promise<Patient[]> {
 
         setError(null);
         setLoading(true);
@@ -17,7 +19,7 @@ export function usePatients() {
             .finally(() => setLoading(false));
     }
 
-    async function getPatient(id: number) {
+    async function getPatient(id: number): Promise<Patient> {
         return await requestGetPatient(id);
     }
 
