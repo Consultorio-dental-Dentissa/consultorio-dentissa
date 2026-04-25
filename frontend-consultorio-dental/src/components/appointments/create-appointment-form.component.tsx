@@ -6,8 +6,8 @@ import { useAppointments } from '../../hooks/use-appointments'
 
 import { Button } from '../ui/button'
 
-import type { ServiceResponse } from '../../types/api/responses/service.response'
-import type { PatientResponse } from '../../types/api/responses/patient.response'
+import type { ServiceResponse } from '@/types/api/responses/service.response'
+import type { Patient } from '@/types/models/patient'
 import type { CreateAppointmentDto } from '../../types/api/request/create-appointment.dto'
 import type { Appointment } from '@/types/models/appointment'
 
@@ -37,7 +37,7 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
     const [form, setForm] = useState<FormData>(initialState);
 
     const [services, setServices] = useState<ServiceResponse[]>([]);
-    const [patients, setPatients] = useState<PatientResponse[]>([]);
+    const [patients, setPatients] = useState<Patient[]>([]);
 
     const { createAppointment, loading, error } = useAppointments();
     const { getServices } = useServices();
@@ -151,7 +151,7 @@ export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppo
                                 {
                                     patients.map((paciente) => {
                                         return (
-                                            <option value={paciente.id}>{paciente.user.name} {paciente.user.lastname} | {paciente.user.email}</option>
+                                            <option value={paciente.id}>{paciente.name} {paciente.lastname} | {paciente.email}</option>
                                         )
                                     })
                                 }

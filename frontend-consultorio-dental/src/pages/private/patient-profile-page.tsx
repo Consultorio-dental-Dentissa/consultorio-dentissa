@@ -1,21 +1,13 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { usePatients } from "../../hooks/use-patients"
-import type { PatientResponse } from "../../types/api/responses/patient.response"
 import { formatPhone } from "@/utils/formatters"
 import { Badge } from "@/components/ui/badge"
 
+import type { Patient } from "@/types/models/patient"
 
 function iniciales(nombre: string, apellido: string) {
     return `${nombre[0]}${apellido[0]}`.toUpperCase()
-}
-
-function formatearFecha(fecha: string) {
-    return new Date(fecha).toLocaleDateString('es-MX', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-    })
 }
 
 const IconContacto = () => (
@@ -36,7 +28,7 @@ export default function PatientProfilePage() {
     const idPatient = Number(id)
     const navigate = useNavigate()
     const { getPatient } = usePatients()
-    const [patient, setPatient] = useState<PatientResponse | null>(null);
+    const [patient, setPatient] = useState<Patient | null>(null);
 
     useEffect(() => {
         async function fetchPatientData() {
@@ -64,11 +56,11 @@ export default function PatientProfilePage() {
                 <div className="perfil-hero">
                     <div className="perfil-hero-left">
                         <div className="perfil-avatar">
-                            {iniciales(patient.user.name, patient.user.lastname)}
+                            {iniciales(patient.name, patient.lastname)}
                         </div>
                         <div>
                             <h1 className="perfil-nombre">
-                                {patient.user.name} {patient.user.lastname}
+                                {patient.name} {patient.lastname}
                             </h1>
                             <div className="perfil-meta">
                                 <Badge variant="base">Paciente</Badge>
@@ -92,11 +84,11 @@ export default function PatientProfilePage() {
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Correo</span>
-                        <span className="perfil-row-val">{patient.user.email}</span>
+                        <span className="perfil-row-val">{patient.email}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Teléfono</span>
-                        <span className="perfil-row-val">{formatPhone(patient.user.phone)}</span>
+                        <span className="perfil-row-val">{formatPhone(patient.phone)}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Tel. emergencia</span>
@@ -115,7 +107,7 @@ export default function PatientProfilePage() {
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">Fecha de nacimiento</span>
-                        <span className="perfil-row-val">{formatearFecha(patient.birth_date)}</span>
+                        <span className="perfil-row-val">{patient.birth_date.toDateString()}</span>
                     </div>
                     <div className="perfil-row">
                         <span className="perfil-row-key">ID paciente</span>

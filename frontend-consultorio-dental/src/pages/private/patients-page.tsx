@@ -9,10 +9,11 @@ import EmptyTable from "../../components/common/empty-table.component";
 import { Button } from "@/components/ui/button";
 
 import type { PatientResponse } from "../../types/api/responses/patient.response";
+import type { Patient } from "@/types/models/patient";
 
 export default function PatientsPage() {
 
-    const [patients, setPatients] = useState<PatientResponse[]>([])
+    const [patients, setPatients] = useState<Patient[]>([])
     const { getPatients, loading } = usePatients();
     const navigate = useNavigate();
 
@@ -69,10 +70,10 @@ export default function PatientsPage() {
 
                                 return (
                                     <tr key={paciente.id}>
-                                        <td>{paciente.user.name}</td>
-                                        <td>{paciente.user.lastname}</td>
-                                        <td>{paciente.user.email}</td>
-                                        <td>{formatPhone(paciente.user.phone)}</td>
+                                        <td>{paciente.name}</td>
+                                        <td>{paciente.lastname}</td>
+                                        <td>{paciente.email}</td>
+                                        <td>{formatPhone(paciente.phone)}</td>
                                         <td>{formatPhone(paciente.emergency_phone)}</td>
                                         <td>{birthDate.toLocaleDateString('es-MX')}</td>
                                         <td>{paciente.address}</td>
