@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { requestUpdateStatusUser, requestRegisterUser, requestGetUsers } from "../services/users.service"
+
 import type { CreateUserDto } from "../types/api/request/create-user.dto";
 import type { ApiError } from "../types/api/responses/api-error";
-import type { UserResponse } from "../types/api/responses/user.response";
+import type { User } from "@/types/models/user"
 
 export function useUsers() {
 
@@ -10,7 +11,7 @@ export function useUsers() {
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function getUsers(): Promise<UserResponse[]> {
+    async function getUsers(): Promise<User[]> {
 
         setError(null);
         setLoadingTable(true)
@@ -20,7 +21,7 @@ export function useUsers() {
             .finally(() => setLoadingTable(false));
     }
 
-    async function registerUser(user: CreateUserDto): Promise<UserResponse> {
+    async function registerUser(user: CreateUserDto): Promise<User> {
 
         setError(null);
         setLoading(true);
