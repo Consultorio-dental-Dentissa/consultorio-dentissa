@@ -10,12 +10,13 @@ import { Switch } from "@/components/ui/switch";
 import { formatFirstLetterUppercase, formatPhone } from "@/utils/formatters";
 import toast from "react-hot-toast";
 
-import type { UserResponse } from "../../types/api/responses/user.response";
+import type { UserResponse } from "@/types/api/responses/user.response";
+import type { User } from "@/types/models/user";
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
 
 export default function UsersPage() {
 
-    const [users, setUsers] = useState<UserResponse[]>([])
+    const [users, setUsers] = useState<User[]>([])
     const [openModal, setOpenModal] = useState(false);
 
     const { getUsers, updateUserStatus, registerUser, loadingTable } = useUsers();
@@ -114,7 +115,7 @@ export default function UsersPage() {
                                         <Switch checked={usuario.status} onClick={() => handleUpdatedUserStatus(usuario.id, !usuario.status)}/>
                                     </td>
 
-                                    <td>{formatFirstLetterUppercase(usuario.role.role)}</td>
+                                    <td>{formatFirstLetterUppercase(usuario.role)}</td>
 
                                     <td>
                                         <div className="actions">

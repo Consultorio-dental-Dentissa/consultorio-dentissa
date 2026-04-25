@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button"
 import { useAppointments } from "@/hooks/use-appointments";
 import { AppointmentList } from "@/components/appointments/appointment-list.component";
 
-import { AppointmentMap } from "@/types/mappers/appointment.mapper";
-
 import type { Appointment } from "@/types/models/appointment";
 
 export default function AppointmentsPage() {
@@ -20,8 +18,7 @@ export default function AppointmentsPage() {
         async function fetchAppointments() {
             try {
                 const appointments = await getAppointments();
-                const appointmentsMap = appointments.map(appointment => AppointmentMap(appointment));
-                setAppointments(appointmentsMap);
+                setAppointments(appointments);
 
             } catch(error) {
                 toast.error(error as string);
