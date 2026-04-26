@@ -8,7 +8,7 @@ export interface HeaderProps {
 export function Header({ username, userRol }: HeaderProps) {
 
     return (
-        <div className="h-16 bg-white-50 px-5 flex flex-row items-center justify-between">
+        <div className="h-16 bg-gray-100 border-b px-5 flex flex-row items-center justify-between">
             <SidebarTrigger className="text-black" />
 
             <div className="flex-col justify-center">
