@@ -97,7 +97,7 @@ export default function UsersPage() {
                 </Button>
             </div>
 
-            <div className="bg-white rounded-sm p-3 mt-5">
+            <div className="bg-white rounded-sm p-3 mt-5 shadow-card">
                 <Button variant="ghost" onClick={() => filterUsers('all')}>
                     Todos
                 </Button>
