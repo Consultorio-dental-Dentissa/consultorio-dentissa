@@ -70,7 +70,7 @@ export default function UsersPage() {
         try {
             const response = await updateUserStatus(id, status);
             if (response) {
-                setAllUsers(prev => 
+                setAllUsers(prev =>
                     prev.map(user => user.id === id ? { ...user, status: status } : user)
                 );
                 toast.success('El estado se actualizó correctamente');
@@ -82,6 +82,9 @@ export default function UsersPage() {
     }
 
     const columns = useMemo(() => getColumns(handleUpdatedUserStatus), []);
+    const roles: Array<[string, string]> = Object.entries(Role);
+    roles.push(['all', 'Todos']);
+    roles.unshift(roles.pop()!);
 
     return (
         <div>
@@ -98,12 +101,9 @@ export default function UsersPage() {
             </div>
 
             <div className="bg-white rounded-sm p-3 mt-5 shadow-card">
-                <Button variant="ghost" onClick={() => filterUsers('all')}>
-                    Todos
-                </Button>
-                {Object.values(Role).map(role => (
-                    <Button variant="ghost" onClick={() => filterUsers(role)}>
-                        {formatFirstLetterUppercase(role)}
+                {roles.map(role => (
+                    <Button variant={`${selectedRole === role[0] ? 'selectedGhost' : 'ghost'}`} onClick={() => filterUsers(role[0])}>
+                        {formatFirstLetterUppercase(role[1])}
                     </Button>
                 ))}
             </div>
@@ -115,15 +115,15 @@ export default function UsersPage() {
                             <h2>Cargando...</h2>
                         </div>
                         :
-                    !filteredUsers.length ?
-                        <div className="bg-white rounded-sm p-5 flex justify-center">
-                            <h2>No se encontrarón usuarios.</h2>
-                        </div>
-                        :
-                        <DataTable
-                            columns={columns}
-                            data={filteredUsers}
-                        />
+                        !filteredUsers.length ?
+                            <div className="bg-white rounded-sm p-5 flex justify-center">
+                                <h2>No se encontrarón usuarios.</h2>
+                            </div>
+                            :
+                            <DataTable
+                                columns={columns}
+                                data={filteredUsers}
+                            />
                 }
 
             </div>
