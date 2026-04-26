@@ -10,8 +10,15 @@ import { IoNotifications } from "react-icons/io5"
 import { BiSolidOffer } from "react-icons/bi"
 import { FaQuestion } from "react-icons/fa"
 import { FaTooth } from "react-icons/fa";
+import type { IconType } from "react-icons/lib"
 
-const businessItems = [
+interface BusinessItem {
+    href: string;
+    label: string;
+    icon: IconType;
+}
+
+const businessItems: BusinessItem[] = [
     { href: '/dashboard', label: 'Resumen', icon: MdDashboard },
     { href: '/usuarios', label: 'Usuarios', icon: MdPeople },
     { href: '/pacientes', label: 'Pacientes', icon: FaUserMd },
@@ -20,7 +27,7 @@ const businessItems = [
     { href: '/servicios', label: 'Servicios', icon: MdMedicalServices },
 ]
 
-const publicityItems = [
+const publicityItems: BusinessItem[] = [
     { href: '/preguntas', label: 'Preguntas frecuentes', icon: FaQuestion },
     { href: '/ofertas', label: 'Ofertas', icon: BiSolidOffer },
     { href: '/notificaciones', label: 'Notificaciones', icon: IoNotifications },
@@ -35,43 +42,25 @@ export function SidebarApp({ logout }: SidebarAppProps) {
         <Sidebar className="border-none">
             <SidebarHeader className="mt-3 flex flex-row justify-center items-center gap-1">
                 <div className="bg-white p-2 rounded-sm">
-                    <FaTooth className="text-rose-400 text-xl" />
+                    <FaTooth className="text-rose-600 text-xl" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Consultorio</h2>
+                <h2 className="text-2xl font-bold text-white">Dentissa</h2>
             </SidebarHeader>
 
-            <SidebarContent className="text-white">
+            <SidebarContent className="text-black">
                 <SidebarGroup>
                     <SidebarGroupLabel className="mt-5 text-white">Manejo de negocio</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenu>
-                            {businessItems.map((item) => (
-                                <SidebarMenuItem key={item.href}>
-                                    <SidebarMenuButton asChild className="py-5 hover:text-rose-500 active:text-rose-600 font-medium">
-                                        <a href={item.href} className="flex items-center gap-3">
-                                            <item.icon size={18} />
-                                            {item.label}
-                                        </a>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
+                        <SidebarMenuComponent 
+                            items={businessItems}
+                        />
                     </SidebarGroupContent>
 
                     <SidebarGroupLabel className="mt-5 text-white">Publicidad</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenu>
-                            {publicityItems.map((item) => (
-                                <SidebarMenuItem key={item.href}>
-                                    <SidebarMenuButton asChild className="py-5 hover:text-rose-500 font-medium active:text-rose-600">
-                                        <a href={item.href} className="flex items-center gap-3">
-                                            <item.icon size={18} />
-                                            {item.label}
-                                        </a>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
+                        <SidebarMenuComponent 
+                            items={publicityItems}
+                        />
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
@@ -86,5 +75,31 @@ export function SidebarApp({ logout }: SidebarAppProps) {
                 </button>
             </SidebarFooter>
         </Sidebar>
+    )
+}
+
+interface SidebarMenuComponentProps {
+    items: BusinessItem[]
+}
+function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
+
+    const currentUrl = new URL(window.location.href).pathname.toString();
+    const activeStyles = 'bg-white text-rose-600';
+
+    return (
+        <SidebarMenu className="flex-col gap-1">
+            {items.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild className={
+                        `text-white py-5 hover:text-rose-600 hover:bg-white ${currentUrl === item.href && activeStyles}`
+                        }>
+                        <a href={item.href} className="flex items-center gap-3">
+                            <item.icon size={18} />
+                            {item.label}
+                        </a>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            ))}
+        </SidebarMenu>
     )
 }
