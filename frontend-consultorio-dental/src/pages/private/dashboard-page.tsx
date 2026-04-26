@@ -7,8 +7,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
 
   return (
-    <div>
-
+    <>
       <PageTitle
         titulo={`Bienvenid@, ${user && user.name}`}
         subtitulo="Aqui esta el resumen de tu consultorio dental"
@@ -17,17 +16,18 @@ export default function DashboardPage() {
       <CardSection />
 
       {/* Aqui ira la seccion de las citas */}
-      <section>
+      <section className="flex flex-col gap-5 mt-5">
+
         <div className="contenedor-seccion-titulo">
-          <h3>Citas pendientes</h3>
-          <h4>Aqui puedes ver las citas que tienes pendientes para el dia de hoy</h4>
+          <h3 className="font-bold text-xl">Citas pendientes</h3>
+          <h4 className="font-base">Aqui puedes ver las citas que tienes pendientes para el dia de hoy</h4>
         </div>
 
-        <div className="contenedor-citas-de-hoy">
-
+        <div className="bg-white p-5 rounded-md h-[500px]">
+          
         </div>
-        
+
       </section>
-    </div>
+    </>
   )
 }

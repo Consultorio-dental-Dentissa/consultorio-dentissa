@@ -41,7 +41,7 @@ export default function AppointmentsPage() {
                 </div>
             </div>
 
-            <div className="flex flex-row justify-between bg-white w-full px-5 py-3 mt-5 rounded-xl shadow-[0_2px_10px_0px_rgba(0,0,0,0.15)]">
+            <div className="flex flex-row justify-between bg-white w-full px-5 py-3 mt-5 rounded-md shadow-card">
                 <div className="flex flex-row gap-5">
                     <Button variant="ghost">Todos</Button>
                     <Button variant="ghost">Pendientes</Button>

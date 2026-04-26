@@ -3,7 +3,6 @@ import { useAuth } from "../context/auth-context-provider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { SidebarApp } from "@/components/common/sidebar.component"
 import { Header } from "@/components/common/header.component"
-import '../styles/theme.private.css';
 import { formatFirstLetterUppercase } from "@/utils/formatters"
 
 export default function PrivateLayout() {
@@ -24,24 +23,19 @@ export default function PrivateLayout() {
     const username = `${user?.name} ${user?.lastname}`;
     const role = formatFirstLetterUppercase(user?.role);
 
-    console.log("user: ", user);
-    console.log("user role: ", role);
-
     return (
-        <div>
-
+        <div className="h-screen overflow-hidden">
             <SidebarProvider>
-
                 <SidebarApp
                     logout={handleLogout}
                 />
 
-                <main className="flex-1 min-w-0 px-3">
+                <main className="flex-1 min-w-0 h-screen flex flex-col">
                     <Header
                         username={username}
-                        userRol={role ? role : ''}
+                        userRol={role || ''}
                     />
-                    <div className="px-7 py-7 bg-gray-100 h-full rounded-2xl">
+                    <div className="bg-gray-100 px-7 py-7 overflow-y-auto flex-1">
                         <Outlet />
                     </div>
                 </main>
