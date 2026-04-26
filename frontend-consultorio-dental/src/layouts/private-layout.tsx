@@ -27,20 +27,18 @@ export default function PrivateLayout() {
     console.log("user role: ", role);
 
     return (
-        <div>
-
+        <div className="h-screen overflow-hidden">
             <SidebarProvider>
-
                 <SidebarApp
                     logout={handleLogout}
                 />
 
-                <main className="flex-1 min-w-0 px-3">
+                <main className="flex-1 min-w-0 px-3 h-screen flex flex-col pb-5">
                     <Header
                         username={username}
                         userRol={role ? role : ''}
                     />
-                    <div className="px-7 py-7 bg-gray-100 h-full rounded-2xl">
+                    <div className="px-7 py-7 bg-gray-100 rounded-2xl overflow-y-auto flex-1">
                         <Outlet />
                     </div>
                 </main>
