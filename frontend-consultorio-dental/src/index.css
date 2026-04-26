@@ -48,7 +48,6 @@
 
   /* My styles */
   --shadow-card: 0 2px 10px 0px rgba(0, 0, 0, 0.15);
-  --radius-card: 8px; 
 }
 
 :root {
@@ -84,9 +83,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --sidebar: oklch(0.7 0.2 10);
+  --sidebar: oklch(0.712 0.194 13.428);
 
-  --sidebar-accent: oklch(100% 0.00011 271.152);
+  --sidebar-accent: oklch(93.705% 0.00011 271.152);
   /* --sidebar: oklch(100% 0.00011 271.152); */
 }
 

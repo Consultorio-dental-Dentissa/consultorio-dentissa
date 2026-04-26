@@ -42,7 +42,7 @@ export function SidebarApp({ logout }: SidebarAppProps) {
         <Sidebar className="border-none">
             <SidebarHeader className="mt-3 flex flex-row justify-center items-center gap-1">
                 <div className="bg-white p-2 rounded-sm">
-                    <FaTooth className="text-rose-600 text-xl" />
+                    <FaTooth className="text-rose-400 text-xl" />
                 </div>
                 <h2 className="text-2xl font-bold text-white">Dentissa</h2>
             </SidebarHeader>
@@ -91,7 +91,7 @@ function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
             {items.map((item) => (
                 <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton asChild className={
-                        `text-white py-5 hover:text-rose-600 hover:bg-white ${currentUrl === item.href && activeStyles}`
+                        `text-white font-medium py-5 active:text-rose-600 hover:bg-white hover:text-rose-600 active:text-rose-600 active:bg-white ${currentUrl === item.href && activeStyles}`
                         }>
                         <a href={item.href} className="flex items-center gap-3">
                             <item.icon size={18} />
