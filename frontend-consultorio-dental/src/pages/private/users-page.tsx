@@ -108,7 +108,7 @@ export default function UsersPage() {
                 ))}
             </div>
 
-            <div className="bg-white mt-5">
+            <div className="bg-white rounded-md mt-5 shadow-card">
                 {
                     loadingTable ?
                         <div className="bg-white rounded-sm p-5 flex justify-center">
