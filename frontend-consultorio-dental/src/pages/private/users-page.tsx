@@ -1,52 +1,65 @@
-import { useEffect, useState } from "react";
-import { useUsers } from "../../hooks/use-users";
+import { useEffect, useState, useMemo } from "react";
+import { useUsers } from "@/hooks/use-users";
 
-import { PageTitle } from "../../components/common/page-title.component";
-import { CreateUserModal } from "@/components/users/create-user-modal.component";
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/common/data-table.component";
-
+import { PageTitle } from "@/components/common/page-title.component";
+import { CreateUserModal } from "@/components/users/create-user-modal.component";
 import toast from "react-hot-toast";
+import { Role } from "@/types/enums/rol.enum";
+import { getColumns } from "@/components/users/data-table-colums.component";
+import { formatFirstLetterUppercase } from "@/utils/formatters";
 
 import type { User } from "@/types/models/user";
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
-import { getColumns } from "@/components/users/data-table-colums.component";
 
 export default function UsersPage() {
 
-    const [users, setUsers] = useState<User[]>([])
+    const [allUsers, setAllUsers] = useState<User[]>([]);
+    const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+    const [selectedRole, setSelectedRole] = useState<string>('all');
     const [openModal, setOpenModal] = useState(false);
-    const [loadingTable, setLoadingTable] = useState(false);
 
-    const { getUsers, updateUserStatus, registerUser } = useUsers();
+    const { getUsers, updateUserStatus, registerUser, loadingTable } = useUsers();
 
     useEffect(() => {
 
         async function fetchUsers() {
             try {
-                setLoadingTable(true);
                 const users = await getUsers();
-                setUsers(users);
-                
+                setAllUsers(users);
+                setFilteredUsers(users);
+
             } catch (error) {
                 toast.error((error as string))
-
-            }
-            finally {
-                setLoadingTable(false);
             }
         }
 
         fetchUsers();
     }, []);
 
+    function filterUsers(role: string) {
+
+        setSelectedRole(role);
+
+        if (role === 'all') {
+            setFilteredUsers(allUsers);
+        } else {
+            setFilteredUsers(allUsers.filter(user => user.role === role));
+        }
+    }
+
+    useEffect(() => {
+        filterUsers(selectedRole);
+    }, [allUsers]);
+
 
     const handleAddUser = async (userData: CreateUserDto) => {
         try {
             const user = await registerUser(userData);
-            setUsers(prev => [...prev, user]);
-            setOpenModal(false);
+            setAllUsers(prev => [...prev, user]);
             toast.success(`El usuario ${user.name} ha sido registrado correctamente.`);
+            setOpenModal(false);
 
         } catch (error) {
             toast.error((error as string));
@@ -55,9 +68,11 @@ export default function UsersPage() {
 
     const handleUpdatedUserStatus = async (id: number, status: boolean) => {
         try {
-            const statusRes = await updateUserStatus(id, status);
-            if (statusRes) {
-                setUsers(prev => prev.map(user => user.id === id ? { ...user, status: status } : user));
+            const response = await updateUserStatus(id, status);
+            if (response) {
+                setAllUsers(prev => 
+                    prev.map(user => user.id === id ? { ...user, status: status } : user)
+                );
                 toast.success('El estado se actualizó correctamente');
             }
 
@@ -66,7 +81,7 @@ export default function UsersPage() {
         }
     }
 
-    const columns = getColumns(handleUpdatedUserStatus);
+    const columns = useMemo(() => getColumns(handleUpdatedUserStatus), []);
 
     return (
         <div>
@@ -82,25 +97,33 @@ export default function UsersPage() {
                 </Button>
             </div>
 
+            <div className="bg-white rounded-sm p-3 mt-5">
+                <Button variant="ghost" onClick={() => filterUsers('all')}>
+                    Todos
+                </Button>
+                {Object.values(Role).map(role => (
+                    <Button variant="ghost" onClick={() => filterUsers(role)}>
+                        {formatFirstLetterUppercase(role)}
+                    </Button>
+                ))}
+            </div>
+
             <div className="bg-white mt-5">
                 {
-                    loadingTable ? 
+                    loadingTable ?
                         <div className="bg-white rounded-sm p-5 flex justify-center">
                             <h2>Cargando...</h2>
                         </div>
                         :
-                    users.length > 0 ?
-                        <DataTable
-                            columns={columns}
-                            data={users}
-                        />
-                        :
-                    !loadingTable && !users.length ?
+                    !filteredUsers.length ?
                         <div className="bg-white rounded-sm p-5 flex justify-center">
                             <h2>No se encontrarón usuarios.</h2>
                         </div>
                         :
-                        ''
+                        <DataTable
+                            columns={columns}
+                            data={filteredUsers}
+                        />
                 }
 
             </div>
