@@ -23,9 +23,6 @@ export default function PrivateLayout() {
     const username = `${user?.name} ${user?.lastname}`;
     const role = formatFirstLetterUppercase(user?.role);
 
-    console.log("user: ", user);
-    console.log("user role: ", role);
-
     return (
         <div className="h-screen overflow-hidden">
             <SidebarProvider>
@@ -33,12 +30,12 @@ export default function PrivateLayout() {
                     logout={handleLogout}
                 />
 
-                <main className="flex-1 min-w-0 px-3 h-screen flex flex-col pb-5">
+                <main className="flex-1 min-w-0 h-screen flex flex-col">
                     <Header
                         username={username}
-                        userRol={role ? role : ''}
+                        userRol={role || ''}
                     />
-                    <div className="px-7 py-7 bg-gray-100 rounded-2xl overflow-y-auto flex-1">
+                    <div className="bg-gray-100 px-7 py-7 overflow-y-auto flex-1">
                         <Outlet />
                     </div>
                 </main>
