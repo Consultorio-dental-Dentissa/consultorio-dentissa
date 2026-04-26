@@ -3,7 +3,6 @@ import { useAuth } from "../context/auth-context-provider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { SidebarApp } from "@/components/common/sidebar.component"
 import { Header } from "@/components/common/header.component"
-import '../styles/theme.private.css';
 import { formatFirstLetterUppercase } from "@/utils/formatters"
 
 export default function PrivateLayout() {
