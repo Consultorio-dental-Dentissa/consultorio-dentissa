@@ -9,6 +9,7 @@ export function userMap(data: UserResponse): User {
         email: data.email,
         phone: data.phone,
         status: data.status,
+        created_at: new Date(data.created_at),
         id: data.id
     }
 }

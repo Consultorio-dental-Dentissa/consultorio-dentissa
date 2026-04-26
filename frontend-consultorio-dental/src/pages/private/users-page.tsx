@@ -1,22 +1,23 @@
-import { useEffect, useState } from "react";
-import { useUsers } from "../../hooks/use-users";
+import { useEffect, useState, useMemo } from "react";
+import { useUsers } from "@/hooks/use-users";
 
-import { PageTitle } from "../../components/common/page-title.component";
-import EmptyTable from "../../components/common/empty-table.component";
-import { CreateUserModal } from "@/components/users/create-user-modal.component";
 import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch";
-
-import { formatFirstLetterUppercase, formatPhone } from "@/utils/formatters";
+import { DataTable } from "@/components/common/data-table.component";
+import { PageTitle } from "@/components/common/page-title.component";
+import { CreateUserModal } from "@/components/users/create-user-modal.component";
 import toast from "react-hot-toast";
+import { Role } from "@/types/enums/rol.enum";
+import { getColumns } from "@/components/users/data-table-colums.component";
+import { formatFirstLetterUppercase } from "@/utils/formatters";
 
-import type { UserResponse } from "@/types/api/responses/user.response";
 import type { User } from "@/types/models/user";
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
 
 export default function UsersPage() {
 
-    const [users, setUsers] = useState<User[]>([])
+    const [allUsers, setAllUsers] = useState<User[]>([]);
+    const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+    const [selectedRole, setSelectedRole] = useState<string>('all');
     const [openModal, setOpenModal] = useState(false);
 
     const { getUsers, updateUserStatus, registerUser, loadingTable } = useUsers();
@@ -26,7 +27,9 @@ export default function UsersPage() {
         async function fetchUsers() {
             try {
                 const users = await getUsers();
-                setUsers(users);
+                setAllUsers(users);
+                setFilteredUsers(users);
+
             } catch (error) {
                 toast.error((error as string))
             }
@@ -35,32 +38,50 @@ export default function UsersPage() {
         fetchUsers();
     }, []);
 
+    function filterUsers(role: string) {
 
-    const handleNewUser = async (user: CreateUserDto) => {
+        setSelectedRole(role);
+
+        if (role === 'all') {
+            setFilteredUsers(allUsers);
+        } else {
+            setFilteredUsers(allUsers.filter(user => user.role === role));
+        }
+    }
+
+    useEffect(() => {
+        filterUsers(selectedRole);
+    }, [allUsers]);
+
+
+    const handleAddUser = async (userData: CreateUserDto) => {
         try {
-            const newUser = await registerUser(user);
-            setUsers(prev => [...prev, newUser]);
+            const user = await registerUser(userData);
+            setAllUsers(prev => [...prev, user]);
+            toast.success(`El usuario ${user.name} ha sido registrado correctamente.`);
             setOpenModal(false);
-            toast.success('Se ha creado un nuevo usuario');
 
         } catch (error) {
             toast.error((error as string));
         }
     }
 
-    const handleUpdatedUserStatus = async (id: number, newStatus: boolean) => {
-
+    const handleUpdatedUserStatus = async (id: number, status: boolean) => {
         try {
-            await updateUserStatus(id, newStatus);
-            setUsers(prev => {
-                return prev.map(u => u.id === id ? { ...u, status: newStatus } : u)
-            });
+            const response = await updateUserStatus(id, status);
+            if (response) {
+                setAllUsers(prev => 
+                    prev.map(user => user.id === id ? { ...user, status: status } : user)
+                );
+                toast.success('El estado se actualizó correctamente');
+            }
 
-            toast.success('El estado se actualizó correctamente');
         } catch (error) {
             toast.error((error as string))
         }
     }
+
+    const columns = useMemo(() => getColumns(handleUpdatedUserStatus), []);
 
     return (
         <div>
@@ -76,64 +97,41 @@ export default function UsersPage() {
                 </Button>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Teléfono</th>
-                        <th>Correo</th>
-                        <th>Estado</th>
-                        <th>Rol</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div className="bg-white rounded-sm p-3 mt-5">
+                <Button variant="ghost" onClick={() => filterUsers('all')}>
+                    Todos
+                </Button>
+                {Object.values(Role).map(role => (
+                    <Button variant="ghost" onClick={() => filterUsers(role)}>
+                        {formatFirstLetterUppercase(role)}
+                    </Button>
+                ))}
+            </div>
 
-                    {
-                        loadingTable ? (
-                            <EmptyTable
-                                mensaje="Cargando..."
-                                submensaje="Buscando usuarios"
-                                colSpan={7}
-                            />
-                        ) : users.length === 0 ? (
-                            <EmptyTable
-                                mensaje="No se encontraron usuarios"
-                                submensaje="Intenta agregar un nuevo usuario"
-                                colSpan={7}
-                            />
-                        ) : (
-                            users.map((usuario) => (
-                                <tr key={usuario.id}>
-                                    <td style={{ fontWeight: '600' }}>{usuario.name}</td>
-                                    <td style={{ fontWeight: '500' }}>{usuario.lastname}</td>
-                                    <td>{formatPhone(usuario.phone)}</td>
-                                    <td>{usuario.email}</td>
+            <div className="bg-white mt-5">
+                {
+                    loadingTable ?
+                        <div className="bg-white rounded-sm p-5 flex justify-center">
+                            <h2>Cargando...</h2>
+                        </div>
+                        :
+                    !filteredUsers.length ?
+                        <div className="bg-white rounded-sm p-5 flex justify-center">
+                            <h2>No se encontrarón usuarios.</h2>
+                        </div>
+                        :
+                        <DataTable
+                            columns={columns}
+                            data={filteredUsers}
+                        />
+                }
 
-                                    <td>
-                                        <Switch checked={usuario.status} onClick={() => handleUpdatedUserStatus(usuario.id, !usuario.status)}/>
-                                    </td>
-
-                                    <td>{formatFirstLetterUppercase(usuario.role)}</td>
-
-                                    <td>
-                                        <div className="actions">
-                                            <Button variant="secondary">Editar</Button>
-                                            <Button variant="destructive">Eliminar</Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        )
-                    }
-                </tbody>
-            </table>
+            </div>
 
             <CreateUserModal
                 open={openModal}
                 onClose={() => setOpenModal(false)}
-                onSubmit={handleNewUser}
+                onSubmit={handleAddUser}
             />
 
         </div>
