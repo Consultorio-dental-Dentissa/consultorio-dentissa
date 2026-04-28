@@ -42,7 +42,7 @@ export function SidebarApp({ logout }: SidebarAppProps) {
         <Sidebar className="border-none">
             <SidebarHeader className="mt-3 flex flex-row justify-center items-center gap-1">
                 <div className="bg-white p-2 rounded-sm">
-                    <FaTooth className="text-rose-400 text-xl" />
+                    <FaTooth className="text-sidebar text-xl" />
                 </div>
                 <h2 className="text-2xl font-bold text-white">Dentissa</h2>
             </SidebarHeader>
@@ -51,14 +51,14 @@ export function SidebarApp({ logout }: SidebarAppProps) {
                 <SidebarGroup>
                     <SidebarGroupLabel className="mt-5 text-white">Manejo de negocio</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenuComponent 
+                        <SidebarMenuComponent
                             items={businessItems}
                         />
                     </SidebarGroupContent>
 
                     <SidebarGroupLabel className="mt-5 text-white">Publicidad</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenuComponent 
+                        <SidebarMenuComponent
                             items={publicityItems}
                         />
                     </SidebarGroupContent>
@@ -84,15 +84,14 @@ interface SidebarMenuComponentProps {
 function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
 
     const currentUrl = new URL(window.location.href).pathname.toString();
-    const activeStyles = 'bg-white text-rose-600';
+    const activeStyles = 'bg-sidebar-accent text-sidebar';
 
     return (
         <SidebarMenu className="flex-col gap-1">
             {items.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild className={
-                        `text-white font-medium py-5 active:text-rose-600 hover:bg-white hover:text-rose-600 active:text-rose-600 active:bg-white ${currentUrl === item.href && activeStyles}`
-                        }>
+                    <SidebarMenuButton asChild className={`text-white font-medium py-5 active:text-sidebar active:bg-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar ${currentUrl === item.href && activeStyles}`
+                    }>
                         <a href={item.href} className="flex items-center gap-3">
                             <item.icon size={18} />
                             {item.label}
