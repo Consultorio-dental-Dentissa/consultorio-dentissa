@@ -1,7 +1,6 @@
 import type { CreateUserDto } from '../types/api/request/create-user.dto';
 import { requestRegister } from '../services/auth.service';
 import { useState } from 'react';
-import type { ApiError } from '../types/api/responses/api-error';
 
 export function useRegister() {
 
@@ -19,7 +18,7 @@ export function useRegister() {
         setLoading(true);
 
         return await requestRegister(user)
-            .catch((error: ApiError) => {setError(error.message); throw error.message;})
+            .catch((error: Error) => {setError(error.message); throw error.message;})
             .finally(() => setLoading(false));
     }
 

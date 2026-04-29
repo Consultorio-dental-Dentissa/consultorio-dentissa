@@ -2,7 +2,6 @@ import { useState } from "react";
 import { requestGetServices, requestUpdateServiceStatus, requestCreateService } from "../services/services.service";
 
 import type { Service } from "@/types/models/service";
-import type { ApiError } from "../types/api/responses/api-error";
 import type { CreateServiceDto } from "../types/api/request/create-service.dto";
 
 export function useServices() {
@@ -17,7 +16,7 @@ export function useServices() {
         setLoading(true);
 
         return await requestCreateService(createService)
-            .catch((error: ApiError) => {setError(error.message); console.log(error); throw error.message;})
+            .catch((error: Error) => {setError(error.message); console.log(error); throw error.message;})
             .finally(() => setLoading(false));
     }
 
@@ -27,7 +26,7 @@ export function useServices() {
         setLoadingTable(true);
 
         return await requestGetServices()
-            .catch((error: ApiError) => {setError(error.message); throw error.message})
+            .catch((error: Error) => {setError(error.message); throw error.message})
             .finally(() => setLoadingTable(false));
     }
 
@@ -36,7 +35,7 @@ export function useServices() {
         setError(null);
 
         return await requestUpdateServiceStatus(id, status)
-            .catch((error: ApiError) => {setError(error.message); throw error.message})
+            .catch((error: Error) => {setError(error.message); throw error.message})
     }
 
     return { getServices, updateServiceStatus, createService, loading, loadingTable, error }
