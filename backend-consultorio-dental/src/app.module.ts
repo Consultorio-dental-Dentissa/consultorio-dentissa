@@ -9,6 +9,7 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { SecurityModule } from './infrastructure/security/security.module';
 import { ServicesModule } from './modules/services/services.module';
+import { CommonModule } from './infrastructure/common/common.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ServicesModule } from './modules/services/services.module';
     PatientsModule,
     SecurityModule,
     ServicesModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [
