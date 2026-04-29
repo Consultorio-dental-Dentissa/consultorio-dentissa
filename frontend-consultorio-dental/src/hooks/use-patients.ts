@@ -2,7 +2,6 @@ import { requestGetPatients, requestGetPatient } from "../services/patients.serv
 import { useState } from "react";
 
 import type { Patient } from "@/types/models/patient";
-import type { ApiError } from "../types/api/responses/api-error";
 
 export function usePatients() {
 
@@ -15,7 +14,7 @@ export function usePatients() {
         setLoading(true);
         
         return await requestGetPatients()
-            .catch((error: ApiError) => {setError(error.message); throw error.message;})
+            .catch((error: Error) => {setError(error.message); throw error.message;})
             .finally(() => setLoading(false));
     }
 
