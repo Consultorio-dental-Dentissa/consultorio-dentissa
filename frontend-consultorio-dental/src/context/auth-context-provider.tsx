@@ -51,12 +51,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 
     const logOut = async () => {
+        
         setUser(null);
         setIsAuthenticated(false);
-
-        localStorage.removeItem('user');
-        localStorage.removeItem('isAuthenticated');
-
         await logout();
     };
 

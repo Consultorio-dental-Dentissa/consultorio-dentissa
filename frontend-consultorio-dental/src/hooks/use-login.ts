@@ -1,34 +1,54 @@
 import { requestLogin, requestLogout } from "../services/auth.service";
 import { useState } from "react";
 import type { LoginDto } from "../types/api/request/login.dto";
+import type { LoginResponse } from "@/types/api/responses/login.response";
 
 export function useLogin() {
 
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-
-    const clearError = () => {
-        setError(null);
-    }
-
-    async function login(credenciales: LoginDto ) {
+    async function login(credenciales: LoginDto): Promise<LoginResponse | null> {
 
         setError(null);
-        setLoading(true);
+        setIsLoading(true);
 
-        return await requestLogin(credenciales)
-            .catch((error: Error) => { setError(error.message); throw error.message; })
-            .finally(() => setLoading(false));
+        try {
+            const loggedUser = await requestLogin(credenciales);
+            return loggedUser;
+
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            setError(errorMessage);
+            return null;
+
+        } finally {
+            setIsLoading(false);
+        }
     }
 
-    async function logout() {
+    async function logout(): Promise<void> {
         
-        return await requestLogout()
-            .catch((error: Error) => { setError(error.message); throw error.message })
-            .finally(() => setLoading(false));
+        setError(null);
+        setIsLoading(true);
+        
+        try {
+            await requestLogout();
+
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Error desconocido';
+            setError(message);
+
+        } finally {
+            setIsLoading(false);
+        }
     }
 
-    return { login, logout, loading, error, clearError }
+    return {
+        login,
+        logout,
+        isLoading,
+        error
+    }
 
 }

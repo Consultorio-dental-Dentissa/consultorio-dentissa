@@ -5,22 +5,50 @@ import type { Patient } from "@/types/models/patient";
 
 export function usePatients() {
 
-    const [loading, setLoading] = useState<boolean>(false);
+    const [patients, setPatients] = useState<Patient[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function getPatients(): Promise<Patient[]> {
+    async function getPatients() {
 
         setError(null);
-        setLoading(true);
-        
-        return await requestGetPatients()
-            .catch((error: Error) => {setError(error.message); throw error.message;})
-            .finally(() => setLoading(false));
+        setIsLoading(true);
+
+        try {
+            const patientsData = await requestGetPatients();
+            setPatients(patientsData);
+
+        } catch(error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
-    async function getPatient(id: number): Promise<Patient> {
-        return await requestGetPatient(id);
+    async function getPatient(id: number): Promise<Patient | null> {
+
+        setError(null);
+        setIsLoading(true);
+
+        try {
+            const patient = await requestGetPatient(id);
+            return patient;
+
+        } catch(error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            setError(errorMessage);
+            return null;
+        } finally {
+            setIsLoading(false);
+        }
     }
 
-    return { getPatients, getPatient, loading, error }
+    return { 
+        patients, 
+        getPatients, 
+        getPatient, 
+        isLoading, 
+        error 
+    }
 }

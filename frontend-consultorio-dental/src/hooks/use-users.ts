@@ -6,36 +6,72 @@ import type { User } from "@/types/models/user"
 
 export function useUsers() {
 
-    const [loading, setLoading] = useState<boolean>(false);
-    const [loadingTable, setLoadingTable] = useState<boolean>(false);
+    const [users, setUsers] = useState<User[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function getUsers(): Promise<User[]> {
+    async function getUsers() {
 
         setError(null);
-        setLoadingTable(true)
+        setIsLoading(true);
 
-        return await requestGetUsers()
-            .catch((error: Error) => {setError(error.message); throw error.message;})
-            .finally(() => setLoadingTable(false));
+        try {
+            const users = await requestGetUsers();
+            setUsers(users);
+
+        } catch(error) {
+            const message = error instanceof Error ? error.message : 'Error desconocido';
+            setError(message);
+
+        } finally { setIsLoading(false) }
     }
 
-    async function registerUser(user: CreateUserDto): Promise<User> {
+    async function registerUser(user: CreateUserDto): Promise<User | null> {
 
         setError(null);
-        setLoading(true);
+        setIsLoading(true);
 
-        return await requestRegisterUser(user)
-            .catch((error: Error) => {setError(error.message); throw error.message;})
-            .finally(() => {setLoading(false)})
+        try {
+            const createdUser = await requestRegisterUser(user);
+            setUsers(prev => [...prev, createdUser]);
+
+            return createdUser;
+
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Error desconocido';
+            setError(message);
+
+            return null;
+
+        } finally { setIsLoading(false);}
     }
 
     async function updateUserStatus(id: number, status: boolean): Promise<boolean> {
+
         setError(null);
-        
-        return await requestUpdateStatusUser(id, status)
-            .catch((error: Error) => {setError(error.message); throw error.message;})
+        setIsLoading(true);
+
+        try {
+            const isStatusUpdated = await requestUpdateStatusUser(id, status);
+            if (isStatusUpdated) {
+                setUsers(prev => prev.map(user => user.id === id ? {...user, status} : user));
+            }
+            return isStatusUpdated;
+
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Error desconocido';
+            setError(message);
+
+            return false;
+        } finally { setIsLoading(false) }
     }
 
-    return { getUsers, registerUser, updateUserStatus, loading, loadingTable, error }
+    return { 
+        users, 
+        getUsers, 
+        registerUser, 
+        updateUserStatus, 
+        isLoading, 
+        error 
+    }
 }
