@@ -2,30 +2,33 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FieldGroup } from '@/components/ui/field'
 import { InputForm } from '@/components/common/input.component'
 import { useForm } from "react-hook-form"
+import { useRegister } from '@/hooks/use-register';
+import { useEffect } from 'react';
 import type { CreateUserDto } from '@/types/api/request/create-user.dto';
 import toast from 'react-hot-toast';
-import { useRegister } from '@/hooks/use-register';
 
 export default function RegisterPage() {
 
     const navigate = useNavigate();
-    const registerHook = useRegister();
+    const { signIn, error } = useRegister();
+    const { 
+        register, 
+        handleSubmit, 
+        formState: { errors, isSubmitting } 
+    } = useForm<CreateUserDto>()
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CreateUserDto>()
+    useEffect(() => {
+        error && toast.error(error);
+    }, [error]);
 
-    const handleFormSubmit = async (user: CreateUserDto) => {
+    const handleFormSubmit = async (userData: CreateUserDto) => {
+        const isUserRegistered = await signIn(userData);
 
-        try {
-            await registerHook.register(user);
+        if (isUserRegistered) {
             toast.success('Te has registrado exitosamente');
-
             setTimeout(() => {
                 navigate('/login');
-
-            }, 2000)
-
-        } catch (error) {
-            toast.error(error as string);
+            }, 2000);
         }
     }
 

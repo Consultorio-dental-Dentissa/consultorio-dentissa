@@ -1,33 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatPhone } from "@/utils/formatters";
-
 import { usePatients } from "../../hooks/use-patients";
-
 import { PageTitle } from "../../components/common/page-title.component";
-import EmptyTable from "../../components/common/empty-table.component";
 import { Button } from "@/components/ui/button";
-
-import type { PatientResponse } from "../../types/api/responses/patient.response";
-import type { Patient } from "@/types/models/patient";
+import toast from "react-hot-toast";
 
 export default function PatientsPage() {
 
-    const [patients, setPatients] = useState<Patient[]>([])
-    const { getPatients, loading } = usePatients();
+    const [isLoadingTable, setIsLoadingTable] = useState(false);
+    const { patients, getPatients, error } = usePatients();
     const navigate = useNavigate();
 
     useEffect(() => {
-
-        async function fetchPatients() {
-            const patients = await getPatients();
-            patients && setPatients(patients);
-        }
-
-        fetchPatients();
-
+        setIsLoadingTable(true);
+        getPatients()
+        .finally(() => setIsLoadingTable(false));
     }, []);
 
+    useEffect(() => {
+        error && toast.error(error);
+    }, [error]);
 
     return (
         <div>
@@ -37,7 +30,7 @@ export default function PatientsPage() {
                 subtitulo="Aqui puedes manejar tus pacientes"
             />
 
-            <table id="tablaPacientes">
+            <table className="w-full">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -53,45 +46,48 @@ export default function PatientsPage() {
                 <tbody>
 
                     {
-                        loading ? (
-                            <EmptyTable mensaje="Cargando..."
-                                submensaje="Estamos buscando los pacientes"
-                                colSpan={8}
-                            />
-                        ) : patients.length === 0 ? (
-                            <EmptyTable mensaje="No hay pacientes"
-                                submensaje="No se han encontrado pacientes"
-                                colSpan={8}
-                            />
-                        ) :
-                            patients.map((paciente) => {
+                        isLoadingTable ? 
+                        (
+                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
+                                <h2>Cargando...</h2>
+                            </div>
+                        )
 
-                                const birthDate = new Date(paciente.birth_date);
-
-                                return (
-                                    <tr key={paciente.id}>
-                                        <td>{paciente.name}</td>
-                                        <td>{paciente.lastname}</td>
-                                        <td>{paciente.email}</td>
-                                        <td>{formatPhone(paciente.phone)}</td>
-                                        <td>{formatPhone(paciente.emergency_phone)}</td>
-                                        <td>{birthDate.toLocaleDateString('es-MX')}</td>
-                                        <td>{paciente.address}</td>
+                        :
+                        
+                        !patients.length ? 
+                        (
+                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
+                                <h2>No se encontraron pacientes.</h2>
+                            </div>
+                        ) 
+                        
+                        :
+                        
+                        patients.map((patient) => (
+                                    <tr key={patient.id}>
+                                        <td>{patient.name}</td>
+                                        <td>{patient.lastname}</td>
+                                        <td>{patient.email}</td>
+                                        <td>{formatPhone(patient.phone)}</td>
+                                        <td>{formatPhone(patient.emergency_phone)}</td>
+                                        <td>{patient.birth_date.toLocaleDateString('es-MX')}</td>
+                                        <td>{patient.address}</td>
                                         <td>
                                             <div className="actions">
-                                            
-                                                <Button variant="secondary" onClick={() => navigate(`/pacientes/${paciente.id}`)}>Ver perfil</Button>
+                                                <Button 
+                                                    variant="secondary" 
+                                                    onClick={() => navigate(`/pacientes/${patient.id}`)}>
+                                                        Ver perfil
+                                                </Button>
                                                 
                                             </div>
                                         </td>
                                     </tr>
-                                );
-                            })
+                                ))
                     }
-
                 </tbody>
             </table>
-
         </div>
     );
 

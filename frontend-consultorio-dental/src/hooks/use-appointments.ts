@@ -6,27 +6,45 @@ import type { Appointment } from "@/types/models/appointment";
 
 export function useAppointments() {
 
-        const [error, setError] = useState<string | null>(null);
+        const [appointments, setAppointments] = useState<Appointment[]>([]);
         const [isLoading, setLoading] = useState<boolean>(false);
+        const [error, setError] = useState<string | null>(null);
 
-        async function getAppointments(): Promise<Appointment[]> {
-
-                setError(null);
-                setLoading(true);
-                return await requestGetAppointments()
-                        .catch((error: Error) => { setError(error.message); throw error.message; })
-                        .finally(() => setLoading(false));
-        }
-
-        async function createAppointment(newAppointment: CreateAppointmentDto): Promise<Appointment> {
-
+        async function getAppointments() {
                 setError(null);
                 setLoading(true);
 
-                return await requestCreateAppointment(newAppointment)
-                        .catch((error: Error) => { setError(error.message); throw error.message; })
-                        .finally(() => setLoading(false));
+                try {
+                        const appointments = await requestGetAppointments();
+                        setAppointments(appointments);
+                } catch (error) {
+                        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+                        setError(errorMessage);
+                }
+
         }
 
-        return { getAppointments, createAppointment, loading: isLoading, error }
+        async function createAppointment(newAppointment: CreateAppointmentDto): Promise<Appointment | null> {
+                setError(null);
+                setLoading(true);
+
+                try {
+                        const appointmentCreated = await requestCreateAppointment(newAppointment);
+                        setAppointments(prev => [...prev, appointmentCreated]);
+                        return appointmentCreated;
+
+                } catch(error) {
+                        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+                        setError(errorMessage);
+                        return null;
+                }
+        }
+
+        return {
+                appointments,
+                getAppointments,
+                createAppointment,
+                isLoading,
+                error
+        }
 }
