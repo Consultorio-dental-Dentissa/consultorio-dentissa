@@ -9,24 +9,16 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => {
 
-        /**
-         * Dejamos esto preparado para cuando se implemente
-         * el interceptor de respuestas del backend
-         */
         if (response.data.success && response.data.data) {
             const apiResponse: ApiResponse<any> = response.data;
-            console.log("Standar response: ", apiResponse);
+            response.data = apiResponse;
 
-            return apiResponse.data;
+        } else {
+            console.warn('`[API] Endpoint ${response.config.url} sin formato ApiResponse`');
+            throw new Error('Hubo un problema inesperado. Espera porfavor');
         }
 
-        /**
-         * Por ahora solo retornamos la data resultante sin el formato
-         * de ApiResponse hasta agregar el interceptor de respuestas 
-         * en el backend. 
-         */
-        console.log("Not a standar response: ", response.data);
-        return response.data
+        return response.data;
     },
     (error) => {
 
@@ -36,6 +28,7 @@ api.interceptors.response.use(
             throw new Error('Error desconocido');
         }
 
+        /* --RECORDAR: Manejar el contrato de respuestas de error */
         if (error.response?.data.message) {
             if (error.response?.data.message) {
                 /**
