@@ -1,35 +1,38 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../../hooks/use-login";
-import { useAuth } from "../../context/auth-context-provider";
 import { FieldGroup } from '@/components/ui/field'
 import { InputForm } from '@/components/common/input.component'
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast";
-
 import type { LoginDto } from "@/types/api/request/login.dto";
+import { useAuth } from "@/context/auth-context-provider";
 
 export default function LoginPage() {
+
     const navigate = useNavigate();
-    const { login } = useLogin();
+    const { login, error, isLoading } = useLogin();
     const { saveUserData } = useAuth();
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginDto>()
+    useEffect(() => {
+        error && toast.error(error);
+    }, [error]);
+
+    const { 
+        register, 
+        handleSubmit, 
+        formState: { errors, isSubmitting } 
+    } = useForm<LoginDto>()
     
 
     const handleFormSubmit = async (credentials: LoginDto) => {
-        
-        try {
+        const userLogged = await login(credentials);
 
-            const response = await login(credentials);
-
-            if (response.logged) {
-                await saveUserData(response.user);
-                navigate('/dashboard');
-            }
-
-        } catch(error) {
-            toast.error(error as string);
+        if (userLogged && userLogged.user) {
+            saveUserData(userLogged.user);
+            navigate('/dashboard');
         }
+
     }
 
     return (
@@ -68,8 +71,8 @@ export default function LoginPage() {
                         </Link>
                     </div>
 
-                    <button type="submit" className="auth-button" disabled={isSubmitting}>
-                        {isSubmitting ? 'Cragando...' : 'Iniciar sesión'}
+                    <button type="submit" className="auth-button" disabled={isLoading}>
+                        {isLoading ? 'Cargando...' : 'Iniciar sesión'}
                     </button>
                 </form>
 

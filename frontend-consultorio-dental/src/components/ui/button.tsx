@@ -17,11 +17,11 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         selectedGhost:
-          "text-rose-500 hover:bg-muted",
+          "text-app-primary-light rounded-none border-b-app-primary-light",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40 border-red-300",
         link: "text-primary underline-offset-4 hover:underline",
-        primary: "bg-rose-400 text-white border-rose-300 hover:bg-red-400"
+        primary: "bg-app-primary text-white border-app-complementer hover:bg-primary-hover"
       },
       size: {
         default:

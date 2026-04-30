@@ -1,31 +1,32 @@
-import { useEffect, useState } from "react"
-import toast from "react-hot-toast";
-
+import { useEffect, useState, useMemo } from "react"
 import { PageTitle } from "@/components/common/page-title.component"
 import { Button } from "@/components/ui/button"
 import { useAppointments } from "@/hooks/use-appointments";
 import { AppointmentList } from "@/components/appointments/appointment-list.component";
-
-import type { Appointment } from "@/types/models/appointment";
+import { formatFirstLetterUppercase } from "@/utils/formatters";
+import toast from "react-hot-toast";
 
 export default function AppointmentsPage() {
 
-    const [appointments, setAppointments] = useState<Appointment[]>([]);
-    const { getAppointments } = useAppointments();
+    const [isLoadingList, setIsAppointmentList] = useState<boolean>(false);
+    const { appointments, getAppointments, error } = useAppointments();
 
     useEffect(() => {
+        setIsAppointmentList(true);
+        getAppointments().finally(() => setIsAppointmentList(false));
+    }, []);
 
-        async function fetchAppointments() {
-            try {
-                const appointments = await getAppointments();
-                setAppointments(appointments);
+    useEffect(() => {
+        error && toast.error(error);
+    }, [error]);
 
-            } catch(error) {
-                toast.error(error as string);
-            }
-        }
-
-        fetchAppointments();
+    const appointmentStatus = useMemo(() => {
+        return [
+                ['all', 'TODOS'], 
+                ['PENDIENTES', 'PENDIENTES'], 
+                ['CONFIRMADAS', 'CONFIRMADAS'], 
+                ['CANCELADAS', 'CANCELADAS']
+            ];
     }, []);
 
     return (
@@ -37,16 +38,21 @@ export default function AppointmentsPage() {
                 />
 
                 <div className="flex flex-row justify-end mb-5">
-                    <Button variant="primary">Exportar citas</Button>
+                    <Button variant="primary">
+                        Exportar citas
+                    </Button>
                 </div>
             </div>
 
             <div className="flex flex-row justify-between bg-white w-full px-5 py-3 mt-5 rounded-md shadow-card">
                 <div className="flex flex-row gap-5">
-                    <Button variant="ghost">Todos</Button>
-                    <Button variant="ghost">Pendientes</Button>
-                    <Button variant="ghost">Confirmadas</Button>
-                    <Button variant="ghost">Canceladas</Button>
+                    {
+                        appointmentStatus.map(([key, label]) => (
+                            <Button variant='ghost'>
+                                {formatFirstLetterUppercase(label)}
+                            </Button>
+                        ))
+                    }
                 </div>
 
                 <div className="flex flex-row gap-2">
@@ -56,8 +62,28 @@ export default function AppointmentsPage() {
             </div>
 
             <div className="mt-5">
-                <h3 className="text-xl font-medium">Citas de hoy</h3>
-                <AppointmentList appointments={appointments} />
+                {
+                    isLoadingList ?
+                        (
+                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
+                                <h2>Cargando...</h2>
+                            </div>
+                        )
+                    :
+                    !appointments.length ?
+                        (
+                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
+                                <h2>No se han encontrado citas</h2>
+                            </div>
+                        )
+                    :
+                        (
+                            <div>
+                                <h3 className="text-xl font-medium">Citas de hoy</h3>
+                                <AppointmentList appointments={appointments} />
+                            </div>
+                        )
+                }
             </div>
         </>
     )

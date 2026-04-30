@@ -10,81 +10,64 @@ import { Role } from "@/types/enums/rol.enum";
 import { getColumns } from "@/components/users/data-table-colums.component";
 import { formatFirstLetterUppercase } from "@/utils/formatters";
 
-import type { User } from "@/types/models/user";
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
 
 export default function UsersPage() {
 
-    const [allUsers, setAllUsers] = useState<User[]>([]);
-    const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
     const [selectedRole, setSelectedRole] = useState<string>('all');
+    const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false);
 
-    const { getUsers, updateUserStatus, registerUser, loadingTable } = useUsers();
+    const { 
+        users, 
+        getUsers, 
+        updateUserStatus, 
+        registerUser, 
+        error 
+    } = useUsers();
 
     useEffect(() => {
-
-        async function fetchUsers() {
-            try {
-                const users = await getUsers();
-                setAllUsers(users);
-                setFilteredUsers(users);
-
-            } catch (error) {
-                toast.error((error as string))
-            }
-        }
-
-        fetchUsers();
+        setIsLoadingTable(true);
+        getUsers().finally(() => setIsLoadingTable(false));
     }, []);
 
-    function filterUsers(role: string) {
-
-        setSelectedRole(role);
-
-        if (role === 'all') {
-            setFilteredUsers(allUsers);
-        } else {
-            setFilteredUsers(allUsers.filter(user => user.role === role));
-        }
-    }
-
     useEffect(() => {
-        filterUsers(selectedRole);
-    }, [allUsers]);
-
+        error && toast.error(error);
+    }, [error]);
 
     const handleAddUser = async (userData: CreateUserDto) => {
-        try {
-            const user = await registerUser(userData);
-            setAllUsers(prev => [...prev, user]);
+        const user = await registerUser(userData);
+        if (user) {
             toast.success(`El usuario ${user.name} ha sido registrado correctamente.`);
             setOpenModal(false);
-
-        } catch (error) {
-            toast.error((error as string));
         }
+
     }
 
     const handleUpdatedUserStatus = async (id: number, status: boolean) => {
-        try {
-            const response = await updateUserStatus(id, status);
-            if (response) {
-                setAllUsers(prev =>
-                    prev.map(user => user.id === id ? { ...user, status: status } : user)
-                );
-                toast.success('El estado se actualizó correctamente');
-            }
-
-        } catch (error) {
-            toast.error((error as string))
+        const isStatusUpdated = await updateUserStatus(id, status);
+        if (isStatusUpdated) {
+            toast.success('El estado se actualizó correctamente');
         }
     }
 
-    const columns = useMemo(() => getColumns(handleUpdatedUserStatus), []);
-    const roles: Array<[string, string]> = Object.entries(Role);
-    roles.push(['all', 'Todos']);
-    roles.unshift(roles.pop()!);
+    const columns = useMemo(
+        () => getColumns(handleUpdatedUserStatus), 
+    []);
+
+    const roles = useMemo(() => {
+        const entries = Object.entries(Role);
+        return [['all', 'Todos'], ...entries];
+    }, []);
+
+    const filteredUsers = useMemo(() => {
+
+        if (selectedRole === 'all') {
+            return users;
+        }
+
+        return users.filter(user => user.role === selectedRole);
+    }, [users, selectedRole]);
 
     return (
         <div>
@@ -101,31 +84,42 @@ export default function UsersPage() {
             </div>
 
             <div className="bg-white rounded-sm p-3 mt-5 shadow-card">
-                {roles.map(role => (
-                    <Button variant={`${selectedRole === role[0] ? 'selectedGhost' : 'ghost'}`} onClick={() => filterUsers(role[0])}>
-                        {formatFirstLetterUppercase(role[1])}
-                    </Button>
-                ))}
+                {
+                    roles.map(([key, label]) => (
+                        <Button
+                            key={key}
+                            variant={selectedRole === key ? 'selectedGhost' : 'ghost'}
+                            onClick={() => setSelectedRole(key)}
+                        >
+                            {formatFirstLetterUppercase(label)}
+                        </Button>
+                    ))
+                }
             </div>
 
             <div className="bg-white rounded-md mt-5 shadow-card">
                 {
-                    loadingTable ?
-                        <div className="bg-white rounded-sm p-5 flex justify-center">
-                            <h2>Cargando...</h2>
-                        </div>
-                        :
-                        !filteredUsers.length ?
+                    isLoadingTable ?
+                        (
+                            <div className="bg-white rounded-sm p-5 flex justify-center">
+                                <h2>Cargando...</h2>
+                            </div>
+                        )
+                    :
+                    !filteredUsers.length ?
+                        (
                             <div className="bg-white rounded-sm p-5 flex justify-center">
                                 <h2>No se encontrarón usuarios.</h2>
                             </div>
-                            :
+                        )
+                    :
+                        (
                             <DataTable
                                 columns={columns}
                                 data={filteredUsers}
                             />
+                        )
                 }
-
             </div>
 
             <CreateUserModal
