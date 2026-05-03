@@ -3,11 +3,13 @@ import { useUsers } from "@/hooks/use-users";
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/common/data-table.component";
 import { PageTitle } from "@/components/common/page-title.component";
-import { CreateUserModal } from "@/components/users/create-user-modal.component";
-import toast from "react-hot-toast";
+import { Modal } from "@/components/common/modal.component";
+import { CreateUserForm } from "@/components/users/create-user-form.component";
 import { getColumns } from "@/components/users/data-table-colums.component";
 
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
+
+import toast from "react-hot-toast";
 
 export default function UsersPage() {
 
@@ -119,11 +121,16 @@ export default function UsersPage() {
                 }
             </div>
 
-            <CreateUserModal
+            <Modal
+                title='Registrar nuevo usuario'
+                description='Porfavor llena todos los campos'
                 open={openModal}
-                onClose={() => setOpenModal(false)}
-                onSubmit={handleAddUser}
-            />
+                onClose={() => setOpenModal(false)}>
+                <CreateUserForm
+                    onSubmit={handleAddUser}
+                    onCancel={() => setOpenModal(false)}
+                />
+            </Modal>
 
         </div>
     );
