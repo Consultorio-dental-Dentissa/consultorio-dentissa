@@ -23,7 +23,7 @@ export function InputForm({ label, placeholder, error, type, step, registration 
                 {...registration} 
                 type={type}
                 step={step}
-                className={`p-5 rounded-md ${error && 'border-red-600'}`}>
+                className={`p-5 rounded-md ${error && 'border-2 border-red-400'}`}>
             </Input>
             { error && <ErrorSpan message={error} /> }
         </Field>
