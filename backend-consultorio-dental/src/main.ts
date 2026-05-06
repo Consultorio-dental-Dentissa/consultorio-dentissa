@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import cookieParser from 'cookie-parser';
 import { TransformResponseInterceptor } from './infrastructure/common/interceptors/transform-response.interceptor'
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  
+
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
@@ -16,10 +16,10 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,       // elimina campos que no están en el DTO
-    forbidNonWhitelisted: true, // lanza error si llegan campos extra
-  }))
+    transform: true, // INDICACION: Permite transformar los datos del JSON
+    whitelist: true, // INDICACION: Elimina los campos que no están en el DTO
+    stopAtFirstError: false, //INDICACION: Solo devuelve el primer error de cada campo del DTO
+  }));
 
   app.useGlobalInterceptors(new TransformResponseInterceptor());
 
