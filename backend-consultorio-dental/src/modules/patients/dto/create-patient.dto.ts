@@ -1,19 +1,35 @@
-import { IsDateString, IsNotEmpty, IsString, IsNumber, IsOptional, isNotEmpty } from 'class-validator'
+import { 
+    IsDateString, 
+    IsNotEmpty, 
+    IsDefined, 
+    IsString, 
+    IsNumber, 
+    IsOptional, 
+} from 'class-validator'
 
 export class CreatePatientDto {
-    @IsString()
+
+    @IsDefined({ message: 'La dirección es requerida' })
     @IsNotEmpty({ message: 'La dirección es requerida' })
-    address!: string          // si llega "dureccion", whitelist lo elimina
-    // y direccion queda undefined → error claro
+    @IsString({ message: "La dirección debe ser un texto plato" })
+    address!: string;
 
+    @IsDefined({ message: 'La fecha de nacimiento es requerida' })
+    @IsNotEmpty({ message: 'La fecha de nacimiento es requerida' })
     @IsDateString({}, { message: 'La fecha de nacimiento no es válida' })
-    birth_date!: string
+    birth_date!: string;
 
+    @IsDefined({ message: 'El telefono de emergencia es requerido' })
     @IsNotEmpty({ message: 'El telefono de emergencia es requerido' })
-    @IsString({})
-    emergency_phone!: string
+    @IsString({ message: "El telefono debe ser un texto plano" })
+    emergency_phone!: string;
 
-    @IsNumber()
+    /**
+     * INDICACIÓN:
+     * El USER_ID se asigna en el servicio. 
+     * No debe venir incluido en los datos de entrada
+     */
+    @IsNumber({}, { message: "El user_id debe ser un número" })
     @IsOptional()
-    user_id?: number        // se asigna en el servicio, no viene del cliente
+    user_id?: number;
 }

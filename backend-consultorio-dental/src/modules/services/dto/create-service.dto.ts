@@ -1,25 +1,34 @@
-import { IsNotEmpty, IsString, Min, IsNumber, IsInt, IsDefined } from 'class-validator'
-import { Type } from 'class-transformer'
+import { 
+    IsNotEmpty, 
+    IsString, 
+    Min, 
+    IsNumber, 
+    IsInt, 
+    IsDefined 
+} from 'class-validator'
 
 export class CreateServiceDto {
 
+    @IsDefined({ message: 'El nombre del servicio es requerido' })
     @IsNotEmpty({ message: 'El nombre del servicio es requerido' })
-    @IsString()
-    name!: string
+    @IsString({ message: 'El nombre del servicio debe ser un texto plano' })
+    name!: string;
 
     @IsDefined({ message: 'La duración del servicio es requerida' })
-    @IsNumber({}, { message: 'La duracion debe ser un número' })
-    @IsInt({ message: 'La duración en minutos debe ser un número entero' })
-    durationMinutes!: number
+    @IsNotEmpty({ message: 'La duración del servicio es requerida' })
+    @IsInt({ message: 'La duración del servicio debe ser un número entero' })
+    durationMinutes!: number;
 
+    @IsDefined({ message: 'La descripción del servicio es requerida' })
     @IsNotEmpty({ message: 'La descripción del servicio es requerida' })
-    @IsString()
-    description!: string
+    @IsString({ message: "La descripción del servicio debe ser un texto plano" })
+    description!: string;
 
-    @IsNotEmpty({ message: 'El precio es requerido' })
+    @IsDefined({ message: 'El precio del servicio es requerido' })
+    @IsNotEmpty({ message: 'El precio del servicio es requerido' })
     @IsNumber({ maxDecimalPlaces: 2 }, { message: 'El precio debe ser un número válido' })
-    @Min(0, { message: 'El precio no puede ser negativo' })
-    price!: number
+    @Min(0, { message: 'El precio no puede ser un número negativo' })
+    price!: number;
 }
 
 
