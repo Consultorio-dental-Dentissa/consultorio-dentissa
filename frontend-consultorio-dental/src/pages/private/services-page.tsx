@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import { PageTitle } from "../../components/common/page-title.component";
-import { CreateServiceModal } from "@/components/services/create-service-modal.component";
+import { Modal } from "@/components/common/modal.component";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-
+import { CreateServiceForm } from "@/components/services/create-service-form.component";
 import { useServices } from "../../hooks/use-services";
 import type { CreateServiceDto } from "@/types/api/request/create-service.dto";
 
@@ -111,13 +111,17 @@ export default function ServicesPage() {
                 </tbody>
             </table>
 
-            {
-                <CreateServiceModal
-                    open={openModal}
-                    onClose={() => setOpenModal(false)}
-                    onSubmit={handleNewService}
-                />
-            }
+            <Modal
+                title="Registrar nuevo servicio"
+                description="Por favor llene todos los campos del servicio"
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                >
+                    <CreateServiceForm
+                        onSubmit={handleNewService}
+                        onCancel={() => setOpenModal(false)}
+                    />            
+            </Modal>
         </div>
     );
 

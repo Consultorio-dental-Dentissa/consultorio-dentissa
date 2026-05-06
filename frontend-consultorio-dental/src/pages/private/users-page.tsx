@@ -1,20 +1,19 @@
 import { useEffect, useState, useMemo } from "react";
 import { useUsers } from "@/hooks/use-users";
-
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/common/data-table.component";
 import { PageTitle } from "@/components/common/page-title.component";
-import { CreateUserModal } from "@/components/users/create-user-modal.component";
-import toast from "react-hot-toast";
-import { Role } from "@/types/enums/rol.enum";
+import { Modal } from "@/components/common/modal.component";
+import { CreateUserForm } from "@/components/users/create-user-form.component";
 import { getColumns } from "@/components/users/data-table-colums.component";
-import { formatFirstLetterUppercase } from "@/utils/formatters";
 
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
 
+import toast from "react-hot-toast";
+
 export default function UsersPage() {
 
-    const [selectedRole, setSelectedRole] = useState<string>('all');
+    const [selectedRole, setSelectedRole] = useState<string>('ALL');
     const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false);
 
@@ -55,14 +54,16 @@ export default function UsersPage() {
         () => getColumns(handleUpdatedUserStatus), 
     []);
 
-    const roles = useMemo(() => {
-        const entries = Object.entries(Role);
-        return [['all', 'Todos'], ...entries];
-    }, []);
+    const roles = useMemo(() => [
+        { key: 'ALL', label: 'Todos' },
+        { key: 'ADMINISTRADOR', label: 'Administrador' },
+        { key: 'ASISTENTE', label: 'Asistente' },
+        { key: 'PACIENTE', label: 'Paciente' }
+    ], []);
 
     const filteredUsers = useMemo(() => {
 
-        if (selectedRole === 'all') {
+        if (selectedRole === 'ALL') {
             return users;
         }
 
@@ -85,13 +86,11 @@ export default function UsersPage() {
 
             <div className="bg-white rounded-sm p-3 mt-5 shadow-card">
                 {
-                    roles.map(([key, label]) => (
+                    roles.map(role => (
                         <Button
-                            key={key}
-                            variant={selectedRole === key ? 'selectedGhost' : 'ghost'}
-                            onClick={() => setSelectedRole(key)}
-                        >
-                            {formatFirstLetterUppercase(label)}
+                            variant={selectedRole === role.key ? 'selectedGhost' : 'ghost'}
+                            onClick={() => setSelectedRole(role.key)}>
+                                { role.label }
                         </Button>
                     ))
                 }
@@ -122,11 +121,16 @@ export default function UsersPage() {
                 }
             </div>
 
-            <CreateUserModal
+            <Modal
+                title='Registrar nuevo usuario'
+                description='Porfavor llena todos los campos'
                 open={openModal}
-                onClose={() => setOpenModal(false)}
-                onSubmit={handleAddUser}
-            />
+                onClose={() => setOpenModal(false)}>
+                <CreateUserForm
+                    onSubmit={handleAddUser}
+                    onCancel={() => setOpenModal(false)}
+                />
+            </Modal>
 
         </div>
     );
