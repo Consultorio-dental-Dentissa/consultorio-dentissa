@@ -2,13 +2,11 @@ import { BadRequestException, Injectable, NotFoundException, Param } from '@nest
 import { UsersRepository } from './repositories/users.repository';
 import { PatientsRepository } from '../patients/repositories/patients.repository';
 import { CreateUserDto } from './dto/create-user.dto';
-import type { ICreateUser } from './interfaces/create-user.interface';
 import type { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Role } from './enums/rol.enum';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { CreatePatientDto } from '../patients/dto/create-patient.dto';
-import { last } from 'rxjs';
 
 
 @Injectable()
@@ -38,7 +36,7 @@ export class UsersService {
     }
 
 
-    async createUser(user: ICreateUser) {
+    async createUser(user: CreateUserDto) {
 
         const emailExists = await this.usersRepository.emailExists(user.email);
 
