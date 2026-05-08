@@ -80,7 +80,13 @@ export class AuthService {
     
 
     async registerUser(user: RegisterUserDto) {
-        
+
+        /**
+         * INDICACIÓN:
+         * Definimos el rol de PACIENTE para este metodo
+         * para que el objeto pueda ser recibido como tipo:
+         * CreateUserDto
+         */
         const patientUser = {
             ...user,
             role: Role.PACIENTE
