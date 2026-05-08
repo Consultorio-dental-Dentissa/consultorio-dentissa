@@ -13,11 +13,11 @@ export default function ServicesPage() {
 
     const [isLoadingTable, setIsLoadingTable] = useState(false);
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const { servicesData, getServices, createService, updateServiceStatus, error } = useServices();
+    const { servicesData, useGetAllServices, useCreateService, useUpdateServiceStatus, error } = useServices();
 
     useEffect(() => {
         setIsLoadingTable(true); 
-        getServices().finally(() => setIsLoadingTable(false));
+        useGetAllServices().finally(() => setIsLoadingTable(false));
     }, []);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function ServicesPage() {
 
     const handleUpdateServiceStatus = async (id: number, newStatus: boolean) => {
 
-        const isStatusUpdated = await updateServiceStatus(id, newStatus);
+        const isStatusUpdated = await useUpdateServiceStatus(id, newStatus);
         if (isStatusUpdated) {
             toast.success('El estado del servicio se ha actualizado correctamente');
         }
@@ -34,7 +34,7 @@ export default function ServicesPage() {
 
     const handleNewService = async (newService: CreateServiceDto): Promise<void> => {
 
-        const service = await createService(newService);
+        const service = await useCreateService(newService);
         if (service) {
             setOpenModal(false);
             toast.success(`El servicio llamado ${service.name} ha sido agregado`);
