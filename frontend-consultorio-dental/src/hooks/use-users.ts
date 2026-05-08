@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { requestUpdateStatusUser, requestRegisterUser, requestGetUsers } from "../services/users.service"
+import { updateUserStatus, createUser, getAllUsers } from "../services/users.service"
 
 import type { CreateUserDto } from "../types/api/request/create-user.dto";
 import type { User } from "@/types/models/user"
@@ -10,13 +10,13 @@ export function useUsers() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function getUsers() {
+    async function useGetAllUsers() {
 
         setError(null);
         setIsLoading(true);
 
         try {
-            const users = await requestGetUsers();
+            const users = await getAllUsers();
             setUsers(users);
 
         } catch(error) {
@@ -26,13 +26,13 @@ export function useUsers() {
         } finally { setIsLoading(false) }
     }
 
-    async function registerUser(user: CreateUserDto): Promise<User | null> {
+    async function useCreateUser(user: CreateUserDto): Promise<User | null> {
 
         setError(null);
         setIsLoading(true);
 
         try {
-            const createdUser = await requestRegisterUser(user);
+            const createdUser = await createUser(user);
             setUsers(prev => [...prev, createdUser]);
 
             return createdUser;
@@ -46,13 +46,13 @@ export function useUsers() {
         } finally { setIsLoading(false);}
     }
 
-    async function updateUserStatus(id: number, status: boolean): Promise<boolean> {
+    async function useUpdateUserStatus(id: number, status: boolean): Promise<boolean> {
 
         setError(null);
         setIsLoading(true);
 
         try {
-            const isStatusUpdated = await requestUpdateStatusUser(id, status);
+            const isStatusUpdated = await updateUserStatus(id, status);
             if (isStatusUpdated) {
                 setUsers(prev => prev.map(user => user.id === id ? {...user, status} : user));
             }
@@ -68,9 +68,9 @@ export function useUsers() {
 
     return { 
         users, 
-        getUsers, 
-        registerUser, 
-        updateUserStatus, 
+        useGetAllUsers, 
+        useCreateUser, 
+        useUpdateUserStatus, 
         isLoading, 
         error 
     }

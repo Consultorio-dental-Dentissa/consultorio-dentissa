@@ -9,11 +9,11 @@ import toast from "react-hot-toast";
 export default function AppointmentsPage() {
 
     const [isLoadingList, setIsAppointmentList] = useState<boolean>(false);
-    const { appointments, getAppointments, error } = useAppointments();
+    const { appointments, useGetAllAppointments, error } = useAppointments();
 
     useEffect(() => {
         setIsAppointmentList(true);
-        getAppointments().finally(() => setIsAppointmentList(false));
+        useGetAllAppointments().finally(() => setIsAppointmentList(false));
     }, []);
 
     useEffect(() => {

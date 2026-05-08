@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { requestGetServices, requestUpdateServiceStatus, requestCreateService } from "../services/services.service";
+import { getAllServices, updateServiceStatus, createService } from "../services/services.service";
 
 import type { Service } from "@/types/models/service";
 import type { CreateServiceDto } from "../types/api/request/create-service.dto";
@@ -10,12 +10,12 @@ export function useServices() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function createService(createServiceDto: CreateServiceDto): Promise<Service | null> {
+    async function useCreateService(createServiceDto: CreateServiceDto): Promise<Service | null> {
         setError(null);
         setIsLoading(true);
 
         try {
-            const serviceCreated = await requestCreateService(createServiceDto);
+            const serviceCreated = await createService(createServiceDto);
             setServicesData(prev => [...prev, serviceCreated]);
             return serviceCreated;
 
@@ -29,13 +29,13 @@ export function useServices() {
         }
     }
 
-    async function getServices() {
+    async function useGetAllServices() {
 
         setError(null);
         setIsLoading(true);
 
         try {
-            const users = await requestGetServices();
+            const users = await getAllServices();
             setServicesData(users);
 
         } catch (error) {
@@ -46,12 +46,12 @@ export function useServices() {
 
     }
 
-    async function updateServiceStatus(id: number, status: boolean): Promise<boolean> {
+    async function useUpdateServiceStatus(id: number, status: boolean): Promise<boolean> {
         setError(null);
         setIsLoading(true);
 
         try {
-            const isStatusUpdated = await requestUpdateServiceStatus(id, status);
+            const isStatusUpdated = await updateServiceStatus(id, status);
             isStatusUpdated && setServicesData(prev => prev.map(service => service.id === id ? {...service, status} : service));
             return isStatusUpdated;
 
@@ -67,9 +67,9 @@ export function useServices() {
 
     return { 
         servicesData, 
-        getServices, 
-        updateServiceStatus, 
-        createService, 
+        useGetAllServices, 
+        useUpdateServiceStatus, 
+        useCreateService, 
         isLoading, 
         error 
     }

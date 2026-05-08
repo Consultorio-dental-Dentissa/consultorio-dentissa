@@ -14,7 +14,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const { logout } = useLogin();
+    const { useLogoutUser } = useLogin();
 
     useEffect(() => {
 
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         setUser(null);
         setIsAuthenticated(false);
-        await logout();
+        await useLogoutUser();
     };
 
     return (

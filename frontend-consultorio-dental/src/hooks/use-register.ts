@@ -7,7 +7,7 @@ export function useRegister() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function signIn(user : CreateUserDto) {
+    async function useSignIn(user : CreateUserDto) {
         
         setError(null);
         setIsLoading(true);
@@ -26,6 +26,6 @@ export function useRegister() {
         }
     }
 
-    return { signIn, error, isLoading }
+    return { useSignIn, error, isLoading }
 
 }

@@ -27,12 +27,12 @@ export default function PatientProfilePage() {
     const { id } = useParams()
     const idPatient = Number(id)
     const navigate = useNavigate()
-    const { getPatient } = usePatients()
+    const { useGetPatientById } = usePatients()
     const [patient, setPatient] = useState<Patient | null>(null);
 
     useEffect(() => {
         async function fetchPatientData() {
-            const data = await getPatient(idPatient)
+            const data = await useGetPatientById(idPatient)
             setPatient(data)
         }
         fetchPatientData()

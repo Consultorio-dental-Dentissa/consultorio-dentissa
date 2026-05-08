@@ -8,7 +8,7 @@ export function useLogin() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function login(credenciales: LoginDto): Promise<LoginResponse | null> {
+    async function useLoginUser(credenciales: LoginDto): Promise<LoginResponse | null> {
 
         setError(null);
         setIsLoading(true);
@@ -27,7 +27,7 @@ export function useLogin() {
         }
     }
 
-    async function logout(): Promise<void> {
+    async function useLogoutUser(): Promise<void> {
         
         setError(null);
         setIsLoading(true);
@@ -45,8 +45,8 @@ export function useLogin() {
     }
 
     return {
-        login,
-        logout,
+        useLoginUser,
+        useLogoutUser,
         isLoading,
         error
     }

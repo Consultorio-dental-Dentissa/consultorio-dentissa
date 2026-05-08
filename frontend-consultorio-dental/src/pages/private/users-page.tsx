@@ -19,15 +19,15 @@ export default function UsersPage() {
 
     const { 
         users, 
-        getUsers, 
-        updateUserStatus, 
-        registerUser, 
+        useGetAllUsers, 
+        useUpdateUserStatus, 
+        useCreateUser, 
         error 
     } = useUsers();
 
     useEffect(() => {
         setIsLoadingTable(true);
-        getUsers().finally(() => setIsLoadingTable(false));
+        useGetAllUsers().finally(() => setIsLoadingTable(false));
     }, []);
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export default function UsersPage() {
     }, [error]);
 
     const handleAddUser = async (userData: CreateUserDto) => {
-        const user = await registerUser(userData);
+        const user = await useCreateUser(userData);
         if (user) {
             toast.success(`El usuario ${user.name} ha sido registrado correctamente.`);
             setOpenModal(false);
@@ -44,7 +44,7 @@ export default function UsersPage() {
     }
 
     const handleUpdatedUserStatus = async (id: number, status: boolean) => {
-        const isStatusUpdated = await updateUserStatus(id, status);
+        const isStatusUpdated = await useUpdateUserStatus(id, status);
         if (isStatusUpdated) {
             toast.success('El estado se actualizó correctamente');
         }

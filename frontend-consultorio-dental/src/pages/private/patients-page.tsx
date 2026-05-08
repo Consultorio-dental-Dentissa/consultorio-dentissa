@@ -9,12 +9,12 @@ import toast from "react-hot-toast";
 export default function PatientsPage() {
 
     const [isLoadingTable, setIsLoadingTable] = useState(false);
-    const { patients, getPatients, error } = usePatients();
+    const { patients, useGetAllPatients, error } = usePatients();
     const navigate = useNavigate();
 
     useEffect(() => {
         setIsLoadingTable(true);
-        getPatients()
+        useGetAllPatients()
         .finally(() => setIsLoadingTable(false));
     }, []);
 
