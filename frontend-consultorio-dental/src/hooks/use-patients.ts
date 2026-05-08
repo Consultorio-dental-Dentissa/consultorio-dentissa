@@ -1,4 +1,4 @@
-import { requestGetPatients, requestGetPatient } from "../services/patients.service"
+import { getAllPatients, getPatientById } from "../services/patients.service"
 import { useState } from "react";
 
 import type { Patient } from "@/types/models/patient";
@@ -9,13 +9,13 @@ export function usePatients() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function getPatients() {
+    async function useGetAllPatients() {
 
         setError(null);
         setIsLoading(true);
 
         try {
-            const patientsData = await requestGetPatients();
+            const patientsData = await getAllPatients();
             setPatients(patientsData);
 
         } catch(error) {
@@ -26,13 +26,13 @@ export function usePatients() {
         }
     }
 
-    async function getPatient(id: number): Promise<Patient | null> {
+    async function useGetPatientById(id: number): Promise<Patient | null> {
 
         setError(null);
         setIsLoading(true);
 
         try {
-            const patient = await requestGetPatient(id);
+            const patient = await getPatientById(id);
             return patient;
 
         } catch(error) {
@@ -46,8 +46,8 @@ export function usePatients() {
 
     return { 
         patients, 
-        getPatients, 
-        getPatient, 
+        useGetAllPatients, 
+        useGetPatientById, 
         isLoading, 
         error 
     }
