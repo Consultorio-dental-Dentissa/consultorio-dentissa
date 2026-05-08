@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 export default function RegisterPage() {
 
     const navigate = useNavigate();
-    const { signIn, error } = useRegister();
+    const { useSignIn, error } = useRegister();
     const { 
         register, 
         handleSubmit, 
@@ -22,7 +22,7 @@ export default function RegisterPage() {
     }, [error]);
 
     const handleFormSubmit = async (userData: CreateUserDto) => {
-        const isUserRegistered = await signIn(userData);
+        const isUserRegistered = await useSignIn(userData);
 
         if (isUserRegistered) {
             toast.success('Te has registrado exitosamente');

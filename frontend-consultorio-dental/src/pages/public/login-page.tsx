@@ -11,7 +11,7 @@ import { useAuth } from "@/context/auth-context-provider";
 export default function LoginPage() {
 
     const navigate = useNavigate();
-    const { login, error, isLoading } = useLogin();
+    const { useLoginUser, error, isLoading } = useLogin();
     const { saveUserData } = useAuth();
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function LoginPage() {
     
 
     const handleFormSubmit = async (credentials: LoginDto) => {
-        const userLogged = await login(credentials);
+        const userLogged = await useLoginUser(credentials);
 
         if (userLogged && userLogged.user) {
             saveUserData(userLogged.user);
