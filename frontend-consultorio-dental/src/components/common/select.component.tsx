@@ -14,18 +14,19 @@ interface SelectProps {
     onChange: (e: any) => void;
     data: SelectData[],
     value?: string;
+    styles?: string;
 }
 
-export function SelectComponent({ title, placeholder, data, onChange, value }: SelectProps) {
+export function SelectComponent({ title, placeholder, data, onChange, value, styles }: SelectProps) {
     return (
         <Select onValueChange={onChange} value={value}>
-            <SelectTrigger className="w-full p-5 rounded-md">
+            <SelectTrigger className={`w-full p-5 rounded-md ${styles}`}>
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
-            <SelectContent className="p-4">
+            <SelectContent className='px-5 py-1 flex justify-center'>
                 <SelectGroup>
                     <SelectLabel>{title}</SelectLabel>
-                    {data.map((dato) => <SelectItem value={dato.value}>{dato.data}</SelectItem>)}
+                    {data.map((dato) => <SelectItem value={String(dato.value)}>{String(dato.data)}</SelectItem>)}
                 </SelectGroup>
             </SelectContent>
         </Select>

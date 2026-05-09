@@ -36,7 +36,7 @@ interface SelectFormProps {
     placeholder: string;
     DATA: SelectData[];
     onChange: () => void
-    value: string
+    value: any
     error?: string
 }
 
@@ -50,6 +50,7 @@ export function SelectForm({label, title, placeholder, DATA, onChange, value, er
                 data={DATA}
                 onChange={onChange}
                 value={value}
+                styles={error && 'border-2 border-red-400'}
             />
             {error && <ErrorSpan message={error} />}
         </Field>

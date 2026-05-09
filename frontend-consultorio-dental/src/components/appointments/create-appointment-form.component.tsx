@@ -1,184 +1,144 @@
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { usePatients } from '../../hooks/use-patients'
-import { useServices } from '../../hooks/use-services'
-import { useAppointments } from '../../hooks/use-appointments'
-
 import { Button } from '../ui/button'
-
-import type { Service } from '@/types/models/service'
-import type { Patient } from '@/types/models/patient'
-import type { CreateAppointmentDto } from '../../types/api/request/create-appointment.dto'
-import type { Appointment } from '@/types/models/appointment'
-
-interface FormData {
-    date: string
-    time: string
-    notes: string
-    service: string
-    patient: string
-}
-
-const initialState: FormData = {
-    date: '',
-    time: '',
-    notes: '',
-    service: '',
-    patient: '',
-}
+import { FieldGroup } from '../ui/field';
+import { InputForm } from '../common/input.component';
+import { useMemo } from 'react';
+import { SelectForm } from '../common/input.component';
+import type { Service } from '@/types/models/service';
+import type { Patient } from '@/types/models/patient';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { 
+    type CreateAppointmentInput, 
+    type CreateAppointmentOutput, 
+    CreateAppointmentSchema 
+} from './appointment.schema';
+import type { CreateAppointmentDto } from '@/types/api/request/create-appointment.dto';
 
 interface CreateAppointmentFormProps {
-    onSubmit: (newAppointment: Appointment) => void
-    onCancel?: () => void
+    onSubmit: (dto: CreateAppointmentDto) => void;
+    onCancel: () => void;
+    services: Service[];
+    patients: Patient[];
 }
 
-export default function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppointmentFormProps) {
 
-    const [form, setForm] = useState<FormData>(initialState);
+export function CreateAppointmentForm({ onSubmit, onCancel, patients, services }: CreateAppointmentFormProps) {
 
-    const [services, setServices] = useState<Service[]>([]);
-    const [patients, setPatients] = useState<Patient[]>([]);
+    /**
+     * Definimos el esquema
+     */
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: {
+            isSubmitting,
+            errors
+        } } = useForm<CreateAppointmentInput, any, CreateAppointmentOutput>({
+            resolver: zodResolver(CreateAppointmentSchema)
+        });
 
-    const { createAppointment, loading, error } = useAppointments();
-    const { getServices } = useServices();
-    const { getPatients } = usePatients();
+    /**
+     * INDICACIÓN:
+     * No es necesario especificar el tipo ya que 
+     * CreateAppointmentOutput es exactamente igual 
+     * a CreateAppointmentDto
+     */
+    const handleSubmitForm = (data: CreateAppointmentOutput) => {
 
-    const today = new Date();
-    const localDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-    ).toISOString().split('T')[0];
-
-    useEffect(() => {
-
-        async function fetchData() {
-
-            try {
-                const services = await getServices();
-                const patients = await getPatients();
-
-                setServices(services);
-                setPatients(patients);
-            } catch(error) {
-                toast.error((error as string))
-            }
-        }
-
-        fetchData();
-
-    }, []);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target
-        setForm(prev => ({ ...prev, [name]: value }));
+        onSubmit(data);
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    /**
+     * INDICACIÓN:
+     * Definimos los arrays de datos para los select
+     */
 
-        Object.values(form).some(field => !field) && toast.error('Debes llenar todos los campos');
-        console.log(form);
+    const servicesSelectData = useMemo(() => services.map(ser => ({ 
+        value: ser.id, 
+        data: ser.name 
+    })), [services]);
+    
+    const patientsSelectData = useMemo(() => patients.map(pa => ({ 
+        value: pa.id, 
+        data: `${pa.name} ${pa.lastname}` 
+    })), [patients]);
 
-        if (form.date < localDate) {
-            toast.error('No puedes seleccionar una fecha pasada');
-            return;
-        }
-
-        const appointment: CreateAppointmentDto = {
-            date: form.date,
-            time: form.time,
-            notes: form.notes,
-            patient_id: Number(form.patient),
-            service_id: Number(form.service)
-        }
-
-        try {
-            const newAppointment = await createAppointment(appointment);
-            toast.success('La cita se ha agendado exitosamente');
-            onSubmit(newAppointment);
-        } catch (error) {
-            toast.error((error as string));
-        }
-    }
-
-    console.log(form);
 
     return (
-        <div className="form-card">
+        <form className='flex flex-col gap-5' onSubmit={handleSubmit(handleSubmitForm)}>
+            <FieldGroup className='flex-row'>
 
-            {error && toast.error(error)}
+                <Controller control={control} name="service_id"
+                    render={({ field }) => (
+                        <SelectForm 
+                            label="Servicio" 
+                            title="Servicios" 
+                            onChange={field.onChange}
+                            value={field.value}
+                            DATA={servicesSelectData}
+                            placeholder={ !servicesSelectData.length ? 'No hay servicios' : 'Seleccione un servicio' }
+                            error={errors.service_id?.message}
+                        />
+                    )}
+                />
 
-            <form onSubmit={handleSubmit}>
-                <div className="form-header">
-                    <p className="form-title">Agendar cita</p>
-                    <p className="form-subtitle">Completa los campos para agendar una nueva cita.</p>
-                </div>
+                <Controller control={control} name="patient_id"
+                    render={({ field }) => (
+                        <SelectForm 
+                            label="Paciete" 
+                            title="Pacientes" 
+                            onChange={field.onChange}
+                            DATA={patientsSelectData}
+                            value={field.value}
+                            placeholder={ !patientsSelectData.length ? 'No hay pacientes' : 'Seleccione un paciente' }
+                            error={errors.patient_id?.message}
+                        />
+                    )}
+                />
 
-                <div className="form-section">
-                    <p className="section-label">Información general</p>
-                    <div className="form-grid">
+            </FieldGroup>
 
-                        <div className="field">
-                            <label>Fecha de la cita</label>
-                            <input name="fecha" type='date' value={form.date} onChange={handleChange} placeholder="Seleccione la fecha en la que quiera realizar su cita" />
-                        </div>
+            <FieldGroup className='flex-row'>
+                <InputForm
+                    label='Fecha de la cita'
+                    placeholder='Porfavor escoja una fecha para la cita'
+                    type='date'
+                    registration={register('date')}
+                    error={errors.date?.message}
+                />
 
-                        <div className="field">
-                            <label>Hora</label>
-                            <input name="hora" type='time' value={form.time} onChange={handleChange} placeholder="Seleccione la hora" />
-                        </div>
+                <InputForm
+                    label='Hora de la cita'
+                    placeholder='Porfavor escoja una hora para la cita'
+                    type='time'
+                    registration={register('time')}
+                    error={errors.time?.message}
+                />
+            </FieldGroup>
 
-                        <div className="field">
-                            <label>Servicio</label>
-                            <select name="servicio" id="servicio" value={form.service} onChange={handleChange}>
-                                {
-                                    services.map((servicio) => {
+            <FieldGroup>
+                <InputForm
+                    label='Notas'
+                    placeholder='Por favor escriba una nota previa para la cita'
+                    registration={register('notes')}
+                    error={errors.notes?.message}
+                />
+            </FieldGroup>
 
-                                        return (
-                                            <option value={servicio.id}>
-                                                {servicio.name}
-                                            </option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
-
-                        <div className="field">
-                            <label>Paciente</label>
-                            <select name="paciente" id="paciente" onChange={handleChange}>
-                                {
-                                    patients.map((paciente) => {
-                                        return (
-                                            <option value={paciente.id}>{paciente.name} {paciente.lastname} | {paciente.email}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </div>
-
-
-                    <div className='form-secction' style={{ marginTop: '30px' }}>
-                        <p className="section-label">Nota previa</p>
-
-                        <div className="field">
-                            <label>Descripción</label>
-                            <textarea name="notaPrevia" value={form.notes} onChange={handleChange} id="notaPrevia" placeholder='Porfavor escriba porque quiere realizar su cita'>
-                            </textarea>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div className="form-footer">
-                    <Button type="button" onClick={onCancel}>Cancelar</Button>
-                    <Button type="submit" disabled={loading}>Agendar cita</Button>
-                </div>
-
-            </form>
-
-        </div>
+            <FieldGroup className='flex-row justify-end gap-2'>
+                <Button
+                    variant="secondary"
+                    type='button'
+                    onClick={() => onCancel()}>
+                    Cancelar
+                </Button>
+                <Button
+                    disabled={isSubmitting}
+                    variant="primary">
+                    {isSubmitting ? 'Cargando...' : 'Agendar cita'}
+                </Button>
+            </FieldGroup>
+        </form>
     )
 }
