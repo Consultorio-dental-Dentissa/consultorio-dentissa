@@ -19,8 +19,8 @@ export default function ServicesPage() {
 
     useEffect(() => {
         setIsLoadingTable(true); 
-        useGetAllServices();
-        setIsLoadingTable(false);
+        useGetAllServices().
+        finally(() => setIsLoadingTable(false));
     }, []);
 
     useEffect(() => {
@@ -61,7 +61,7 @@ export default function ServicesPage() {
 
                 {
                     isLoadingTable ? (
-                        <div>
+                        <div className="bg-white w-full rounded-md p-5 flex justify-center">
                             Cargando...
                         </div>
                     )
@@ -69,7 +69,7 @@ export default function ServicesPage() {
                     : 
 
                     !servicesData.length ? (
-                        <div>
+                        <div className="bg-white w-full rounded-md p-5 flex justify-center">
                             No hay servicios.
                         </div>
                     )
