@@ -6,8 +6,8 @@ interface SpanProps {
     message: string
 }
 
-export function ErrorSpan({message}: SpanProps) {
-    return(
+export function ErrorSpan({ message }: SpanProps) {
+    return (
         <span className="text-red-500">{message}</span>
     );
 }
@@ -17,10 +17,10 @@ interface StatusSpanProps {
 }
 
 export function StatusSpan({ status }: StatusSpanProps) {
-    
+
     let variant: BadgeVariant;
 
-    switch(status) {
+    switch (status) {
         case StatusAppointment.PENDIENTE:
             variant = "base";
             break;
@@ -39,8 +39,22 @@ export function StatusSpan({ status }: StatusSpanProps) {
             variant = "base";
             break;
     }
-    
+
     return (
-        <Badge variant={variant}>{ formatFirstLetterUppercase(status) }</Badge>
+        <Badge variant={variant}>{formatFirstLetterUppercase(status)}</Badge>
+    )
+}
+
+
+interface ActiveSpanProps {
+    status: boolean;
+}
+
+export const ActiveSpan = ({ status }: ActiveSpanProps) => {
+
+    return (
+        <Badge variant={status ? 'primary' : 'destructive'}>
+            {status ? 'Activo' : 'No activo'}
+        </Badge>
     )
 }
