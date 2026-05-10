@@ -7,6 +7,7 @@ import { Switch } from "../ui/switch";
 
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FiEdit2 } from "react-icons/fi";
+import { ActiveSpan } from "../common/span.component";
 
 import { formatFirstLetterUppercase } from "@/utils/formatters";
 import { formatPhone } from "@/utils/formatters";
@@ -53,19 +54,29 @@ export const getColumns = (onToggleStatus?: (id: number, status: boolean) => voi
         cell: ({ row }) => <div>{formatFirstLetterUppercase(row.original.role)}</div>
     },
     {
-        header: 'Estado',
+        header: "Fecha de registro",
+        cell: ({ row }) => <div>{row.original.created_at.toDateString()}</div>
+    },
+    {
+        header: "Estado",
         cell: ({ row }) => (
-            <div>
-                <Switch 
-                    checked={row.original.status} 
-                    onClick={() => onToggleStatus && onToggleStatus(row.original.id, !row.original.status)} 
+            <div className="flex justify-center w-[50px]">
+                <ActiveSpan
+                    status={row.original.status}
                 />
-            </div>  
+            </div>
         )
     },
     {
-        header: "Fecha de registro",
-        cell: ({row}) => <div>{row.original.created_at.toDateString()}</div>
+        header: 'Modificar estado',
+        cell: ({ row }) => (
+            <div className="flex justify-center">
+                <Switch
+                    checked={row.original.status}
+                    onClick={() => onToggleStatus && onToggleStatus(row.original.id, !row.original.status)}
+                />
+            </div>
+        )
     },
     {
         header: "Acciones",

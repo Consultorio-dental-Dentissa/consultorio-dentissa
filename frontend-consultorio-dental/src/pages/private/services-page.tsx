@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import { PageTitle } from "../../components/common/page-title.component";
 import { Modal } from "@/components/common/modal.component";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { CreateServiceForm } from "@/components/services/create-service-form.component";
 import { useServices } from "../../hooks/use-services";
 import type { CreateServiceDto } from "@/types/api/request/create-service.dto";
+import { DataTable } from "@/components/common/data-table.component";
+import { getServicesColumns } from "@/components/services/services-columns.component";
+
 
 export default function ServicesPage() {
 
@@ -17,20 +19,14 @@ export default function ServicesPage() {
 
     useEffect(() => {
         setIsLoadingTable(true); 
-        useGetAllServices().finally(() => setIsLoadingTable(false));
+        useGetAllServices().
+        finally(() => setIsLoadingTable(false));
     }, []);
 
     useEffect(() => {
         error && toast.error(error);
     }, [error]);
 
-    const handleUpdateServiceStatus = async (id: number, newStatus: boolean) => {
-
-        const isStatusUpdated = await useUpdateServiceStatus(id, newStatus);
-        if (isStatusUpdated) {
-            toast.success('El estado del servicio se ha actualizado correctamente');
-        }
-    }
 
     const handleNewService = async (newService: CreateServiceDto): Promise<void> => {
 
@@ -41,11 +37,14 @@ export default function ServicesPage() {
         }
     }
 
-    function totalMinutesToHours(minutes: number): string {
-        const hours = Math.floor(minutes / 60)
-        const mins = minutes % 60
-        return `${hours}h ${mins}m`
+    const updateServiceStatus = async (serviceId: number, status: boolean) => {
+        const isStatusUpdated = await useUpdateServiceStatus(serviceId, status);
+        if (isStatusUpdated) {
+            toast.success('El estado se ha actualizado correctamente');
+        }
     }
+
+    const servicesTableColumns = useMemo(() => getServicesColumns(updateServiceStatus), []);
 
     return (
         <div>
@@ -58,58 +57,34 @@ export default function ServicesPage() {
                 <Button variant="primary" onClick={() => setOpenModal(true)}>Agregar nuevo servicio</Button>
             </div>
 
-            <table className="w-full">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Precio</th>
-                        <th>Duración</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        isLoadingTable ? 
-                        (
-                            <tr className="bg-white rounded-sm p-5 flex justify-center">
-                                <h2>Cargando...</h2>
-                            </tr>
-                        ) 
-                        :
-                        servicesData.length === 0 ? 
-                        (
-                            <tr className="bg-white rounded-sm p-5 flex justify-center">
-                                <td>No se encontrarón servicios</td>
-                            </tr>
-                        ) 
-                        : 
-                        (
-                            servicesData.map((servicio) => {
-                                return (
-                                    <tr key={servicio.id}>
-                                        <td>{servicio.name}</td>
-                                        <td>${parseFloat(servicio.price).toFixed(2)}</td>
-                                        <td>{totalMinutesToHours(servicio.durationMinutes)}</td>
-                                        <td>{servicio.description}</td>
-                                        <td>
-                                            <Switch 
-                                                checked={servicio.status} 
-                                                onClick={
-                                                    () => handleUpdateServiceStatus(
-                                                            servicio.id, 
-                                                            !servicio.status
-                                                        )
-                                                }
-                                            />
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        )
-                    }
-                </tbody>
-            </table>
+            <div className="w-full mt-5">
+
+                {
+                    isLoadingTable ? (
+                        <div className="bg-white w-full rounded-md p-5 flex justify-center">
+                            Cargando...
+                        </div>
+                    )
+
+                    : 
+
+                    !servicesData.length ? (
+                        <div className="bg-white w-full rounded-md p-5 flex justify-center">
+                            No hay servicios.
+                        </div>
+                    )
+
+                    :
+
+                    <div className="bg-white rounded-md">
+                        <DataTable 
+                        columns={servicesTableColumns}
+                        data={servicesData}
+                        />
+                    </div>
+                }
+
+            </div>
 
             <Modal
                 title="Registrar nuevo servicio"
