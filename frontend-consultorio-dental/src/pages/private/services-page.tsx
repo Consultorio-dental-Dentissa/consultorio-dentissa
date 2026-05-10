@@ -3,7 +3,6 @@ import toast from "react-hot-toast";
 
 import { PageTitle } from "../../components/common/page-title.component";
 import { Modal } from "@/components/common/modal.component";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { CreateServiceForm } from "@/components/services/create-service-form.component";
 import { useServices } from "../../hooks/use-services";
@@ -28,13 +27,6 @@ export default function ServicesPage() {
         error && toast.error(error);
     }, [error]);
 
-    const handleUpdateServiceStatus = async (id: number, newStatus: boolean) => {
-
-        const isStatusUpdated = await useUpdateServiceStatus(id, newStatus);
-        if (isStatusUpdated) {
-            toast.success('El estado del servicio se ha actualizado correctamente');
-        }
-    }
 
     const handleNewService = async (newService: CreateServiceDto): Promise<void> => {
 
