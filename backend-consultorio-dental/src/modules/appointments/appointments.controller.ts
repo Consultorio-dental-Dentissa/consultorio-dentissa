@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, ParseIntPipe, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, ParseIntPipe, Param, UseGuards, Query } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { AuthGuard } from 'src/infrastructure/security/guards/auth.guard';
 import { IsActiveUserGuard } from 'src/infrastructure/security/guards/is-active-user.guard';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { GetAppointmentsDto } from './dto/get-appointment.dto';
 
 @UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('appointments')
@@ -11,8 +12,8 @@ export class AppointmentsController {
     constructor(private appointmentsServices: AppointmentsService) { }
 
     @Get()
-    async getAllAppointments() {
-        return await this.appointmentsServices.getAllAppointments();
+    async getAllAppointments(@Query() parameters: GetAppointmentsDto) {
+        return await this.appointmentsServices.getAllAppointments(parameters);
     }
 
     @Get(':id')

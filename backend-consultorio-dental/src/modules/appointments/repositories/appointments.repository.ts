@@ -1,14 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { CreateAppointmentDto } from "../dto/create-appointment.dto";
+import { GetAppointmentsDto } from "../dto/get-appointment.dto";
 
 @Injectable()
 export class AppointmentsRepository {
 
     constructor(private prisma: PrismaService) { }
 
-    async getAll() {
+    async getAll(filters: GetAppointmentsDto) {
+
         return await this.prisma.appointment.findMany({
+            where: {
+                patient_id: filters.patient_id,
+                status: filters.status
+            },
             select: {
                 id: true,
                 date: true,
