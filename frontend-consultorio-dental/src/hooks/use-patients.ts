@@ -7,22 +7,24 @@ export function usePatients() {
 
     const [patients, setPatients] = useState<Patient[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoadingPatients, setIsLoadingPatients] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     async function useGetAllPatients() {
 
         setError(null);
-        setIsLoading(true);
+        setIsLoadingPatients(true);
 
         try {
+
             const patientsData = await getAllPatients();
             setPatients(patientsData);
 
-        } catch(error) {
+        } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             setError(errorMessage);
         } finally {
-            setIsLoading(false);
+            setIsLoadingPatients(false);
         }
     }
 
@@ -35,7 +37,7 @@ export function usePatients() {
             const patient = await getPatientById(id);
             return patient;
 
-        } catch(error) {
+        } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             setError(errorMessage);
             return null;
@@ -44,11 +46,12 @@ export function usePatients() {
         }
     }
 
-    return { 
-        patients, 
-        useGetAllPatients, 
-        useGetPatientById, 
-        isLoading, 
-        error 
+    return {
+        patients,
+        useGetAllPatients,
+        useGetPatientById,
+        isLoadingPatients,
+        isLoading,
+        error
     }
 }
