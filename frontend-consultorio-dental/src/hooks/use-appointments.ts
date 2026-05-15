@@ -10,12 +10,12 @@ export function useAppointments() {
         const [isLoading, setLoading] = useState<boolean>(false);
         const [error, setError] = useState<string | null>(null);
 
-        async function useGetAllAppointments() {
+        async function useGetAllAppointments(parameters?: string) {
                 setError(null);
                 setLoading(true);
 
                 try {
-                        const appointments = await getAllAppointments();
+                        const appointments = await getAllAppointments(parameters);
                         setAppointments(appointments);
                 } catch (error) {
                         const errorMessage = error instanceof Error ? error.message : 'Error desconocido';

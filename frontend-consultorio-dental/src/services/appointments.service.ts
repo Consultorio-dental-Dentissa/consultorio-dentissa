@@ -6,8 +6,11 @@ import type { CreateAppointmentDto } from '../types/api/request/create-appointme
 import type { Appointment } from '@/types/models/appointment';
 import type { ApiResponse } from '@/types/api/responses/api.response';
 
-export async function getAllAppointments(): Promise<Appointment[]> {
-    const response = await get<ApiResponse<AppointmentResponse[]>>('/appointments');
+export async function getAllAppointments(parameters?: string): Promise<Appointment[]> {
+
+    const url = parameters ? `/appointments?${parameters}` : '/appointments';
+
+    const response = await get<ApiResponse<AppointmentResponse[]>>(url);
     const appointmentsResponse = response.data;
     return appointmentsResponse.map(appointment => AppointmentMap(appointment));
 }
