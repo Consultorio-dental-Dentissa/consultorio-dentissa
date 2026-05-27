@@ -1,122 +1,118 @@
+import { PageTitle } from "@/components/common/page-title.component"
 import { useEffect, useState } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { usePatients } from "../../hooks/use-patients"
-import { formatPhone } from "@/utils/formatters"
-import { Badge } from "@/components/ui/badge"
+import { usePatients } from "@/hooks/use-patients"
+import { useAppointments } from "@/hooks/use-appointments";
+import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { AppointmentSmallTable } from "@/components/appointments/appointment-small-table.component";
+import { StatusAppointment } from "@/types/enums/status-appointment.enum";
+import { Separator } from "@/components/ui/separator";
+import { formatPhone } from "@/utils/formatters";
+import type { Patient } from "@/types/models/patient";
 
-import type { Patient } from "@/types/models/patient"
 
-function iniciales(nombre: string, apellido: string) {
-    return `${nombre[0]}${apellido[0]}`.toUpperCase()
-}
+export default function PatientProfile() {
 
-const IconContacto = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-    </svg>
-)
-
-const IconClinico = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-    </svg>
-)
-
-export default function PatientProfilePage() {
-
-    const { id } = useParams()
-    const idPatient = Number(id)
-    const navigate = useNavigate()
-    const { useGetPatientById } = usePatients()
+    const { useGetPatientById } = usePatients();
+    const { appointments, useGetAllAppointments } = useAppointments();
     const [patient, setPatient] = useState<Patient | null>(null);
+    const { id } = useParams();
 
     useEffect(() => {
-        async function fetchPatientData() {
-            const data = await useGetPatientById(idPatient)
-            setPatient(data)
+
+        async function fetchData() {
+            const patientInfo = await useGetPatientById(Number(id));
+            patientInfo && setPatient(patientInfo);
+
+            useGetAllAppointments(`patient_id=${id}`);
         }
-        fetchPatientData()
+
+        fetchData()
     }, [])
 
-    if (!patient) return <div className="perfil-loading">Cargando paciente...</div>
+    if (!patient) {
+        return (
+            <h2>No se ha encontrado información de este paciente</h2>
+        )
+    }
 
     return (
-        <div className="perfil-page">
+        <>
+            <PageTitle
+                titulo="Perfil del paciente"
+                subtitulo=""
+            />
 
-            {/* HEADER GRANDE */}
-            <div className="perfil-header">
+            <div className="bg-white p-5 rounded-lg flex flex-col">
+                <div className="flex justify-between items-center">
+                    <p className="font-medium text-xl"> {`${patient?.name} ${patient?.lastname}`} </p>
+                    <Button variant="primary">Editar perfil</Button>
+                </div>
 
-                <button className="perfil-back" onClick={() => navigate(-1)}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                    Pacientes
-                </button>
+                <div className="p-5 rounded-lg border border-gray-300 mt-5">
 
-                <div className="perfil-hero">
-                    <div className="perfil-hero-left">
-                        <div className="perfil-avatar">
-                            {iniciales(patient.name, patient.lastname)}
-                        </div>
+                    <div>
+                        <p className="font-bold">Información general</p>
+                        <p className="text-gray-500">Aqui estan todos los datos del paciente</p>
+                    </div>
+
+                    <div className="flex mt-5 justify-between">
                         <div>
-                            <h1 className="perfil-nombre">
-                                {patient.name} {patient.lastname}
-                            </h1>
-                            <div className="perfil-meta">
-                                <Badge variant="base">Paciente</Badge>
-                                <span className="perfil-id">
-                                    #{patient.id.toString().padStart(4, '0')}
-                                </span>
-                            </div>
+                            <p className="font-base text-gray-500">Correo electronico:</p>
+                            <p className="font-medium">{patient.email}</p>
+                        </div>
+
+                        <Separator orientation="vertical"/>
+
+                        <div>
+                            <p className="font-base text-gray-500">Telefono:</p>
+                            <p className="font-medium">{formatPhone(patient.phone)}</p>
+                        </div>
+
+                        <Separator orientation="vertical"/>
+
+                        <div>
+                            <p className="font-base text-gray-500">Telefono de emergencia:</p>
+                            <p className="font-medium">{formatPhone(patient.emergency_phone)}</p>
+                        </div>
+
+                        <Separator orientation="vertical"/>
+
+                        <div>
+                            <p className="font-base text-gray-500">Fecha de nacimiento:</p>
+                            <p className="font-medium">{patient.birth_date.toDateString()}</p>
                         </div>
                     </div>
                 </div>
 
-            </div>
+                <div className="flex flex-col mt-5">
 
-            {/* CARDS */}
-            <div className="perfil-body">
+                    <h2 className="font-medium">Historial de consultas realizadas:</h2>
+                    <div className="flex flex-col p-5 max-h-[300px] overflow-y-auto border border-gray-300 rounded-lg">
+                        No hay consultas.
+                    </div>
 
-                <div className="perfil-card">
-                    <div className="perfil-card-head">
-                        <div className="perfil-card-icon"><IconContacto /></div>
-                        <p className="perfil-card-titulo">Información de contacto</p>
-                    </div>
-                    <div className="perfil-row">
-                        <span className="perfil-row-key">Correo</span>
-                        <span className="perfil-row-val">{patient.email}</span>
-                    </div>
-                    <div className="perfil-row">
-                        <span className="perfil-row-key">Teléfono</span>
-                        <span className="perfil-row-val">{formatPhone(patient.phone)}</span>
-                    </div>
-                    <div className="perfil-row">
-                        <span className="perfil-row-key">Tel. emergencia</span>
-                        <span className="perfil-row-val">{formatPhone(patient.emergency_phone)}</span>
-                    </div>
-                    <div className="perfil-row">
-                        <span className="perfil-row-key">Dirección</span>
-                        <span className="perfil-row-val">{patient.address}</span>
+                    <h2 className="font-medium mt-5">Citas agendadas:</h2>
+                    <div className="max-h-[300px] overflow-y-auto">
+                        {
+                            !appointments.length ?
+                                (
+                                    <h2>No hay citas.</h2>
+                                )
+
+                                :
+
+                                (
+                                    <div className="bg-white rounded-md">
+                                        <AppointmentSmallTable
+                                            appointments={appointments.filter(a => a.status != StatusAppointment.CANCELADA)}
+                                        />
+                                    </div>
+                                )
+                        }
                     </div>
                 </div>
-
-                <div className="perfil-card">
-                    <div className="perfil-card-head">
-                        <div className="perfil-card-icon"><IconClinico /></div>
-                        <p className="perfil-card-titulo">Datos clínicos</p>
-                    </div>
-                    <div className="perfil-row">
-                        <span className="perfil-row-key">Fecha de nacimiento</span>
-                        <span className="perfil-row-val">{patient.birth_date.toDateString()}</span>
-                    </div>
-                    <div className="perfil-row">
-                        <span className="perfil-row-key">ID paciente</span>
-                        <span className="perfil-row-val">#{patient.id.toString().padStart(4, '0')}</span>
-                    </div>
-                </div>
-
             </div>
-
-        </div>
+        </>
     )
 }
