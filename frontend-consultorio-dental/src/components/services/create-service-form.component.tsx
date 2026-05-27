@@ -6,14 +6,16 @@ import { FieldGroup } from "@/components/ui/field"
 import { InputForm } from "@/components/common/input.component"
 import { Button } from '@/components/ui/button'
 import type { CreateServiceDto } from '@/types/api/request/create-service.dto';
+import { Spinner } from "../ui/spinner";
 
 
 interface CreateServiceFormProps {
     onSubmit: (nuevoServicio: CreateServiceDto) => Promise<void>
-    onCancel: () => void
+    onCancel: () => void;
+    isSaving: boolean;
 }
 
-export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps) {
+export function CreateServiceForm({ onSubmit, onCancel, isSaving }: CreateServiceFormProps) {
 
     const {
         register,
@@ -85,7 +87,9 @@ export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps
 
             <FieldGroup className="flex flex-row justify-end gap-2 mt-2">
                 <Button variant="secondary" onClick={onCancel} type="button">Cancelar</Button>
-                <Button variant="primary" type="submit" disabled={isSubmitting}>Guardar servicio</Button>
+                <Button variant="primary" type="submit" disabled={isSaving}>
+                    {isSaving ? <Spinner /> : 'Registrar servicio'}
+                </Button>
             </FieldGroup>
         </form>
     )
