@@ -20,6 +20,8 @@ export function useAppointments() {
                 } catch (error) {
                         const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
                         setError(errorMessage);
+                } finally {
+                        setLoading(false);
                 }
 
         }
@@ -37,6 +39,8 @@ export function useAppointments() {
                         const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
                         setError(errorMessage);
                         return null;
+                } finally {
+                        setLoading(false);
                 }
         }
 
