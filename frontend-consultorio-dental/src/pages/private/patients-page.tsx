@@ -1,26 +1,19 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { formatPhone } from "@/utils/formatters";
+import { useEffect } from "react";
 import { usePatients } from "../../hooks/use-patients";
 import { PageTitle } from "../../components/common/page-title.component";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
+import { getPatientsColumns } from "@/components/patients/patients-columns.component";
+import { DataTable } from "@/components/common/data-table.component";
 
 export default function PatientsPage() {
 
-    const [isLoadingTable, setIsLoadingTable] = useState(false);
-    const { patients, useGetAllPatients, error } = usePatients();
-    const navigate = useNavigate();
+    const { patients, useGetAllPatients, isLoadingPatients, error } = usePatients();
 
     useEffect(() => {
-        setIsLoadingTable(true);
-        useGetAllPatients()
-        .finally(() => setIsLoadingTable(false));
+        useGetAllPatients();
+
     }, []);
 
-    useEffect(() => {
-        error && toast.error(error);
-    }, [error]);
+    const patientsTableColumns = getPatientsColumns();
 
     return (
         <div>
@@ -30,64 +23,41 @@ export default function PatientsPage() {
                 subtitulo="Aqui puedes manejar tus pacientes"
             />
 
-            <table className="w-full">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Correo</th>
-                        <th>Teléfono</th>
-                        <th>Teléfono de emergencia</th>
-                        <th>Fecha de nacimiento</th>
-                        <th>Dirección</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div className="mt-3 flex flex-row gap-5">
+                <div className="bg-white rounded-sm px-5 py-2 min-w-[15%] border borer-gray-200">
+                    <p className="text-sm text-gray-500 font-medium">Número de pacientes: </p>                    
+                    <p className="font-bold text-2xl">{patients.length}</p>
+                </div>
+            </div>
 
-                    {
-                        isLoadingTable ? 
-                        (
-                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
-                                <h2>Cargando...</h2>
-                            </div>
-                        )
+            <div className="mt-5">
+                {
+                    isLoadingPatients ? (
+                        <div className="bg-white rounded-md p-5 flex justify-center">
+                            Cargando...
+                        </div>
+                    )
 
-                        :
-                        
-                        !patients.length ? 
-                        (
-                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
-                                <h2>No se encontraron pacientes.</h2>
-                            </div>
-                        ) 
-                        
-                        :
-                        
-                        patients.map((patient) => (
-                                    <tr key={patient.id}>
-                                        <td>{patient.name}</td>
-                                        <td>{patient.lastname}</td>
-                                        <td>{patient.email}</td>
-                                        <td>{formatPhone(patient.phone)}</td>
-                                        <td>{formatPhone(patient.emergency_phone)}</td>
-                                        <td>{patient.birth_date.toLocaleDateString('es-MX')}</td>
-                                        <td>{patient.address}</td>
-                                        <td>
-                                            <div className="actions">
-                                                <Button 
-                                                    variant="secondary" 
-                                                    onClick={() => navigate(`/pacientes/${patient.id}`)}>
-                                                        Ver perfil
-                                                </Button>
-                                                
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                    }
-                </tbody>
-            </table>
+                    :
+                    
+                    !patients.length ? (
+                        <div className="bg-red-500 text-white font-medium rounded-md p-5 flex justify-center">
+                            {error ? error : 'No hay servicios.'}
+                        </div>
+                    )
+                    
+                    :
+                    
+                    (
+                        <div className="bg-white rounded-md">
+                            <DataTable
+                                columns={patientsTableColumns}
+                                data={patients}
+                            />
+                        </div>
+                    )
+                }
+            </div>
         </div>
     );
 

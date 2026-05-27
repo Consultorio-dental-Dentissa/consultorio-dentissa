@@ -60,7 +60,7 @@ export const getColumns = (onToggleStatus?: (id: number, status: boolean) => voi
     {
         header: "Estado",
         cell: ({ row }) => (
-            <div className="flex justify-center w-[50px]">
+            <div className="flex justify-center">
                 <ActiveSpan
                     status={row.original.status}
                 />

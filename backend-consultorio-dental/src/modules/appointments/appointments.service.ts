@@ -3,6 +3,7 @@ import { AppointmentsRepository } from './repositories/appointments.repository';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ServicesRepository } from '../services/repositories/services.repository';
 import { PatientsRepository } from '../patients/repositories/patients.repository';
+import { GetAppointmentsDto } from './dto/get-appointment.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -14,8 +15,8 @@ export class AppointmentsService {
 
     ) { }
 
-    async getAllAppointments() {
-        const appointments = await this.appointmentRepository.getAll();
+    async getAllAppointments(parameters: GetAppointmentsDto) {
+        const appointments = await this.appointmentRepository.getAll(parameters);
 
         // TODO: Cambiar despues al patron DTO
         return appointments.map(appointment => {
@@ -112,5 +113,4 @@ export class AppointmentsService {
         });
 
     }
-
 }

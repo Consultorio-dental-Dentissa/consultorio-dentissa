@@ -21,7 +21,7 @@ import AppointmentsPage from "@/pages/private/appointments-page"
 import PublicLayout from "../layouts/public-layout"
 import PrivateLayout from "../layouts/private-layout"
 import ConsultationPage from "../pages/private/consultations-page"
-import PerfilPaciente from "../pages/private/patient-profile-page"
+import PatientProfile from "../pages/private/patient-profile-page"
 
 
 export default function Router() {
@@ -40,7 +40,7 @@ export default function Router() {
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/usuarios" element={<UsersPage />} />
                     <Route path="/pacientes" element={<PatientsPage />} />
-                    <Route path="/pacientes/:id" element={<PerfilPaciente />} />
+                    <Route path="/pacientes/:id" element={<PatientProfile />} />
 
                     <Route path="/servicios" element={<ServicesPage />} />
                     <Route path="/citas" element={<AppointmentsPage />} />
