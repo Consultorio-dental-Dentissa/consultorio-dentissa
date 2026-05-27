@@ -48,16 +48,18 @@ export const getServicesColumns = (
         {
             header: 'Modificar estado',
             cell: ({ row }) => (
-                <Switch
-                    checked={row.original.status}
-                    onClick={() => updateStatus(row.original.id, !row.original.status)}
-                />
+                <div className="flex justify-center">
+                    <Switch
+                        checked={row.original.status}
+                        onClick={() => updateStatus(row.original.id, !row.original.status)}
+                    />
+                </div>
             )
         },
         {
             header: 'Estado',
             cell: ({ row }) => (
-                <div className="flex justify-center w-[20px]">
+                <div className="flex justify-center">
                     <ActiveSpan
                         status={row.original.status}
                     />
