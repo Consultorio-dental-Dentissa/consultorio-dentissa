@@ -7,22 +7,25 @@ import type { Service } from '@/types/models/service';
 import type { Patient } from '@/types/models/patient';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Spinner } from '../ui/spinner';
+import type { CreateAppointmentDto } from '@/types/api/request/create-appointment.dto';
+
 import { 
     type CreateAppointmentInput, 
     type CreateAppointmentOutput, 
     CreateAppointmentSchema 
 } from './appointment.schema';
-import type { CreateAppointmentDto } from '@/types/api/request/create-appointment.dto';
 
 interface CreateAppointmentFormProps {
     onSubmit: (dto: CreateAppointmentDto) => void;
     onCancel: () => void;
+    isSaving: boolean;
     services: Service[];
     patients: Patient[];
 }
 
 
-export function CreateAppointmentForm({ onSubmit, onCancel, patients, services }: CreateAppointmentFormProps) {
+export function CreateAppointmentForm({ onSubmit, onCancel, isSaving, patients, services }: CreateAppointmentFormProps) {
 
     /**
      * Definimos el esquema
@@ -32,7 +35,6 @@ export function CreateAppointmentForm({ onSubmit, onCancel, patients, services }
         handleSubmit,
         control,
         formState: {
-            isSubmitting,
             errors
         } } = useForm<CreateAppointmentInput, any, CreateAppointmentOutput>({
             resolver: zodResolver(CreateAppointmentSchema)
@@ -127,17 +129,18 @@ export function CreateAppointmentForm({ onSubmit, onCancel, patients, services }
             </FieldGroup>
 
             <FieldGroup className='flex-row justify-end gap-2'>
+                
                 <Button
                     variant="secondary"
                     type='button'
                     onClick={() => onCancel()}>
                     Cancelar
                 </Button>
-                <Button
-                    disabled={isSubmitting}
-                    variant="primary">
-                    {isSubmitting ? 'Cargando...' : 'Agendar cita'}
+                
+                <Button variant="primary" type="submit" disabled={isSaving}>
+                    {isSaving ? <Spinner />  : 'Agendar cita'}
                 </Button>
+
             </FieldGroup>
         </form>
     )
