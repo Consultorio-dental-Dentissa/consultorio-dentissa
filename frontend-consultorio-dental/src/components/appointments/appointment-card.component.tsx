@@ -13,7 +13,7 @@ export function AppointmentCard({ appointment, onClick }: AppointmentCardProps) 
         day: '2-digit',
         month: 'short',
         year: 'numeric',
-    }).format(appointment.date);
+    }).format(appointment.scheluded_at);
 
     return (
         <>

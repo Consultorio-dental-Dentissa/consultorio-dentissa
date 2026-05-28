@@ -13,7 +13,7 @@ interface AppointmentSmallTableProps {
 const columns = (): ColumnDef<Appointment>[] => [
         {
             header: 'Fecha programada',
-            cell: ({ row }) => <div> {row.original.date.toDateString()} </div>
+            cell: ({ row }) => <div> {row.original.scheluded_at.toDateString()} </div>
         },
         {
             header: 'Horario',

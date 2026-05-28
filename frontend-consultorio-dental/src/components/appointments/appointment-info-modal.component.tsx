@@ -56,7 +56,7 @@ export function AppointmentInfoModal({ open, close, appointment }: AppointmentIn
                     <div className="space-y-1">
                         <p className="text-sm text-muted-foreground">Fecha</p>
                         <p className="font-medium">
-                            {appointment.date.toLocaleDateString()}
+                            {appointment.scheluded_at.toLocaleDateString()}
                         </p>
                     </div>
 
