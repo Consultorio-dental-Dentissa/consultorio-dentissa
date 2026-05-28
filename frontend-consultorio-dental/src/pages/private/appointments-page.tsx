@@ -15,7 +15,7 @@ export default function AppointmentsPage() {
 
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false);
-    const { appointments, useGetAllAppointments, useCreateAppointment, error } = useAppointments();
+    const { appointments, useGetAllAppointments, useCreateAppointment, isLoading, error } = useAppointments();
 
     const { servicesData, useGetAllServices } = useServices();
     const { patients, useGetAllPatients } = usePatients();
@@ -118,6 +118,7 @@ export default function AppointmentsPage() {
                 <CreateAppointmentForm
                     onSubmit={handleCreatedAppointment}
                     onCancel={() => setOpenModal(false)}
+                    isSaving={isLoading}
                     services={servicesData}
                     patients={patients}
                 />

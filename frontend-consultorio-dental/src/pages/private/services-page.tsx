@@ -15,7 +15,15 @@ export default function ServicesPage() {
 
     const [isLoadingTable, setIsLoadingTable] = useState(false);
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const { servicesData, useGetAllServices, useCreateService, useUpdateServiceStatus, error } = useServices();
+
+    const { 
+        servicesData, 
+        useGetAllServices, 
+        useCreateService, 
+        useUpdateServiceStatus, 
+        isLoading, 
+        error 
+    } = useServices();
 
     useEffect(() => {
         setIsLoadingTable(true); 
@@ -95,6 +103,7 @@ export default function ServicesPage() {
                     <CreateServiceForm
                         onSubmit={handleNewService}
                         onCancel={() => setOpenModal(false)}
+                        isSaving={isLoading}
                     />            
             </Modal>
         </div>

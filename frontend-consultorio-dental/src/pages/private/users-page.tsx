@@ -22,6 +22,7 @@ export default function UsersPage() {
         useGetAllUsers, 
         useUpdateUserStatus, 
         useCreateUser, 
+        isLoading,
         error 
     } = useUsers();
 
@@ -129,6 +130,7 @@ export default function UsersPage() {
                 <CreateUserForm
                     onSubmit={handleAddUser}
                     onCancel={() => setOpenModal(false)}
+                    isSaving={isLoading}
                 />
             </Modal>
 

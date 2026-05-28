@@ -9,11 +9,13 @@ import { Separator } from "../ui/separator";
 import { Role } from "@/types/enums/rol.enum";
 import type { SelectData } from "@/components/common/select.component";
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
+import { Spinner } from "../ui/spinner";
 
 
 interface CreateUserFormProps {
     onSubmit: (data: CreateUserDto) => void;
     onCancel: () => void;
+    isSaving: boolean;
 }
 
 
@@ -24,7 +26,7 @@ const ROLES: SelectData[] = [
 ];
 
 
-export function CreateUserForm({ onSubmit, onCancel }: CreateUserFormProps) {
+export function CreateUserForm({ onSubmit, onCancel, isSaving }: CreateUserFormProps) {
     const {
         register,
         handleSubmit,
@@ -49,9 +51,6 @@ export function CreateUserForm({ onSubmit, onCancel }: CreateUserFormProps) {
         };
 
         createUserDto.role !== Role.PACIENTE && delete createUserDto.patient;
-
-        console.log("FORM DATA: ", data);
-        console.log("DTO: ", createUserDto);
 
         onSubmit(createUserDto);
     };
@@ -134,8 +133,9 @@ export function CreateUserForm({ onSubmit, onCancel }: CreateUserFormProps) {
                 <Button variant="secondary" type="button" onClick={onCancel}>
                     Cancelar
                 </Button>
-                <Button variant="primary" type="submit" disabled={isSubmitting}>
-                    Registrar usuario
+                
+                <Button variant="primary" type="submit" disabled={isSaving}>
+                    {isSaving ? <Spinner />  : 'Registrar usuario'}
                 </Button>
             </div>
         </form>
