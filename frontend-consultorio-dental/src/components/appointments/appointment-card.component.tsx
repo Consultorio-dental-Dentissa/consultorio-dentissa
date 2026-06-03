@@ -9,12 +9,6 @@ export interface AppointmentCardProps {
 
 export function AppointmentCard({ appointment, onClick }: AppointmentCardProps) {
 
-    const formatedDate = new Intl.DateTimeFormat('es-MX', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-    }).format(appointment.scheluded_at);
-
     return (
         <>
             <div className="bg-white flex flec-col justify-between w-64 min-h-[250px] rounded-lg px-7 py-6 cursor-pointer shadow-[0_2px_20px_rgba(0,0,0,0.15)] flex-col transition transform duration-300 hover:scale-103 active:scale-97"
@@ -32,7 +26,7 @@ export function AppointmentCard({ appointment, onClick }: AppointmentCardProps) 
                     </div>
 
                     <div className="py-2 border-t-1 mt-3 text-gray-600 text-sm font-medium flex justify-end">
-                        {formatedDate}
+                        {appointment.scheduled_at.toLocaleDateString()}
                     </div>
                 </div>
             </div>

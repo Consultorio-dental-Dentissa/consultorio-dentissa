@@ -2,6 +2,7 @@ import type { Appointment } from "@/types/models/appointment"
 import { StatusSpan } from "../common/span.component"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "../common/data-table.component"
+import { formatDate } from "@/utils/formatters"
 
 
 interface AppointmentSmallTableProps {
@@ -13,11 +14,15 @@ interface AppointmentSmallTableProps {
 const columns = (): ColumnDef<Appointment>[] => [
         {
             header: 'Fecha programada',
-            cell: ({ row }) => <div> {row.original.scheluded_at.toDateString()} </div>
+            cell: ({ row }) => <div> {formatDate(row.original.scheduled_at)} </div>
         },
         {
             header: 'Horario',
-            cell: ({ row }) => <div> {row.original.time} </div>
+            cell: ({ row }) => (
+                <div>
+                    {`${row.original.scheduled_at.toLocaleTimeString()} - ${row.original.scheduled_at_end.toLocaleTimeString()}`}
+                </div>
+            )
         },
         {
             header: 'Servicio',
@@ -32,6 +37,8 @@ const columns = (): ColumnDef<Appointment>[] => [
 
 export function AppointmentSmallTable({ appointments }: AppointmentSmallTableProps) {
     
+    console.log("CITAS:", appointments);
+
     return (
         <DataTable
             columns={columns()}

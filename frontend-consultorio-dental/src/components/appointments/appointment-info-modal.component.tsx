@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator"
 
 import type { Appointment } from "@/types/models/appointment";
 import { StatusSpan } from "@/components/common/span.component";
+import { formatDate } from "@/utils/formatters";
 
 interface AppointmentInfoModalProps {
     open: boolean;
@@ -56,13 +57,15 @@ export function AppointmentInfoModal({ open, close, appointment }: AppointmentIn
                     <div className="space-y-1">
                         <p className="text-sm text-muted-foreground">Fecha</p>
                         <p className="font-medium">
-                            {appointment.scheluded_at.toLocaleDateString()}
+                            {formatDate(appointment.scheduled_at)}
                         </p>
                     </div>
 
                     <div className="space-y-1">
                         <p className="text-sm text-muted-foreground">Hora</p>
-                        <p className="font-medium">{appointment.time}</p>
+                        <p className="font-medium">
+                            {`${appointment.scheduled_at.toLocaleTimeString()} - ${appointment.scheduled_at_end.toLocaleTimeString()}`}
+                            </p>
                     </div>
 
                 </div>
