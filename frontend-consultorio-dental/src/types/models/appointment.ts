@@ -1,7 +1,7 @@
 export interface Appointment {
     id: number;
-    date: Date;
-    time: string;
+    scheduled_at: Date;
+    scheduled_at_end: Date;
     durationMinutes: number;
     status: string;
     created_at: Date;

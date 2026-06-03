@@ -13,3 +13,11 @@ export function formatTotalMinutesToHours(totalMinutes: number) {
     const mins = totalMinutes % 60
     return `${hours}h ${mins}m`
 }
+
+export function formatDate(date: Date) {
+    return new Intl.DateTimeFormat('es-MX', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    }).format(date);
+}

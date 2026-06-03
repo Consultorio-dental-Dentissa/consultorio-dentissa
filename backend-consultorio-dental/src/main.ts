@@ -18,7 +18,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true, // INDICACION: Permite transformar los datos del JSON
     whitelist: true, // INDICACION: Elimina los campos que no están en el DTO
-    stopAtFirstError: false, //INDICACION: Solo devuelve el primer error de cada campo del DTO
+    stopAtFirstError: true, //INDICACION: Solo devuelve el primer error de cada campo del DTO
   }));
 
   app.useGlobalInterceptors(new TransformResponseInterceptor());

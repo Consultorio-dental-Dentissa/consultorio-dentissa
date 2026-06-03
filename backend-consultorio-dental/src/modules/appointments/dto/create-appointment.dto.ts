@@ -4,28 +4,22 @@ import {
     IsString,
     IsNotEmpty, 
     IsDateString,
+    IsDate,
     MinDate,
     MaxLength,
     IsInt
 } from 'class-validator'
 
+import { Type } from 'class-transformer';
+
 export class CreateAppointmentDto {
 
     @IsDefined({ message: "La fecha de la cita es requerida" })
     @IsNotEmpty({ message: "La fecha de la cita es requerida" })
-    @IsDateString({}, { message: "La fecha de la cita no es valida" })
-    // @MinDate(new Date(), { message: "La fecha de la cita no puede ser anterior a la fecha y hora actual" })
-    date!: string;
-
-    /**
-     * RECORDATORIO: 
-     * Manejar la hora de la cita con algun objeto
-     * o validación de hora en lugar de string
-     */
-    @IsDefined({ message: "La hora de la cita es requerida" })
-    @IsNotEmpty({ message: "La hora de la cita es requerida" })
-    @IsString({ message: "La hora debe ser un texto plano" })
-    time!: string;
+    @IsDate({ message: "La fecha de la cita no es valida" })
+    @MinDate(() => new Date(), { message: "La fecha de la cita no puede ser anterior a la fecha y hora actual" })
+    @Type(() => Date)
+    scheduled_at!: Date;
 
     @IsDefined({ message: "La nota de la cita es requerida" })
     @IsNotEmpty({ message: "La nota de la cita es requerida" })

@@ -17,8 +17,7 @@ export class AppointmentsRepository {
             },
             select: {
                 id: true,
-                date: true,
-                time: true,
+                scheduled_at: true,
                 durationMinutes: true,
                 status: true,
                 created_at: true,
@@ -50,20 +49,18 @@ export class AppointmentsRepository {
         });
     }
 
-    async create(crearCitaDto: CreateAppointmentDto) {
+    async create(createAppointmentDto: CreateAppointmentDto) {
         return await this.prisma.appointment.create({
             data: {
-                date: new Date(crearCitaDto.date),
-                time: crearCitaDto.time,
-                notes: crearCitaDto.notes,
-                patient_id: crearCitaDto.patient_id,
-                service_id: crearCitaDto.service_id,
-                durationMinutes: crearCitaDto.durationMinutes
+                scheduled_at: createAppointmentDto.scheduled_at,
+                notes: createAppointmentDto.notes,
+                patient_id: createAppointmentDto.patient_id,
+                service_id: createAppointmentDto.service_id,
+                durationMinutes: createAppointmentDto.durationMinutes
             },
             select: {
                 id: true,
-                date: true,
-                time: true,
+                scheduled_at: true,
                 status: true,
                 durationMinutes: true,
                 created_at: true,
@@ -89,21 +86,34 @@ export class AppointmentsRepository {
     }
 
     async getAppointmentsByDate(date: Date, excluirCitaId?: number) {
+        
+        const startOfDay = new Date(date);
+        const endOfDay = new Date(date);
 
-        return await this.prisma.appointment.findMany({
+        startOfDay.setHours(0, 0, 0, 0);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const appointmments = await this.prisma.appointment.findMany({
             where: {
-                date: {
-                    gte: new Date(date.setHours(0, 0, 0, 0)),
-                    lt: new Date(date.setHours(23, 59, 59, 999)),
+                scheduled_at: {
+                    gte: startOfDay,
+                    lt: endOfDay,
                 },
                 id: excluirCitaId ? { not: excluirCitaId } : undefined,
             },
             select: {
-                time: true,
-                durationMinutes: true,
+                scheduled_at: true,
+                service: {
+                    select: {
+                        durationMinutes: true
+                    }
+                }
             }
+        });
 
-
-        })
+        return appointmments.map(a => ({
+            scheduled_at: a.scheduled_at,
+            durationMinutes: a.service.durationMinutes
+        }))
     }
 }

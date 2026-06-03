@@ -12,6 +12,8 @@ export async function getAllAppointments(parameters?: string): Promise<Appointme
 
     const response = await get<ApiResponse<AppointmentResponse[]>>(url);
     const appointmentsResponse = response.data;
+
+    console.log(appointmentsResponse);
     return appointmentsResponse.map(appointment => AppointmentMap(appointment));
 }
 

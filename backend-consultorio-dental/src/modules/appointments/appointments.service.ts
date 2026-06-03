@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { AppointmentsRepository } from './repositories/appointments.repository';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ServicesRepository } from '../services/repositories/services.repository';
@@ -22,8 +22,7 @@ export class AppointmentsService {
         return appointments.map(appointment => {
             return {
                 id: appointment.id,
-                date: appointment.date,
-                time: appointment.time,
+                scheduled_at: appointment.scheduled_at,
                 durationMinutes: appointment.durationMinutes,
                 status: appointment.status,
                 created_at: appointment.created_at,
@@ -45,6 +44,7 @@ export class AppointmentsService {
 
     async createAppoinment(createAppointmentDto: CreateAppointmentDto) {
 
+        
         const [existsPatient, service] = await Promise.all([
             this.patientsRepository.existById(createAppointmentDto.patient_id),
             this.servicesRepository.getById(createAppointmentDto.service_id)
@@ -59,24 +59,24 @@ export class AppointmentsService {
          */
 
         createAppointmentDto.durationMinutes = service.durationMinutes;
+        const appointmentsOfTheDate = await this.appointmentRepository.getAppointmentsByDate(createAppointmentDto.scheduled_at);
+        const conflict = this.existsScheduleConflict(createAppointmentDto, appointmentsOfTheDate); 
 
-        const appointmentsOfTheDate = await this.appointmentRepository.getAppointmentsByDate(new Date(createAppointmentDto.date));
-
-        if (this.existsScheduleConflict(
-            createAppointmentDto.time,
-            createAppointmentDto.durationMinutes,
-            appointmentsOfTheDate)) {
+        if (conflict) {
             throw new ConflictException(
-                `Ya existe una cita agendada a las ${createAppointmentDto.time}, por favor selecciona un horario diferente`
-            );
+                `El horario choca con una cita agendada de ${conflict.startDate.toLocaleTimeString()} a ${conflict.endDate.toLocaleTimeString()}. Porfavor escoja otro horario disponible`
+            )
         }
 
         const appointment = await this.appointmentRepository.create(createAppointmentDto);
+        
+        if (!appointment) {
+            throw new UnprocessableEntityException('Algo ha salido mal. Intentalo mas tarde')
+        }
 
         return {
             id: appointment.id,
-            date: appointment.date,
-            time: appointment.time,
+            scheduled_at: appointment.scheduled_at,
             durationMinutes: appointment.durationMinutes,
             status: appointment.status,
             notes: appointment.notes,
@@ -96,21 +96,25 @@ export class AppointmentsService {
      * choca con el de una ya establecida */
 
     private existsScheduleConflict(
-        time: string,
-        dutationMinutes: number,
-        appointments: { time: string, durationMinutes: number }[]) {
+        pendingAppointment: CreateAppointmentDto,
+        appointments: {scheduled_at: Date, durationMinutes: number}[]
+    ) {
+            const startPendingAppointment = new Date(pendingAppointment.scheduled_at);
+            const endPendingAppointment = new Date(pendingAppointment.scheduled_at);
 
-        const [newAppointmentTime, newAppointmentDurationMinutes] = time.split(':').map(Number);
-        const newAppointmentBeginsTime = newAppointmentTime * 60 + newAppointmentDurationMinutes;
-        const newAppointmentEndTime = newAppointmentBeginsTime + dutationMinutes;
+            endPendingAppointment.setMinutes(startPendingAppointment.getMinutes() + pendingAppointment.durationMinutes);
 
-        return appointments.some(appointment => {
-            const [eh, em] = appointment.time.split(':').map(Number);
-            const existstedAppointmentStartTime = eh * 60 + em;
-            const existstAppointmentEndTime = existstedAppointmentStartTime + appointment.durationMinutes;
+            for (const appointment of appointments) {
 
-            return newAppointmentBeginsTime < existstAppointmentEndTime && newAppointmentEndTime > existstedAppointmentStartTime;
-        });
+                const startScheludedAppointment = new Date(appointment.scheduled_at);
+                appointment.scheduled_at.setMinutes(startScheludedAppointment.getMinutes() + appointment.durationMinutes);
+                const endScheludedAppointment = new Date(appointment.scheduled_at);
 
+                if (
+                    (startPendingAppointment >= startScheludedAppointment && startPendingAppointment <= endScheludedAppointment) || (endPendingAppointment >= startScheludedAppointment && endPendingAppointment <= endScheludedAppointment)
+                ) {
+                    return { startDate: startScheludedAppointment, endDate: endScheludedAppointment };
+                }
+            }
     }
 }

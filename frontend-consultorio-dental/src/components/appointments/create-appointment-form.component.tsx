@@ -48,7 +48,19 @@ export function CreateAppointmentForm({ onSubmit, onCancel, isSaving, patients, 
      */
     const handleSubmitForm = (data: CreateAppointmentOutput) => {
 
-        onSubmit(data);
+        const dto: CreateAppointmentDto = {
+            /**
+             * INDICACIÓN: 
+             * Construimos la fecha en formato UTC usando 
+             * los datos de los inputs de date y time 
+             */
+            scheduled_at: new Date(`${data.date}T${data.time}:00`).toISOString(),
+            patient_id: data.patient_id,
+            service_id: data.service_id,
+            notes: data.notes
+        }
+
+        onSubmit(dto);
     }
 
     /**

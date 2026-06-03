@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { AppointmentSmallTable } from "@/components/appointments/appointment-small-table.component";
 import { StatusAppointment } from "@/types/enums/status-appointment.enum";
 import { Separator } from "@/components/ui/separator";
-import { formatPhone } from "@/utils/formatters";
+import { formatDate, formatPhone } from "@/utils/formatters";
 import type { Patient } from "@/types/models/patient";
 
 
@@ -80,7 +80,7 @@ export default function PatientProfile() {
 
                         <div>
                             <p className="font-base text-gray-500">Fecha de nacimiento:</p>
-                            <p className="font-medium">{patient.birth_date.toDateString()}</p>
+                            <p className="font-medium">{formatDate(patient.birth_date)}</p>
                         </div>
                     </div>
                 </div>
