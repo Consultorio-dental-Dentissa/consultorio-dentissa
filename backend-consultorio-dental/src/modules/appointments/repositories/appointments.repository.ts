@@ -53,8 +53,8 @@ export class AppointmentsRepository {
     async create(crearCitaDto: CreateAppointmentDto) {
         return await this.prisma.appointment.create({
             data: {
-                date: new Date(crearCitaDto.date),
-                time: crearCitaDto.time,
+                date: crearCitaDto.scheduled_at,
+                time: '',
                 notes: crearCitaDto.notes,
                 patient_id: crearCitaDto.patient_id,
                 service_id: crearCitaDto.service_id,
@@ -89,21 +89,34 @@ export class AppointmentsRepository {
     }
 
     async getAppointmentsByDate(date: Date, excluirCitaId?: number) {
+        
+        const startOfDay = new Date(date);
+        const endOfDay = new Date(date);
 
-        return await this.prisma.appointment.findMany({
+        startOfDay.setHours(0, 0, 0, 0);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const appointmments = await this.prisma.appointment.findMany({
             where: {
                 date: {
-                    gte: new Date(date.setHours(0, 0, 0, 0)),
-                    lt: new Date(date.setHours(23, 59, 59, 999)),
+                    gte: startOfDay,
+                    lt: endOfDay,
                 },
                 id: excluirCitaId ? { not: excluirCitaId } : undefined,
             },
             select: {
-                time: true,
-                durationMinutes: true,
+                date: true,
+                service: {
+                    select: {
+                        durationMinutes: true
+                    }
+                }
             }
+        });
 
-
-        })
+        return appointmments.map(a => ({
+            date: a.date,
+            durationMinutes: a.service.durationMinutes
+        }))
     }
 }
