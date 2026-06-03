@@ -1,6 +1,5 @@
 export interface CreateAppointmentDto {
-    date: string;
-    time: string;
+    scheduled_at: string;
     notes: string;
     patient_id: number;
     service_id: number;
