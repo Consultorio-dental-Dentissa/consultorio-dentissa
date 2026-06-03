@@ -1,7 +1,6 @@
 export interface AppointmentResponse {
     id: number;
-    date: Date;
-    time: string;
+    scheduled_at: Date;
     durationMinutes: number;
     status: string;
     notes: string;

@@ -17,8 +17,7 @@ export class AppointmentsRepository {
             },
             select: {
                 id: true,
-                date: true,
-                time: true,
+                scheduled_at: true,
                 durationMinutes: true,
                 status: true,
                 created_at: true,
@@ -50,20 +49,18 @@ export class AppointmentsRepository {
         });
     }
 
-    async create(crearCitaDto: CreateAppointmentDto) {
+    async create(createAppointmentDto: CreateAppointmentDto) {
         return await this.prisma.appointment.create({
             data: {
-                date: crearCitaDto.scheduled_at,
-                time: '',
-                notes: crearCitaDto.notes,
-                patient_id: crearCitaDto.patient_id,
-                service_id: crearCitaDto.service_id,
-                durationMinutes: crearCitaDto.durationMinutes
+                scheduled_at: createAppointmentDto.scheduled_at,
+                notes: createAppointmentDto.notes,
+                patient_id: createAppointmentDto.patient_id,
+                service_id: createAppointmentDto.service_id,
+                durationMinutes: createAppointmentDto.durationMinutes
             },
             select: {
                 id: true,
-                date: true,
-                time: true,
+                scheduled_at: true,
                 status: true,
                 durationMinutes: true,
                 created_at: true,
@@ -98,14 +95,14 @@ export class AppointmentsRepository {
 
         const appointmments = await this.prisma.appointment.findMany({
             where: {
-                date: {
+                scheduled_at: {
                     gte: startOfDay,
                     lt: endOfDay,
                 },
                 id: excluirCitaId ? { not: excluirCitaId } : undefined,
             },
             select: {
-                date: true,
+                scheduled_at: true,
                 service: {
                     select: {
                         durationMinutes: true
@@ -115,7 +112,7 @@ export class AppointmentsRepository {
         });
 
         return appointmments.map(a => ({
-            date: a.date,
+            scheduled_at: a.scheduled_at,
             durationMinutes: a.service.durationMinutes
         }))
     }

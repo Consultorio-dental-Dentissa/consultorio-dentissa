@@ -22,8 +22,7 @@ export class AppointmentsService {
         return appointments.map(appointment => {
             return {
                 id: appointment.id,
-                date: appointment.date,
-                time: appointment.time,
+                scheduled_at: appointment.scheduled_at,
                 durationMinutes: appointment.durationMinutes,
                 status: appointment.status,
                 created_at: appointment.created_at,
@@ -77,8 +76,7 @@ export class AppointmentsService {
 
         return {
             id: appointment.id,
-            date: appointment.date,
-            time: appointment.time,
+            scheduled_at: appointment.scheduled_at,
             durationMinutes: appointment.durationMinutes,
             status: appointment.status,
             notes: appointment.notes,
@@ -99,7 +97,7 @@ export class AppointmentsService {
 
     private existsScheduleConflict(
         pendingAppointment: CreateAppointmentDto,
-        appointments: {date: Date, durationMinutes: number}[]
+        appointments: {scheduled_at: Date, durationMinutes: number}[]
     ) {
             const startPendingAppointment = new Date(pendingAppointment.scheduled_at);
             const endPendingAppointment = new Date(pendingAppointment.scheduled_at);
@@ -108,14 +106,13 @@ export class AppointmentsService {
 
             for (const appointment of appointments) {
 
-                const startScheludedAppointment = new Date(appointment.date);
-                appointment.date.setMinutes(startScheludedAppointment.getMinutes() + appointment.durationMinutes);
-                const endScheludedAppointment = new Date(appointment.date);
+                const startScheludedAppointment = new Date(appointment.scheduled_at);
+                appointment.scheduled_at.setMinutes(startScheludedAppointment.getMinutes() + appointment.durationMinutes);
+                const endScheludedAppointment = new Date(appointment.scheduled_at);
 
                 if (
                     (startPendingAppointment >= startScheludedAppointment && startPendingAppointment <= endScheludedAppointment) || (endPendingAppointment >= startScheludedAppointment && endPendingAppointment <= endScheludedAppointment)
                 ) {
-                    
                     return { startDate: startScheludedAppointment, endDate: endScheludedAppointment };
                 }
             }

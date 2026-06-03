@@ -83,8 +83,7 @@ enum AppointmentStatus {
 
 model Appointment {
   id              Int      @id @default(autoincrement())
-  date            DateTime
-  time            String
+  scheduled_at    DateTime
   durationMinutes Int
   status          AppointmentStatus   @default(PENDIENTE)
   notes           String
