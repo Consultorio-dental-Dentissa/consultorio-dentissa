@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#fff;color:#18181b;-webkit-font-smoothing:antialiased}
+  a{color:#c0685c;text-decoration:none}a:hover{color:#a8564b}
+  ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#e4e4e7;border-radius:8px;border:2px solid #fff}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;width:1440px;background:#fff">
+
+  <aside style="width:252px;flex:none;background:#fff;display:flex;flex-direction:column;padding:20px 14px;border-right:1px solid #ececee">
+    <div style="display:flex;align-items:center;gap:11px;padding:6px 8px 18px">
+      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(150deg,#f9c4bb,#f2b0a6);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5C10 2.5 4 3 4 8c0 4 2 6 3 9 .6 1.8 1.2 4 2 4s1-2 1.5-4 .8-3 1.5-3 1 1 1.5 3 .7 4 1.5 4 1.4-2.2 2-4c1-3 3-5 3-9 0-5-6-5.5-8-2.5Z"/></svg></div>
+      <div><div style="font-size:16px;font-weight:800;letter-spacing:-.02em">Dentissa</div><div style="font-size:10px;color:#a1a1aa;font-weight:600;margin-top:1px">Panel clínico</div></div>
+    </div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.07em;color:#b4b4bb;padding:4px 10px 4px">GENERAL</div>
+    <sc-for list="{{ navMain }}" as="i" hint-placeholder-count="8">
+      <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:{{ i.weight }};color:{{ i.color }};background:{{ i.bg }}" style-hover="background:#f0f0f1"><span style="display:flex;color:{{ i.iconColor }}">{{ i.icon }}</span><span>{{ i.label }}</span><sc-if value="{{ i.badge }}" hint-placeholder-val="{{ true }}"><span style="margin-left:auto;font-size:10.5px;font-weight:700;color:{{ i.badgeColor }};background:{{ i.badgeBg }};border-radius:6px;padding:1px 7px">{{ i.badge }}</span></sc-if></div>
+    </sc-for>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.07em;color:#b4b4bb;padding:16px 10px 4px">SITIO PÚBLICO</div>
+    <sc-for list="{{ navPublic }}" as="i" hint-placeholder-count="2">
+      <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:#52525b" style-hover="background:#f0f0f1"><span style="display:flex;color:#8f8f99">{{ i.icon }}</span><span>{{ i.label }}</span></div>
+    </sc-for>
+    <div style="margin-top:auto;padding-top:12px;border-top:1px solid #ececee">
+      <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#b4483e" style-hover="background:#fbeeec"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg><span>Cerrar sesión</span></div>
+    </div>
+  </aside>
+
+  <main style="flex:1;min-width:0;display:flex;flex-direction:column;background:#f5f5f6">
+    <header style="display:flex;align-items:center;gap:16px;padding:0 30px;height:60px;border-bottom:1px solid #ececee;background:#fff">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:#a1a1aa"><span>Inicio</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg><span>Pacientes</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg><span style="color:#3f3f46">María Ramírez</span></div>
+      <div onMouseEnter="{{ openMenu }}" onMouseLeave="{{ closeMenu }}" style="margin-left:auto;position:relative">
+        <div style="display:flex;align-items:center;gap:9px;padding:5px 10px 5px 5px;border-radius:10px;cursor:pointer;background:{{ menuBg }}"><div style="width:31px;height:31px;border-radius:8px;background:linear-gradient(150deg,#f9c4bb,#f2b0a6);flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px">LA</div><div style="line-height:1.2"><div style="font-size:12px;font-weight:700">Dr. Luis Arroyo</div><div style="font-size:10px;color:#a1a1aa;font-weight:600">Administrador</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" style="transform:{{ menuChevron }};transition:transform .2s"><path d="m6 9 6 6 6-6"/></svg></div>
+        <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:calc(100% + 8px);right:0;width:216px;background:#fff;border:1px solid #ececee;border-radius:12px;box-shadow:0 16px 40px -14px rgba(24,24,27,.28);padding:6px;z-index:50">
+            <div style="padding:9px 11px 10px;border-bottom:1px solid #f4f4f5;margin-bottom:4px"><div style="font-size:12.5px;font-weight:700">Dr. Luis Arroyo</div><div style="font-size:11px;color:#a1a1aa;font-weight:500">luis.arroyo@dentissa.mx</div></div>
+            <sc-for list="{{ menuItems }}" as="mi" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:{{ mi.color }}" style-hover="background:{{ mi.hoverBg }}"><span style="display:flex;color:{{ mi.iconColor }}">{{ mi.icon }}</span><span>{{ mi.label }}</span><sc-if value="{{ mi.badge }}" hint-placeholder-val="{{ true }}"><span style="margin-left:auto;font-size:10.5px;font-weight:700;color:#fff;background:#ef9d90;border-radius:6px;padding:1px 7px">{{ mi.badge }}</span></sc-if></div></sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </header>
+
+    <div style="padding:28px 30px 44px;display:flex;flex-direction:column;gap:20px">
+      <!-- HERO -->
+      <div style="border:1px solid #ececee;border-radius:12px;background:#fff;padding:22px 24px;display:flex;align-items:center;gap:18px">
+        <div style="width:64px;height:64px;border-radius:14px;background:#fbeeec;color:#c0685c;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex:none">MR</div>
+        <div style="flex:1"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:21px;font-weight:800;letter-spacing:-.02em">María Ramírez</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#15803d;background:#f0fdf4;padding:4px 10px;border-radius:6px"><span style="width:6px;height:6px;border-radius:50%;background:#15803d"></span>Activo</span></div>
+          <div style="display:flex;gap:22px;margin-top:9px"><sc-for list="{{ heroMeta }}" as="h" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:#71717a;font-weight:500"><span style="display:flex;color:#a1a1aa">{{ h.icon }}</span>{{ h.value }}</div></sc-for></div>
+        </div>
+        <div style="display:flex;gap:10px"><div style="padding:10px 16px;border:1px solid #e4e4e7;border-radius:9px;font-size:12.5px;font-weight:700;color:#3f3f46;cursor:pointer" style-hover="background:#fafafa">Editar datos</div><div style="padding:10px 16px;background:#18181b;border-radius:9px;font-size:12.5px;font-weight:700;color:#fff;cursor:pointer" style-hover="background:#333">Agendar cita</div></div>
+      </div>
+
+      <!-- QUICK STATS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <sc-for list="{{ quick }}" as="q" hint-placeholder-count="4"><div style="border:1px solid #ececee;border-radius:12px;background:#fff;padding:15px 18px"><div style="font-size:11.5px;font-weight:600;color:#71717a">{{ q.label }}</div><div style="font-size:22px;font-weight:800;letter-spacing:-.03em;margin-top:6px">{{ q.value }}</div></div></sc-for>
+      </div>
+
+      <!-- TABS -->
+      <div style="display:flex;gap:3px;background:#efeff1;border-radius:10px;padding:3px;width:fit-content">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><div onClick="{{ t.onClick }}" style="padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;color:{{ t.color }};background:{{ t.bg }};box-shadow:{{ t.shadow }};cursor:pointer">{{ t.label }}</div></sc-for>
+      </div>
+
+      <!-- ODONTOGRAMA -->
+      <sc-if value="{{ showOdonto }}" hint-placeholder-val="{{ true }}">
+        <div style="border:1px solid #ececee;border-radius:12px;background:#fff;padding:24px">
+          <div style="display:flex;align-items:center;gap:12px"><div><div style="font-size:15px;font-weight:800;letter-spacing:-.01em">Odontograma</div><div style="font-size:12px;color:#a1a1aa;font-weight:500;margin-top:1px">Haz clic en un diente para ver su estado clínico</div></div><div style="margin-left:auto;display:flex;gap:16px"><sc-for list="{{ toothLegend }}" as="l" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:7px"><span style="width:13px;height:13px;border-radius:4px;background:{{ l.color }};border:1.5px solid {{ l.border }}"></span><span style="font-size:11.5px;font-weight:600;color:#52525b">{{ l.label }}</span></div></sc-for></div></div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:26px">
+            <div style="display:flex;gap:30px">
+              <div style="display:flex;gap:6px"><sc-for list="{{ q1 }}" as="t" hint-placeholder-count="8"><div onClick="{{ t.onClick }}" style="width:34px;text-align:center;cursor:pointer"><div style="height:46px;border-radius:8px 8px 5px 5px;background:{{ t.color }};border:1.5px solid {{ t.border }}" style-hover="filter:brightness(.92)"></div><div style="font-size:10px;font-weight:700;color:#a1a1aa;margin-top:4px">{{ t.n }}</div></div></sc-for></div>
+              <div style="display:flex;gap:6px"><sc-for list="{{ q2 }}" as="t" hint-placeholder-count="8"><div onClick="{{ t.onClick }}" style="width:34px;text-align:center;cursor:pointer"><div style="height:46px;border-radius:8px 8px 5px 5px;background:{{ t.color }};border:1.5px solid {{ t.border }}" style-hover="filter:brightness(.92)"></div><div style="font-size:10px;font-weight:700;color:#a1a1aa;margin-top:4px">{{ t.n }}</div></div></sc-for></div>
+            </div>
+            <div style="width:100%;max-width:660px;height:1px;background:#ececee;margin:6px 0"></div>
+            <div style="display:flex;gap:30px">
+              <div style="display:flex;gap:6px"><sc-for list="{{ q3 }}" as="t" hint-placeholder-count="8"><div onClick="{{ t.onClick }}" style="width:34px;text-align:center;cursor:pointer"><div style="font-size:10px;font-weight:700;color:#a1a1aa;margin-bottom:4px">{{ t.n }}</div><div style="height:46px;border-radius:5px 5px 8px 8px;background:{{ t.color }};border:1.5px solid {{ t.border }}" style-hover="filter:brightness(.92)"></div></div></sc-for></div>
+              <div style="display:flex;gap:6px"><sc-for list="{{ q4 }}" as="t" hint-placeholder-count="8"><div onClick="{{ t.onClick }}" style="width:34px;text-align:center;cursor:pointer"><div style="font-size:10px;font-weight:700;color:#a1a1aa;margin-bottom:4px">{{ t.n }}</div><div style="height:46px;border-radius:5px 5px 8px 8px;background:{{ t.color }};border:1.5px solid {{ t.border }}" style-hover="filter:brightness(.92)"></div></div></sc-for></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- HISTORIAL -->
+      <sc-if value="{{ showHistory }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid #ececee;border-radius:12px;background:#fff;overflow:hidden">
+          <div style="display:grid;grid-template-columns:1.3fr 1.5fr .9fr 1fr;padding:12px 20px;background:#fafafa;border-bottom:1px solid #f0f0f1;font-size:10.5px;font-weight:700;color:#a1a1aa;text-transform:uppercase;letter-spacing:.04em"><span>Fecha</span><span>Servicio</span><span>Hora</span><span>Estatus</span></div>
+          <sc-for list="{{ history }}" as="h" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:1.3fr 1.5fr .9fr 1fr;padding:13px 20px;border-bottom:1px solid #f4f4f5;align-items:center" style-hover="background:#fcfcfc"><span style="font-size:13px;font-weight:600">{{ h.date }}</span><span style="font-size:13px;color:#52525b;font-weight:500">{{ h.service }}</span><span style="font-size:13px;color:#71717a;font-weight:500">{{ h.time }}</span><span><span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:{{ h.color }};background:{{ h.bg }};padding:4px 10px;border-radius:6px"><span style="width:6px;height:6px;border-radius:50%;background:{{ h.color }}"></span>{{ h.status }}</span></span></div></sc-for>
+        </div>
+      </sc-if>
+
+      <!-- HISTORIAL DE CONSULTAS -->
+      <sc-if value="{{ showConsult }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ consultas }}" as="c" hint-placeholder-count="4">
+            <div style="border:1px solid #ececee;border-radius:12px;background:#fff;padding:18px 20px;display:flex;gap:16px">
+              <div style="width:4px;border-radius:4px;background:{{ c.barColor }};flex:none"></div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14.5px;font-weight:800;letter-spacing:-.01em">{{ c.service }}</span><span style="font-size:11.5px;font-weight:600;color:#a1a1aa">·</span><span style="font-size:12.5px;font-weight:600;color:#71717a">{{ c.date }}</span></div>
+                <div style="font-size:13px;color:#52525b;font-weight:500;line-height:1.55;margin-top:8px">{{ c.note }}</div>
+                <div style="display:flex;align-items:center;gap:16px;margin-top:12px"><span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#71717a;font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>{{ c.doctor }}</span><span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#71717a;font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m3 16 5-5 4 4"/></svg>{{ c.images }} imágenes</span></div>
+              </div>
+              <div style="display:flex;align-items:flex-start"><div style="display:flex;align-items:center;gap:6px;border:1px solid #e4e4e7;border-radius:8px;padding:7px 11px;cursor:pointer;color:#3f3f46" style-hover="background:#fafafa"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span style="font-size:11.5px;font-weight:700">Ver detalle</span></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- DATOS PERSONALES -->
+      <sc-if value="{{ showData }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid #ececee;border-radius:12px;background:#fff;padding:24px"><div style="font-size:15px;font-weight:800;letter-spacing:-.01em;margin-bottom:18px">Información del paciente</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:18px"><sc-for list="{{ personal }}" as="p" hint-placeholder-count="6"><div><div style="font-size:11px;font-weight:700;color:#a1a1aa;text-transform:uppercase;letter-spacing:.03em">{{ p.label }}</div><div style="font-size:14px;font-weight:700;color:#3f3f46;margin-top:5px">{{ p.value }}</div></div></sc-for></div></div>
+      </sc-if>
+    </div>
+  </main>
+
+  <!-- MODAL DIENTE -->
+  <sc-if value="{{ toothOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ close }}" style="position:fixed;inset:0;background:rgba(24,24,27,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:60">
+      <div onClick="{{ stop }}" style="width:410px;background:#fff;border-radius:14px;box-shadow:0 30px 70px -20px rgba(24,24,27,.5);border:1px solid #ececee;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:13px;padding:20px 24px;border-bottom:1px solid #f0f0f1"><div style="width:42px;height:50px;border-radius:8px 8px 5px 5px;background:{{ toothColor }};border:1.5px solid {{ toothBorder }};flex:none"></div><div style="flex:1"><div style="font-size:16px;font-weight:800">Diente {{ toothNum }}</div><div style="font-size:12px;color:#a1a1aa;font-weight:500">{{ toothName }}</div></div><div onClick="{{ close }}" style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#a1a1aa" style-hover="background:#f4f4f5"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div>
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:11px;font-weight:700;color:#a1a1aa;text-transform:uppercase;letter-spacing:.03em">Estado</span><span style="display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:{{ toothStateColor }};background:{{ toothStateBg }};padding:5px 12px;border-radius:6px"><span style="width:8px;height:8px;border-radius:3px;background:{{ toothColor }};border:1px solid {{ toothBorder }}"></span>{{ toothState }}</span></div>
+          <div><div style="font-size:11px;font-weight:700;color:#a1a1aa;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px">Observaciones</div><div style="font-size:13.5px;color:#52525b;line-height:1.55">{{ toothNote }}</div></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#a1a1aa;font-weight:500"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Última actualización: 10 jul 2025</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #f0f0f1"><div onClick="{{ close }}" style="padding:10px 18px;border:1px solid #e4e4e7;border-radius:9px;font-size:12.5px;font-weight:700;color:#3f3f46;cursor:pointer" style-hover="background:#fafafa">Cerrar</div><div onClick="{{ close }}" style="padding:10px 18px;background:#18181b;border-radius:9px;font-size:12.5px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:7px" style-hover="background:#333"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Modificar</div></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state={ menuOpen:false, tab:"odonto", toothOpen:false, tooth:null };
+  svg(inner,w,stroke,sw){w=w||17;stroke=stroke||'currentColor';sw=sw||2;return React.createElement('span',{style:{display:'inline-flex'},dangerouslySetInnerHTML:{__html:`<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`}});}
+  renderVals(){
+    const P={grid:"<rect x='3' y='3' width='7' height='7' rx='2'/><rect x='14' y='3' width='7' height='7' rx='2'/><rect x='14' y='14' width='7' height='7' rx='2'/><rect x='3' y='14' width='7' height='7' rx='2'/>",cal:"<rect x='3' y='4' width='18' height='18' rx='3'/><path d='M3 9h18M8 2v4M16 2v4'/>",user:"<path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/>",users:"<path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11'/>",services:"<path d='M14.7 6.3a4 4 0 0 0-5.6 5.6l-6.4 6.4a1.5 1.5 0 0 0 2.1 2.1l6.4-6.4a4 4 0 0 0 5.6-5.6l-2.5 2.5-2.1-2.1 2.5-2.5Z'/>",consult:"<path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z'/><path d='M14 2v6h6M9 13h6M9 17h4'/>",offer:"<path d='M20.6 12.5 12.5 20.6a2 2 0 0 1-2.8 0l-6.3-6.3a2 2 0 0 1 0-2.8L11.5 2.4a2 2 0 0 1 1.4-.6h5.7a2 2 0 0 1 2 2v5.7a2 2 0 0 1-.6 1.4Z'/><circle cx='16' cy='8' r='1.3'/>",msg:"<path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z'/>",faq:"<path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z'/><path d='M9.5 9a2.5 2.5 0 0 1 4 1.6c0 1.4-2 1.7-2 2.9M12 16h.01'/>",globe:"<circle cx='12' cy='12' r='9'/><path d='M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z'/>",phone:"<path d='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z'/>",mail:"<rect x='2' y='4' width='20' height='16' rx='3'/><path d='m2 7 10 6 10-6'/>",cake:"<path d='M4 21h16v-6a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3Z'/><path d='M12 8V5M8 8V6M16 8V6'/>",pin:"<path d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z'/><circle cx='12' cy='10' r='3'/>"};
+    const A="Pacientes";
+    const nm=(label,key,badge,bc,bb)=>({label,icon:this.svg(P[key]),iconColor:A===label?"#c0685c":"#8f8f99",weight:A===label?700:500,color:A===label?"#c0685c":"#52525b",bg:A===label?"#fbeeec":"transparent",badge,badgeColor:bc,badgeBg:bb});
+    const navMain=[nm("Dashboard","grid"),nm("Citas","cal","12","#71717a","#f4f4f5"),nm("Pacientes","user"),nm("Usuarios","users"),nm("Servicios","services"),nm("Consultas","consult"),nm("Ofertas","offer"),nm("Notificaciones","msg","3","#fff","#ef9d90")];
+    const navPublic=[{label:"Preguntas frecuentes",icon:this.svg(P.faq)},{label:"Sitio web público",icon:this.svg(P.globe)}];
+    const M={eye:"<path d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/>",bell:"<path d='M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9'/><path d='M13.7 21a2 2 0 0 1-3.4 0'/>",out:"<path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/><path d='M16 17l5-5-5-5M21 12H9'/>"};
+    const menuItems=[{label:"Ver perfil",icon:this.svg(M.eye,16),color:"#3f3f46",iconColor:"#8f8f99",hoverBg:"#f4f4f5"},{label:"Notificaciones",icon:this.svg(M.bell,16),color:"#3f3f46",iconColor:"#8f8f99",hoverBg:"#f4f4f5",badge:"3"},{label:"Cerrar sesión",icon:this.svg(M.out,16),color:"#b4483e",iconColor:"#c0685c",hoverBg:"#fbeeec"}];
+    const hi=(k)=>this.svg(P[k],15,"#a1a1aa");
+    const heroMeta=[{value:"55 1042 8890",icon:hi("phone")},{value:"maria.ramirez@gmail.com",icon:hi("mail")},{value:"34 años",icon:hi("cake")},{value:"Ciudad de México",icon:hi("pin")}];
+    const quick=[{label:"Citas totales",value:"14"},{label:"Consultas",value:"9"},{label:"Última visita",value:"10 jul"},{label:"Próxima cita",value:"22 jul"}];
+    const t=this.state.tab;
+    const mk=(id,label)=>({label,onClick:()=>this.setState({tab:id}),color:t===id?"#18181b":"#71717a",bg:t===id?"#fff":"transparent",shadow:t===id?"0 1px 2px rgba(24,24,27,.12)":"none"});
+    const tabs=[mk("odonto","Datos clínicos"),mk("history","Historial de citas"),mk("consult","Historial de consultas"),mk("data","Datos personales")];
+    // RF-026: Sano blanco, Caries negro, Extraído rojo, Revisión gris oscuro
+    const S={sano:{color:"#ffffff",border:"#d4d4d8",state:"Sano",stateColor:"#15803d",stateBg:"#f0fdf4",note:"Pieza sana, sin hallazgos. Continuar con higiene habitual."},caries:{color:"#18181b",border:"#18181b",state:"Caries",stateColor:"#18181b",stateBg:"#f4f4f5",note:"Caries oclusal detectada. Se recomienda restauración con resina en la próxima consulta."},extraido:{color:"#dc2626",border:"#b91c1c",state:"Extraído",stateColor:"#dc2626",stateBg:"#fef2f2",note:"Pieza extraída. Valorar opciones de rehabilitación (implante o puente)."},revision:{color:"#52525b",border:"#3f3f46",state:"Pendiente de revisión",stateColor:"#52525b",stateBg:"#f4f4f5",note:"Requiere revisión en próxima cita. Posible sensibilidad reportada."}};
+    const toothLegend=[{label:"Sano",...S.sano},{label:"Caries",...S.caries},{label:"Extraído",...S.extraido},{label:"Revisión",...S.revision}];
+    const names={};
+    const mkQ=(nums,states)=>nums.map((n,i)=>{const st=states[i]||"sano";return{n,color:S[st].color,border:S[st].border,onClick:()=>this.setState({toothOpen:true,tooth:{n,st}})};});
+    const q1=mkQ([18,17,16,15,14,13,12,11],["sano","sano","revision","sano","caries","sano","sano","sano"]);
+    const q2=mkQ([21,22,23,24,25,26,27,28],["sano","sano","sano","sano","sano","caries","sano","extraido"]);
+    const q3=mkQ([38,37,36,35,34,33,32,31],["extraido","sano","sano","revision","sano","sano","sano","sano"]);
+    const q4=mkQ([41,42,43,44,45,46,47,48],["sano","sano","sano","sano","caries","sano","sano","sano"]);
+    const stC={Confirmada:{color:"#15803d",bg:"#f0fdf4"},Completada:{color:"#2563eb",bg:"#eff6ff"},Cancelada:{color:"#dc2626",bg:"#fef2f2"},Reprogramada:{color:"#b45309",bg:"#fffbeb"}};
+    const hrows=[["10 jul 2025","Limpieza dental","09:00","Completada"],["02 jun 2025","Resina dental","11:30","Completada"],["18 abr 2025","Consulta general","10:00","Completada"],["05 mar 2025","Extracción","16:00","Cancelada"],["12 feb 2025","Ortodoncia","12:30","Completada"]];
+    const history=hrows.map(r=>({date:r[0],service:r[1],time:r[2],status:r[3],...stC[r[3]]}));
+    const av2=[["#fbeeec","#c0685c"],["#eef2fb","#3b6fd4"],["#eafaf1","#12915a"]];
+    const crows=[["10 jul 2025","Limpieza dental","Dr. Arroyo","Profilaxis completa, remoción de cálculo en cuadrantes superiores. Encías con leve inflamación.","3"],["02 jun 2025","Resina dental","Dr. Arroyo","Restauración con resina en pieza 46, cara oclusal. Sin complicaciones.","2"],["18 abr 2025","Consulta general","Dra. Medina","Revisión de rutina. Se detecta caries incipiente en pieza 26, se agenda tratamiento.","1"],["12 feb 2025","Ortodoncia","Dr. Arroyo","Ajuste de brackets superiores. Buena evolución del tratamiento.","4"]];
+    const consultas=crows.map((r,i)=>({date:r[0],service:r[1],doctor:r[2],note:r[3],images:r[4],barColor:av2[i%3][1],barBg:av2[i%3][0]}));
+    const personal=[{label:"Nombre completo",value:"María Fernanda Ramírez"},{label:"Fecha de nacimiento",value:"14 marzo 1992"},{label:"Teléfono",value:"55 1042 8890"},{label:"Teléfono de emergencia",value:"55 3320 7781"},{label:"Correo electrónico",value:"maria.ramirez@gmail.com"},{label:"Dirección",value:"Av. Reforma 210, CDMX"}];
+    const teethNames={11:"Incisivo central sup. der.",14:"Primer premolar sup. der.",16:"Primer molar sup. der.",26:"Primer molar sup. izq.",28:"Tercer molar sup. izq.",35:"Segundo premolar inf. izq.",38:"Tercer molar inf. izq.",45:"Segundo premolar inf. der."};
+    const tt=this.state.tooth;
+    const tState=tt?S[tt.st]:S.caries;
+    const mo=this.state.menuOpen;
+    return {navMain,navPublic,menuItems,heroMeta,quick,tabs,toothLegend,q1,q2,q3,q4,history,consultas,personal,
+      showOdonto:t==="odonto",showHistory:t==="history",showConsult:t==="consult",showData:t==="data",
+      menuOpen:mo,menuBg:mo?"#f4f4f5":"transparent",menuChevron:mo?"rotate(180deg)":"rotate(0deg)",
+      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),
+      toothOpen:this.state.toothOpen,toothNum:tt?tt.n:"",toothName:tt?(teethNames[tt.n]||"Pieza dental"):"",
+      toothColor:tState.color,toothBorder:tState.border,toothState:tState.state,toothStateColor:tState.stateColor,toothStateBg:tState.stateBg,toothNote:tState.note,
+      close:()=>this.setState({toothOpen:false}),stop:(e)=>e.stopPropagation()};
+  }
+}
+</script>
+</body>
+</html>

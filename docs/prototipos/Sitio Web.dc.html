@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#fbfbfc;color:#1c1c1f;-webkit-font-smoothing:antialiased}
+  a{color:#d8776a;text-decoration:none}a:hover{color:#c0685c}
+  ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#e6e6ea;border-radius:8px;border:2px solid #fbfbfc}
+  html{scroll-behavior:smooth}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+<div style="width:1440px;margin:0 auto;background:#fbfbfc">
+
+  <!-- NAV -->
+  <nav style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:16px;padding:16px 56px;background:rgba(251,251,252,.82);backdrop-filter:blur(12px);border-bottom:1px solid #f0f0f3">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(150deg,#f9c4bb,#f2b0a6);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px -8px rgba(242,176,166,.95)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5C10 2.5 4 3 4 8c0 4 2 6 3 9 .6 1.8 1.2 4 2 4s1-2 1.5-4 .8-3 1.5-3 1 1 1.5 3 .7 4 1.5 4 1.4-2.2 2-4c1-3 3-5 3-9 0-5-6-5.5-8-2.5Z"/></svg></div>
+      <div style="font-size:19px;font-weight:800;letter-spacing:-.03em">Dentissa</div>
+    </div>
+    <div style="margin-left:24px;display:flex;align-items:center;gap:4px">
+      <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="4"><a href="{{ l.href }}" style="padding:9px 15px;border-radius:10px;font-size:13.5px;font-weight:600;color:#5a5a62" style-hover="background:#f4f4f6;color:#1c1c1f">{{ l.label }}</a></sc-for>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+      <a href="#" style="padding:10px 18px;border-radius:11px;font-size:13.5px;font-weight:700;color:#4a4a52;border:1px solid #e6e6ea;background:#fff;transition:box-shadow .25s,border-color .25s,color .25s" style-hover="box-shadow:0 0 0 3px rgba(242,176,166,.28),0 8px 22px -8px rgba(242,176,166,.9);border-color:#f2b0a6;color:#c0685c">Iniciar sesión</a>
+      <a href="#" style="padding:10px 18px;border-radius:11px;font-size:13.5px;font-weight:700;color:#fff;background:linear-gradient(150deg,#f6b6ab,#ef9d90);transition:box-shadow .25s,transform .2s" style-hover="box-shadow:0 0 22px 2px rgba(242,176,166,.7),0 10px 26px -8px rgba(239,157,144,.95);transform:translateY(-1px)">Registrarse</a>
+    </div>
+  </nav>
+
+  <!-- HERO / SOBRE NOSOTROS -->
+  <section id="inicio" style="padding:76px 56px 60px;display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-120px;right:-80px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(242,176,166,.32),transparent 68%);filter:blur(6px)"></div>
+    <div style="position:relative">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#fdeeec;color:#c0685c;font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:30px;box-shadow:0 6px 16px -8px rgba(242,176,166,.8)"><span style="width:7px;height:7px;border-radius:50%;background:#ef9d90"></span>Sonrisas sanas, atención cálida</div>
+      <h1 style="font-size:52px;line-height:1.05;font-weight:800;letter-spacing:-.04em;margin:20px 0 0">Tu mejor sonrisa empieza en <span style="color:#d8776a">Dentissa</span></h1>
+      <p style="font-size:16px;line-height:1.6;color:#6c6c74;font-weight:500;max-width:480px;margin:20px 0 0;text-wrap:pretty">Consultorio dental con tecnología moderna y un equipo que cuida cada detalle. Agenda tu cita en línea y lleva el control de tu salud bucal desde un solo lugar.</p>
+      <div style="display:flex;gap:14px;margin-top:32px">
+        <a href="#contacto" style="display:flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(150deg,#f6b6ab,#ef9d90);box-shadow:0 14px 30px -12px rgba(239,157,144,.95)" style-hover="box-shadow:0 0 26px 2px rgba(242,176,166,.6),0 14px 30px -10px rgba(239,157,144,.95)">Agenda tu primera cita<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#servicios" style="display:flex;align-items:center;padding:14px 24px;border-radius:13px;font-size:14px;font-weight:700;color:#4a4a52;background:#fff;border:1px solid #e6e6ea" style-hover="background:#f4f4f6">Ver servicios</a>
+      </div>
+      <div style="display:flex;gap:34px;margin-top:44px">
+        <sc-for list="{{ heroStats }}" as="s" hint-placeholder-count="3"><div><div style="font-size:28px;font-weight:800;letter-spacing:-.03em;color:#1c1c1f">{{ s.value }}</div><div style="font-size:12.5px;color:#9a9aa2;font-weight:600;margin-top:2px">{{ s.label }}</div></div></sc-for>
+      </div>
+    </div>
+    <div style="position:relative">
+      <div style="border-radius:26px;overflow:hidden;box-shadow:0 30px 70px -30px rgba(60,40,45,.4);border:1px solid #f0f0f3">
+        <image-slot id="hero-img" shape="rect" style="width:100%;height:440px;background:linear-gradient(150deg,#fdeeec,#f7f2f5)" placeholder="Foto del consultorio o de una sonrisa"></image-slot>
+      </div>
+      <div style="position:absolute;bottom:-22px;left:-22px;background:#fff;border:1px solid #f0f0f3;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:13px;box-shadow:0 20px 44px -20px rgba(60,40,45,.35)">
+        <div style="width:44px;height:44px;border-radius:12px;background:#eaf6ef;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#12915a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div><div style="font-size:14px;font-weight:800">+2,400 pacientes</div><div style="font-size:12px;color:#9a9aa2;font-weight:600">confían en nosotros</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE NOSOTROS -->
+  <section id="nosotros" style="padding:60px 56px;background:#fff;border-top:1px solid #f0f0f3;border-bottom:1px solid #f0f0f3">
+    <div style="text-align:center;max-width:640px;margin:0 auto"><div style="font-size:12.5px;font-weight:700;color:#c0685c;letter-spacing:.06em;text-transform:uppercase">Sobre nosotros</div><h2 style="font-size:34px;font-weight:800;letter-spacing:-.03em;margin:12px 0 0">Cuidamos tu salud dental como si fuera nuestra</h2><p style="font-size:15px;line-height:1.6;color:#6c6c74;font-weight:500;margin:14px 0 0;text-wrap:pretty">En Dentissa combinamos experiencia clínica, equipo de última generación y un trato humano. Nuestro objetivo es que cada visita sea cómoda, transparente y sin sorpresas.</p></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px">
+      <sc-for list="{{ features }}" as="f" hint-placeholder-count="3"><div style="border:1px solid #eeeef1;border-radius:18px;padding:26px;background:#fbfbfc;box-shadow:0 2px 4px rgba(20,20,40,.02)" style-hover="box-shadow:0 16px 36px -20px rgba(60,40,45,.28)"><div style="width:52px;height:52px;border-radius:14px;background:{{ f.bg }};display:flex;align-items:center;justify-content:center;box-shadow:0 10px 22px -12px {{ f.shadow }}">{{ f.icon }}</div><div style="font-size:17px;font-weight:800;letter-spacing:-.01em;margin-top:18px">{{ f.title }}</div><div style="font-size:13.5px;line-height:1.55;color:#7a7a82;font-weight:500;margin-top:7px">{{ f.desc }}</div></div></sc-for>
+    </div>
+  </section>
+
+  <!-- SERVICIOS (CARRUSEL) -->
+  <section id="servicios" style="padding:64px 56px">
+    <div style="display:flex;align-items:flex-end;gap:20px"><div style="flex:1"><div style="font-size:12.5px;font-weight:700;color:#c0685c;letter-spacing:.06em;text-transform:uppercase">Nuestros servicios</div><h2 style="font-size:34px;font-weight:800;letter-spacing:-.03em;margin:12px 0 0">Tratamientos para toda la familia</h2></div>
+      <div style="display:flex;gap:10px"><div onClick="{{ prev }}" style="width:46px;height:46px;border-radius:13px;border:1px solid #e6e6ea;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#4a4a52" style-hover="background:#f4f4f6;box-shadow:0 0 0 3px rgba(242,176,166,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></div><div onClick="{{ next }}" style="width:46px;height:46px;border-radius:13px;background:linear-gradient(150deg,#f6b6ab,#ef9d90);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;box-shadow:0 12px 26px -12px rgba(239,157,144,.95)" style-hover="box-shadow:0 0 22px 1px rgba(242,176,166,.6)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></div></div>
+    </div>
+    <div style="overflow:hidden;margin-top:34px">
+      <div style="display:flex;gap:22px;transition:transform .45s cubic-bezier(.4,0,.2,1);transform:{{ trackTransform }}">
+        <sc-for list="{{ services }}" as="s" hint-placeholder-count="6"><div style="flex:none;width:376px;border:1px solid #eeeef1;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 3px 8px rgba(20,20,40,.03)" style-hover="box-shadow:0 22px 44px -24px rgba(60,40,45,.34)">
+          <image-slot id="{{ s.slotId }}" shape="rect" style="width:100%;height:186px;background:{{ s.imgBg }}" placeholder="{{ s.name }}"></image-slot>
+          <div style="padding:20px 22px"><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:18px;font-weight:800;letter-spacing:-.01em">{{ s.name }}</div><span style="font-size:12px;font-weight:700;color:{{ s.tagColor }};background:{{ s.tagBg }};padding:4px 11px;border-radius:20px">{{ s.tag }}</span></div><div style="font-size:13.5px;line-height:1.55;color:#7a7a82;font-weight:500;margin-top:8px">{{ s.desc }}</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:16px;border-top:1px solid #f1f1f4"><div style="font-size:19px;font-weight:800;color:#1c1c1f">{{ s.price }}</div><a href="#contacto" style="font-size:13px;font-weight:700;color:#d8776a;display:flex;align-items:center;gap:5px">Agendar<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>
+        </div></sc-for>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-top:26px">
+      <sc-for list="{{ dots }}" as="d" hint-placeholder-count="4"><div onClick="{{ d.go }}" style="height:8px;border-radius:20px;cursor:pointer;transition:all .3s;width:{{ d.w }};background:{{ d.bg }}"></div></sc-for>
+    </div>
+  </section>
+
+  <!-- PREGUNTAS FRECUENTES -->
+  <section id="faq" style="padding:64px 56px;background:#fff;border-top:1px solid #f0f0f3;border-bottom:1px solid #f0f0f3">
+    <div style="display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;align-items:start">
+      <div style="position:sticky;top:96px"><div style="font-size:12.5px;font-weight:700;color:#c0685c;letter-spacing:.06em;text-transform:uppercase">Preguntas frecuentes</div><h2 style="font-size:34px;font-weight:800;letter-spacing:-.03em;margin:12px 0 0;line-height:1.1">¿Tienes dudas? Aquí las resolvemos</h2><p style="font-size:15px;line-height:1.6;color:#6c6c74;font-weight:500;margin:16px 0 0">Y si no encuentras tu respuesta, escríbenos: con gusto te atendemos.</p>
+        <a href="#contacto" style="display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:13px 22px;border-radius:13px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(150deg,#f6b6ab,#ef9d90);box-shadow:0 14px 30px -12px rgba(239,157,144,.95)" style-hover="box-shadow:0 0 24px 1px rgba(242,176,166,.6)">Contáctanos</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5"><div style="border:1px solid #eeeef1;border-radius:16px;overflow:hidden;background:#fbfbfc;box-shadow:{{ f.shadow }}">
+          <div onClick="{{ f.toggle }}" style="display:flex;align-items:center;gap:16px;padding:19px 22px;cursor:pointer"><div style="flex:1;font-size:15px;font-weight:700;color:#1c1c1f">{{ f.q }}</div><div style="width:30px;height:30px;border-radius:9px;background:{{ f.iconBg }};display:flex;align-items:center;justify-content:center;transition:transform .25s;transform:{{ f.chevron }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ f.iconColor }}" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></div></div>
+          <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 22px 20px"><div style="font-size:13.5px;line-height:1.65;color:#6c6c74;font-weight:500">{{ f.a }}</div></div></sc-if>
+        </div></sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTANOS -->
+  <section id="contacto" style="padding:64px 56px">
+    <div style="text-align:center;max-width:600px;margin:0 auto"><div style="font-size:12.5px;font-weight:700;color:#c0685c;letter-spacing:.06em;text-transform:uppercase">Contáctanos</div><h2 style="font-size:34px;font-weight:800;letter-spacing:-.03em;margin:12px 0 0">Estamos para atenderte</h2></div>
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:26px;margin-top:44px;align-items:stretch">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ contact }}" as="c" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:16px;border:1px solid #eeeef1;border-radius:16px;padding:20px 22px;background:#fff;box-shadow:0 2px 4px rgba(20,20,40,.02)"><div style="width:48px;height:48px;border-radius:13px;background:{{ c.bg }};display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 10px 22px -12px {{ c.shadow }}">{{ c.icon }}</div><div><div style="font-size:12px;font-weight:700;color:#a2a2ab;text-transform:uppercase;letter-spacing:.03em">{{ c.label }}</div><div style="font-size:15px;font-weight:700;color:#2b2b2e;margin-top:3px">{{ c.value }}</div></div></div></sc-for>
+        <div style="border:1px solid #eeeef1;border-radius:16px;overflow:hidden;flex:1;min-height:150px"><image-slot id="map-img" shape="rect" style="width:100%;height:100%;min-height:150px;background:linear-gradient(150deg,#f4f4f6,#fdeeec)" placeholder="Mapa / ubicación del consultorio"></image-slot></div>
+      </div>
+      <!-- CTA crear cuenta -->
+      <div style="border-radius:22px;padding:40px 42px;background:linear-gradient(155deg,#fef2ef,#fdeeec 60%,#fbe4df);border:1px solid #f6d9d2;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center">
+        <div style="position:absolute;top:-70px;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(242,176,166,.45),transparent 68%)"></div>
+        <div style="position:relative">
+          <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(150deg,#f9c4bb,#f2b0a6);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px -12px rgba(239,157,144,.95)"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></div>
+          <h3 style="font-size:25px;font-weight:800;letter-spacing:-.025em;margin:20px 0 0;line-height:1.15">Crea tu cuenta y agenda tu primera cita</h3>
+          <p style="font-size:14.5px;line-height:1.6;color:#8a6a63;font-weight:500;margin:12px 0 0;text-wrap:pretty">Regístrate en menos de un minuto para agendar en línea, ver tu historial clínico y recibir recordatorios de tus citas.</p>
+          <div style="display:flex;flex-direction:column;gap:11px;margin:24px 0 0">
+            <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:12px"><div style="width:26px;height:26px;border-radius:50%;background:#fff;color:#c0685c;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 4px 10px -4px rgba(192,104,92,.5)">{{ st.n }}</div><span style="font-size:14px;color:#7a5a53;font-weight:600">{{ st.label }}</span></div></sc-for>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:30px">
+            <a href="#" style="flex:1;text-align:center;padding:14px 0;border-radius:13px;font-size:14px;font-weight:700;color:#fff;background:#1c1c1f;transition:box-shadow .25s,transform .2s" style-hover="box-shadow:0 0 22px 1px rgba(242,176,166,.55);transform:translateY(-1px)">Crear cuenta</a>
+            <a href="#" style="flex:1;text-align:center;padding:14px 0;border-radius:13px;font-size:14px;font-weight:700;color:#c0685c;background:#fff;border:1px solid #f2c8bf" style-hover="box-shadow:0 0 0 3px rgba(242,176,166,.28)">Iniciar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:44px 56px 40px;background:#fff;border-top:1px solid #f0f0f3">
+    <div style="display:flex;align-items:flex-start;gap:40px">
+      <div style="flex:1"><div style="display:flex;align-items:center;gap:11px"><div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(150deg,#f9c4bb,#f2b0a6);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5C10 2.5 4 3 4 8c0 4 2 6 3 9 .6 1.8 1.2 4 2 4s1-2 1.5-4 .8-3 1.5-3 1 1 1.5 3 .7 4 1.5 4 1.4-2.2 2-4c1-3 3-5 3-9 0-5-6-5.5-8-2.5Z"/></svg></div><span style="font-size:17px;font-weight:800;letter-spacing:-.02em">Dentissa</span></div><p style="font-size:13px;color:#9a9aa2;font-weight:500;margin:14px 0 0;max-width:280px;line-height:1.55">Consultorio dental comprometido con tu sonrisa. Tecnología moderna y atención cálida.</p></div>
+      <sc-for list="{{ footerCols }}" as="col" hint-placeholder-count="3"><div><div style="font-size:12px;font-weight:800;color:#1c1c1f;text-transform:uppercase;letter-spacing:.04em">{{ col.title }}</div><div style="display:flex;flex-direction:column;gap:10px;margin-top:14px"><sc-for list="{{ col.items }}" as="it" hint-placeholder-count="4"><a href="#" style="font-size:13px;color:#7a7a82;font-weight:500" style-hover="color:#c0685c">{{ it }}</a></sc-for></div></div></sc-for>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:36px;padding-top:22px;border-top:1px solid #f1f1f4"><span style="font-size:12.5px;color:#a2a2ab;font-weight:500">© 2026 Dentissa. Todos los derechos reservados.</span><div style="display:flex;gap:10px"><sc-for list="{{ socials }}" as="s" hint-placeholder-count="3"><div style="width:36px;height:36px;border-radius:10px;border:1px solid #eeeef1;background:#fbfbfc;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#8a8a93" style-hover="color:#c0685c;box-shadow:0 0 0 3px rgba(242,176,166,.2)">{{ s.icon }}</div></sc-for></div></div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  state={ slide:0, faqIdx:0 };
+  svg(inner,w,stroke,sw){w=w||24;stroke=stroke||'#fff';sw=sw||2;return React.createElement('span',{style:{display:'inline-flex'},dangerouslySetInnerHTML:{__html:`<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`}});}
+  renderVals(){
+    const navLinks=[{label:"Inicio",href:"#inicio"},{label:"Sobre nosotros",href:"#nosotros"},{label:"Servicios",href:"#servicios"},{label:"Preguntas frecuentes",href:"#faq"},{label:"Contacto",href:"#contacto"}];
+    const heroStats=[{value:"15+",label:"Años de experiencia"},{value:"12",label:"Especialidades"},{value:"4.9★",label:"Calificación promedio"}];
+    const I={shield:"<path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z'/><path d='m9 12 2 2 4-4'/>",heart:"<path d='M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 22l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z'/>",spark:"<path d='M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2'/>"};
+    const features=[
+      {title:"Equipo especializado",desc:"Dentistas certificados en cada área, desde ortodoncia hasta cirugía.",bg:"#fdeeec",shadow:"rgba(242,176,166,.9)",icon:this.svg(I.shield,26,"#c0685c")},
+      {title:"Trato humano y cálido",desc:"Te explicamos cada paso. Sin presiones, sin letras chiquitas.",bg:"#eef2fb",shadow:"rgba(59,111,212,.6)",icon:this.svg(I.heart,26,"#3b6fd4")},
+      {title:"Tecnología moderna",desc:"Diagnóstico digital y tratamientos precisos para tu comodidad.",bg:"#eaf6ef",shadow:"rgba(18,145,90,.55)",icon:this.svg(I.spark,26,"#12915a")},
+    ];
+    const stheme=[["#fdeeec","#c0685c","#fdeeec"],["#eef2fb","#3b6fd4","#eef2fb"],["#eaf6ef","#12915a","#eaf6ef"],["#f2f0fb","#7a5af0","#f2f0fb"],["#fbf4e8","#c98a20","#fbf4e8"],["#fceff2","#d64a68","#fceff2"]];
+    const sdata=[["Limpieza dental","Preventivo","Profilaxis y remoción de sarro para una boca sana.","$650"],["Blanqueamiento","Estético","Aclara el tono de tus dientes de forma segura.","$2,400"],["Ortodoncia","Correctivo","Brackets y alineadores para una sonrisa alineada.","$18,000"],["Resina dental","Restaurativo","Restauramos caries con acabado natural.","$800"],["Endodoncia","Especializado","Tratamiento de conducto sin dolor.","$3,200"],["Odontopediatría","Niños","Cuidado dental amable para los más pequeños.","$550"]];
+    const services=sdata.map((d,i)=>({name:d[0],tag:d[1],desc:d[2],price:d[3],slotId:"svc-"+i,imgBg:stheme[i%6][0],tagColor:stheme[i%6][1],tagBg:stheme[i%6][2]}));
+    const per=3, maxSlide=Math.max(0,services.length-per), slide=Math.min(this.state.slide,maxSlide);
+    const cardW=376+22;
+    const trackTransform=`translateX(-${slide*cardW}px)`;
+    const nDots=maxSlide+1;
+    const dots=Array.from({length:nDots},(_,i)=>({w:i===slide?"26px":"8px",bg:i===slide?"#ef9d90":"#e2c9c3",go:()=>this.setState({slide:i})}));
+    const fi=this.state.faqIdx;
+    const fdata=[
+      ["¿Necesito cita previa para una consulta?","Recomendamos agendar en línea o por teléfono para garantizar tu horario. También atendemos urgencias según disponibilidad."],
+      ["¿Qué formas de pago aceptan?","Efectivo, tarjetas de débito y crédito, y transferencias. Algunos tratamientos pueden diferirse a meses."],
+      ["¿Atienden a niños?","Sí, contamos con odontopediatría y un ambiente pensado para que los más pequeños se sientan cómodos."],
+      ["¿Cada cuánto debo hacerme una limpieza?","Cada 6 meses en la mayoría de los casos, para mantener encías y dientes sanos."],
+      ["¿Los tratamientos tienen garantía?","Los tratamientos restaurativos cuentan con garantía. Te damos todos los detalles en tu consulta."],
+    ];
+    const faqs=fdata.map((d,i)=>({q:d[0],a:d[1],open:fi===i,chevron:fi===i?"rotate(180deg)":"rotate(0deg)",iconBg:fi===i?"#fdeeec":"#f1f1f4",iconColor:fi===i?"#c0685c":"#9a9aa2",shadow:fi===i?"0 16px 34px -22px rgba(60,40,45,.3)":"0 2px 4px rgba(20,20,40,.02)",toggle:()=>this.setState({faqIdx:fi===i?-1:i})}));
+    const ci=(inner,c)=>this.svg(inner,22,c,2);
+    const CI={pin:"<path d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z'/><circle cx='12' cy='10' r='3'/>",phone:"<path d='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z'/>",mail:"<rect x='2' y='4' width='20' height='16' rx='3'/><path d='m2 7 10 6 10-6'/>",clock:"<circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/>"};
+    const contact=[
+      {label:"Dirección",value:"Av. Reforma 210, CDMX",bg:"#fdeeec",shadow:"rgba(242,176,166,.9)",icon:ci(CI.pin,"#c0685c")},
+      {label:"Teléfono",value:"55 2290 4471",bg:"#eef2fb",shadow:"rgba(59,111,212,.6)",icon:ci(CI.phone,"#3b6fd4")},
+      {label:"Correo",value:"contacto@dentissa.mx",bg:"#eaf6ef",shadow:"rgba(18,145,90,.55)",icon:ci(CI.mail,"#12915a")},
+      {label:"Horario",value:"Lun a Sáb · 9:00 – 20:00",bg:"#fbf4e8",shadow:"rgba(201,138,32,.5)",icon:ci(CI.clock,"#c98a20")},
+    ];
+    const steps=[{n:"1",label:"Regístrate con tu correo"},{n:"2",label:"Elige servicio, fecha y hora"},{n:"3",label:"Recibe la confirmación de tu cita"}];
+    const footerCols=[{title:"Clínica",items:["Sobre nosotros","Servicios","Ofertas","Preguntas frecuentes"]},{title:"Pacientes",items:["Crear cuenta","Iniciar sesión","Agendar cita","Mi historial"]},{title:"Legal",items:["Aviso de privacidad","Términos","Cookies"]}];
+    const SI={fb:"<path d='M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z'/>",ig:"<rect x='2' y='2' width='20' height='20' rx='5'/><circle cx='12' cy='12' r='4'/><circle cx='17.5' cy='6.5' r='1'/>",wa:"<path d='M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5Z'/>"};
+    const socials=[{icon:this.svg(SI.fb,18,"currentColor",1.8)},{icon:this.svg(SI.ig,18,"currentColor",1.8)},{icon:this.svg(SI.wa,18,"currentColor",1.8)}];
+    return {navLinks,heroStats,features,services,trackTransform,dots,faqs,contact,steps,footerCols,socials,
+      prev:()=>this.setState({slide:Math.max(0,slide-1)}),next:()=>this.setState({slide:Math.min(maxSlide,slide+1)})};
+  }
+}
+</script>
+</body>
+</html>
