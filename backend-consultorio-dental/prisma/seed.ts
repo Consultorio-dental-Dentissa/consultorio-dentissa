@@ -59,7 +59,13 @@ async function main() {
         return;
     }
     
-    console.log("Success: admin user created successfully");    
+    console.log("Success: admin user created successfully");
+    
+    // Print admin credentials for develoment:
+    
+    console.log(`ADMIN EMAIL: ${admin.email}`);   
+    console.log("ADMIN PASSWORD: 12345678");
+
 }
 
 main()
