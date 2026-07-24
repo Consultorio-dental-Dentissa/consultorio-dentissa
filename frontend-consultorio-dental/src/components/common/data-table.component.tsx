@@ -15,14 +15,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     })
 
     return (
-        <div className="rounded-md border border-gray-300 bg-transparent max-h-[500px] overflow-auto">
+        <div className="border-t bg-transparent max-h-[500px] overflow-auto">
             <Table className="">
                 <TableHeader className="bg-gray-100">
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
                             {headerGroup.headers.map((header) => {
                                 return (
-                                    <TableHead className="py-4 font-bold border-r border-gray-200" key={header.id}>
+                                    <TableHead className="py-4 font-bold text-gray-500" key={header.id}>
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
-                                className=" px-5"
+                                className="px-5"
                             >
                                 {
                                     row.getVisibleCells().map((cell) => (

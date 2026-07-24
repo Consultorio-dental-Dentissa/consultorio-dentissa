@@ -18,14 +18,27 @@ api.interceptors.response.use(
             throw new Error('Hubo un problema inesperado. Espera porfavor');
         }
 
+        console.log(response);
+
         return response.data;
     },
     (error) => {
+
+        console.log(error.response)
 
         if (!axios.isAxiosError(error)) {
             console.log("Error no esperado");
 
             throw new Error('Error desconocido');
+        }
+
+        if (error.response?.status === 401) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
+
+            if (window.location.pathname !== '/login') {
+                window.location.href = '/login';
+            }
         }
 
         /* --RECORDAR: Manejar el contrato de respuestas de error */
@@ -53,22 +66,22 @@ api.interceptors.response.use(
 )
 
 
-export async function get<T>(endpoint: string): Promise<T> {
+export async function get<T>(endpoint: string): Promise<ApiResponse<T>> {
     return api.get(endpoint);
 }
 
-export async function post<T>(endpoint: string, data: object): Promise<T> {
+export async function post<T>(endpoint: string, data: object): Promise<ApiResponse<T>> {
     return api.post(endpoint, data);
 }
 
-export async function put<T>(endpoint: string, data: object): Promise<T> {
+export async function put<T>(endpoint: string, data: object): Promise<ApiResponse<T>> {
     return api.put(endpoint, data)
 }
 
-export async function patch<T>(endpoint: string, data: object): Promise<T> {
+export async function patch<T>(endpoint: string, data: object): Promise<ApiResponse<T>> {
     return api.patch(endpoint, data);
 }
 
-export async function deleteR<T>(endpoint: string): Promise<T> {
+export async function deleteR<T>(endpoint: string): Promise<ApiResponse<T>> {
     return api.delete(endpoint);
 }

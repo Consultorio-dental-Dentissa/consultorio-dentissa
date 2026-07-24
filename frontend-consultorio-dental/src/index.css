@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: system-ui;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -58,7 +58,7 @@
   --color-app-accent: #5d0ec0;
 
   /* Pages components styles */
-  --color-sidebar: #4d179a;
+  --color-sidebar: #fb7185;
   --color-sidebar-accent: #ffff;
 }
 
@@ -157,5 +157,5 @@ body,
   height: 100%;
   overflow: hidden;
   --gradient-pink: linear-gradient(135deg, #d75078 0%, #f2b0a6 100%);
-
+  font-family: var(--font-display);
 }

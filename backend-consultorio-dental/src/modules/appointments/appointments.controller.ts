@@ -16,6 +16,12 @@ export class AppointmentsController {
         return await this.appointmentsServices.getAllAppointments(parameters);
     }
 
+    @Get('count')
+    async getAppointmentsCount(@Query() parameters: GetAppointmentsDto) {
+        console.log(parameters)
+        return await this.appointmentsServices.getAppointmentsCount(parameters);
+    }
+
     @Get(':id')
     async getAppointmentById(@Param('id', ParseIntPipe) id: number) {
         return await this.appointmentsServices.getAppointmentById(id);

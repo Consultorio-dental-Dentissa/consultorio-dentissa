@@ -11,7 +11,7 @@ export function AppointmentCard({ appointment, onClick }: AppointmentCardProps) 
 
     return (
         <>
-            <div className="bg-white flex flec-col justify-between w-64 min-h-[250px] rounded-lg px-7 py-6 cursor-pointer shadow-[0_2px_20px_rgba(0,0,0,0.15)] flex-col transition transform duration-300 hover:scale-103 active:scale-97"
+            <div className="bg-white flex flec-col justify-between w-64 min-h-[250px] rounded-lg px-7 py-6 cursor-pointer border-2 flex-col transition transform duration-300 hover:scale-103 active:scale-97"
             onClick={onClick}>
                 <div>
                     <StatusSpan status={appointment.status} />

@@ -21,3 +21,12 @@ export function formatDate(date: Date) {
         year: 'numeric',
     }).format(date);
 }
+
+export function toLocalDateString(date: Date): string {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+export function parseLocalDateString(dateStr: string): Date {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+}

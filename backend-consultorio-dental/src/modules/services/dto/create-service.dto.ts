@@ -27,7 +27,7 @@ export class CreateServiceDto {
     @IsDefined({ message: 'El precio del servicio es requerido' })
     @IsNotEmpty({ message: 'El precio del servicio es requerido' })
     @IsNumber({ maxDecimalPlaces: 2 }, { message: 'El precio debe ser un número válido' })
-    @Min(0, { message: 'El precio no puede ser un número negativo' })
+    @Min(1, { message: 'El precio no puede ser un número negativo' })
     price!: number;
 }
 

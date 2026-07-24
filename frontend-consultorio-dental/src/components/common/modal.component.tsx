@@ -33,6 +33,7 @@ export function Modal({ open, onClose, title, description, children, position }:
                     <DialogTitle className='font-bold text-2xl'>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
+                <hr />
                 {children}
             </DialogContent>
         </Dialog>

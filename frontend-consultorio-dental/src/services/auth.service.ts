@@ -9,13 +9,13 @@ import { deleteR, post } from "./api"
 import { userMap } from "@/types/mappers/user.mapper";
 
 export async function requestLogin(credentials : LoginDto): Promise<LoginResponse> {
-    const response =  await post<ApiResponse<LoginResponse>>('/auth/login', credentials);
+    const response =  await post<LoginResponse>('/auth/login', credentials);
     const loginResponse = response.data;
     return loginResponse;
 }
 
 export async function requestRegister(user: CreateUserDto) : Promise<User> {
-    const response = await post<ApiResponse<UserResponse>>('/auth/register', user);
+    const response = await post<UserResponse>('/auth/register', user);
     const userCreated = response.data;
     return userMap(userCreated);
 }

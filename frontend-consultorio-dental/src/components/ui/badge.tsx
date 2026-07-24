@@ -19,10 +19,14 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-green-100 text-green-700 border-green-500",
-        base: "bg-gray-200 text-gray-600 border-gray-300",
-        warning: "bg-orange-100 text-orange-800 border-orange-400",
-        primary: "bg-blue-200 text-blue-800 border-blue-500"
+        success: "bg-green-100 text-green-700 border-none rounded-sm font-bold",
+        base: "bg-gray-200 text-gray-600 border-none rounded-sm font-bold",
+        warning: "bg-orange-100 text-orange-800 border-none rounded-sm font-bold",
+        primary: "bg-blue-200 text-blue-800 border-none rounded-sm font-bold",
+        admin: "bg-red-100 text-red-400 border-none rounded-sm font-bold",
+        assistant: "bg-violet-100 text-violet-500 border-none rounded-sm font-bold",
+        patient: "bg-slate-200 text-sky-600 border-none rounded-sm font-bold"
+
       },
     },
     defaultVariants: {
@@ -41,6 +45,9 @@ export type BadgeVariant =
   | "success"
   | "base"
   | "warning"
+  | "admin"
+  | "assistant"
+  | "patient"
   | "primary";
 
 function Badge({

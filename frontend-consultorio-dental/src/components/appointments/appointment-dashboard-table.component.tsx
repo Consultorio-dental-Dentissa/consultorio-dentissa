@@ -1,0 +1,74 @@
+import type { Appointment } from "@/types/models/appointment"
+import type { ColumnDef } from "@tanstack/react-table"
+import { StatusSpan } from "../common/span.component"
+
+interface AppointmentSmallTableProps {
+    appointments: Appointment[]
+}
+
+
+/* Table columns */
+const columns = (): ColumnDef<Appointment>[] => [
+        {
+            header: 'Paciente',
+            cell: ({ row }) => <div> {`${row.original.patient.name} ${row.original.patient.lastname}`} </div>
+        },
+        {
+            header: 'Servicio',
+            cell: ({ row }) => <div> {row.original.service.name} </div>
+
+        },
+        {
+            header: 'Hora',
+            cell: ({ row }) => <div>{row.original.scheduled_at.toLocaleTimeString()}</div>
+        },
+        {
+            header: 'Estatus',
+            cell: ({ row }) => <StatusSpan status={row.original.status}/>
+        }
+    ]
+
+
+export function AppointmentsDashboardTable({ appointments }: AppointmentSmallTableProps) {
+  return (
+    <div className="border overflow-hidden">
+      <div className="grid grid-cols-[1.5fr_1.2fr_0.7fr_1fr] px-5 py-2.5 border-b bg-zinc-50 border-zinc-100 text-[10.5px] font-bold text-zinc-400 uppercase tracking-wide">
+        <span>Paciente</span>
+        <span>Servicio</span>
+        <span>Hora</span>
+        <span>Estatus</span>
+      </div>
+
+      {appointments.map((appointment, index) => {
+
+        return (
+          <div
+            key={index}
+            className="grid grid-cols-[1.5fr_1.2fr_0.7fr_1fr] items-center px-5 py-3 border-b border-zinc-100 last:border-b-0"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+
+              <div className="text-[13px] font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                {appointment.patient.name}
+              </div>
+            </div>
+
+            <div className="text-[12.5px] text-zinc-600 font-medium">
+              {appointment.service.name}
+            </div>
+
+            <div className="text-[12.5px] text-zinc-700 font-semibold">
+              {appointment.scheduled_at.toLocaleTimeString()}
+            </div>
+
+            <div>
+                <StatusSpan 
+                    status={appointment.status}
+                />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

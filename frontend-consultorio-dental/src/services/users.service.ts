@@ -9,7 +9,7 @@ import type { ApiResponse } from "@/types/api/responses/api.response";
 
 export async function getAllUsers(): Promise<User[]> {
 
-    const response = await get<ApiResponse<UserResponse[]>>('/users');
+    const response = await get<UserResponse[]>('/users');
     const usersResponse = response.data;
     const users = usersResponse.map(user => userMap(user));
 
@@ -17,13 +17,13 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 export async function createUser(user: CreateUserDto): Promise<User> {
-    const response = await post<ApiResponse<UserResponse>>("/users", user);
+    const response = await post<UserResponse>("/users", user);
     const userCreated = response.data;
 
     return userMap(userCreated);
 }
 
 export async function updateUserStatus(id: number, status: boolean): Promise<boolean> {
-    const response = await patch<ApiResponse<boolean>>(`/users/status/${id}`, { estado: status });
+    const response = await patch<boolean>(`/users/status/${id}`, { estado: status });
     return response.data;
 }

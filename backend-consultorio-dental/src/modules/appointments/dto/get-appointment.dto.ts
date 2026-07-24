@@ -1,4 +1,4 @@
-import { IsOptional, IsInt, IsEnum } from 'class-validator';
+import { IsOptional, IsInt, IsEnum, IsDateString } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 import { AppointmentStatus } from '@prisma/client';
 
@@ -12,4 +12,7 @@ export class GetAppointmentsDto {
     @Transform(({ value }) => value.toUpperCase())
     @IsEnum(AppointmentStatus, {message: `El estatus debe ser de: ${Object.values(AppointmentStatus)}`})
     status?: AppointmentStatus
+
+    @IsOptional() @IsDateString()
+    date?: string;
 }

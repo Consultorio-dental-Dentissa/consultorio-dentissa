@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotAcceptableException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { AppointmentsRepository } from './repositories/appointments.repository';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ServicesRepository } from '../services/repositories/services.repository';
@@ -14,6 +14,10 @@ export class AppointmentsService {
         private patientsRepository: PatientsRepository
 
     ) { }
+
+    async getAppointmentsCount(parameters: GetAppointmentsDto) {
+        return await this.appointmentRepository.count(parameters);
+    }
 
     async getAllAppointments(parameters: GetAppointmentsDto) {
         const appointments = await this.appointmentRepository.getAll(parameters);
@@ -58,7 +62,12 @@ export class AppointmentsService {
          * implementen multiples servicios en una sola cita
          */
 
+        if (!service.status) {
+            throw new NotAcceptableException('EL servicio que selecionaste está desactivado. Por favor escoje uno disponible');
+        }
+
         createAppointmentDto.durationMinutes = service.durationMinutes;
+        
         const appointmentsOfTheDate = await this.appointmentRepository.getAppointmentsByDate(createAppointmentDto.scheduled_at);
         const conflict = this.existsScheduleConflict(createAppointmentDto, appointmentsOfTheDate); 
 

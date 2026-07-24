@@ -2,7 +2,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ErrorSpan } from "./span.component";
 import { Field } from "@/components/ui/field"
-import { SelectComponent, type SelectData } from "./select.component";
+import { SelectInputComponent, type SelectData } from "./select.component";
 import type { UseFormRegisterReturn } from "react-hook-form"
 
 interface InputFormProps {
@@ -44,7 +44,7 @@ export function SelectForm({label, title, placeholder, DATA, onChange, value, er
     return (
         <Field>
             <Label>{label}</Label>
-            <SelectComponent
+            <SelectInputComponent
                 title={title}
                 placeholder={placeholder}
                 data={DATA}

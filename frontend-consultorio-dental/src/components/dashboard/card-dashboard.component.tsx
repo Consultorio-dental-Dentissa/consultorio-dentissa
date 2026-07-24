@@ -1,19 +1,28 @@
-import type { ReactNode } from "react"
+import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
+import type { IconType } from "react-icons/lib"
+
 
 export interface CardDashboardProps {
-    children: ReactNode;
     title: string;
-    url: string;
-    backgroundColor: string;
+    icon: IconType;
+    data: string;
 }
 
-export function CardDashboard({ title, children, url, backgroundColor }: CardDashboardProps) {
+export function CardDashboard({ title, icon: Icon, data }: CardDashboardProps) {
     return (
-        <>
-            <a href={ url } className={`${backgroundColor} px-5 py-5 w-full rounded-xl flex flex-col items-center gap-2 transition transform duration-300 hover:scale-105 active:scale-95`}>
-                <div className="text-2xl text-white"> { children } </div>
-                <div className="text-white font-bold"> { title } </div>
-            </a>
-        </>
+        <Card className="w-full">
+            <CardHeader>
+                <CardTitle className="flex flex-row items-center gap-2">
+                    <Icon className="w-4 h-4 text-zinc-500" />
+                    <p className="text-xs text-zinc-500 font-semibold">{ title }</p>
+                </CardTitle>
+            </CardHeader>
+
+            <CardContent>
+                <div className="text-3xl font-bold">
+                    { data }
+                </div>
+            </CardContent>
+        </Card>
     )
 }

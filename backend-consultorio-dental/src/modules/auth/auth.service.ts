@@ -42,7 +42,7 @@ export class AuthService {
         
         response.cookie('access_token', token, {
             httpOnly: true,
-            secure: false,
+            secure: false,//Boolean(process.env.ON_PRODUCTION),
             maxAge: 3600000,
         });
         

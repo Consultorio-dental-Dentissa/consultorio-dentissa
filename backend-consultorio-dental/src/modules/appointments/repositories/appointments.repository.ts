@@ -2,19 +2,38 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { CreateAppointmentDto } from "../dto/create-appointment.dto";
 import { GetAppointmentsDto } from "../dto/get-appointment.dto";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class AppointmentsRepository {
 
     constructor(private prisma: PrismaService) { }
 
+
+    private buildWhere(filters: GetAppointmentsDto): Prisma.AppointmentWhereInput {
+        const where: Prisma.AppointmentWhereInput = {
+            patient_id: filters.patient_id,
+            status: filters.status,
+        };
+
+        if (filters.date) {
+            const [year, month, day] = filters.date.split('-').map(Number);
+            const start = new Date(year, month - 1, day, 0, 0, 0, 0);
+            const end = new Date(year, month - 1, day, 23, 59, 59, 999);
+            where.scheduled_at = { gte: start, lte: end };
+        }
+
+        return where;
+    }
+
+    async count(filters: GetAppointmentsDto) {
+        return this.prisma.appointment.count({ where: this.buildWhere(filters) });
+    }
+
     async getAll(filters: GetAppointmentsDto) {
 
         return await this.prisma.appointment.findMany({
-            where: {
-                patient_id: filters.patient_id,
-                status: filters.status
-            },
+            where: this.buildWhere(filters),
             select: {
                 id: true,
                 scheduled_at: true,
@@ -86,7 +105,7 @@ export class AppointmentsRepository {
     }
 
     async getAppointmentsByDate(date: Date, excluirCitaId?: number) {
-        
+
         const startOfDay = new Date(date);
         const endOfDay = new Date(date);
 

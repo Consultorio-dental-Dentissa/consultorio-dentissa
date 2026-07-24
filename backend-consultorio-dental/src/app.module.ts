@@ -16,7 +16,6 @@ import { CommonModule } from './infrastructure/common/common.module';
     PrismaModule,
     UsersModule,
     AuthModule,
-    PrismaModule,
     AppointmentsModule,
     PatientsModule,
     SecurityModule,

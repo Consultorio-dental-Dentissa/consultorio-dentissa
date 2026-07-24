@@ -3,11 +3,15 @@ import * as z from "zod";
 
 export const CreateAppointmentSchema = z.object({
     date: z
-        .iso.date('Seleccione una fecha valida')
-        .refine(
-            date => new Date(date) < new Date() ? false : true, 
-            'La fecha no puede ser anterior a la fecha actual'
-        ),
+    .iso.date('Seleccione una fecha valida')
+    .refine(date => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // medianoche LOCAL de hoy
+
+        const selected = new Date(`${date}T00:00:00`); // fuerza parseo como hora LOCAL, no UTC
+
+        return selected >= today;
+    }, 'La fecha no puede ser anterior a la fecha actual'),
     time: z
         .iso.time('Porfavor escoja un horario valido')
         .min(1, 'Este campo es obligatorio'),

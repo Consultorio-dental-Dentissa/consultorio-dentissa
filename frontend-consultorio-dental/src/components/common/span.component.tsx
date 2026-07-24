@@ -1,4 +1,5 @@
 import { StatusAppointment } from "@/types/enums/status-appointment.enum";
+import { Role } from "@/types/enums/rol.enum";
 import { Badge, type BadgeVariant } from "../ui/badge";
 import { formatFirstLetterUppercase } from "@/utils/formatters";
 
@@ -32,6 +33,23 @@ export function StatusSpan({ status }: StatusSpanProps) {
             break;
         case StatusAppointment.REPROGRAMADA: {
             variant = "warning";
+            break;
+        }
+
+
+        /* Aprovechamos para incluir los roles de los usuarios */
+        case Role.ADMINISTRADOR: {
+            variant = "admin";
+            break;
+        }
+
+        case Role.ASISTENTE: {
+            variant = "assistant";
+            break;
+        }
+
+        case Role.PACIENTE: {
+            variant = "patient";
             break;
         }
 

@@ -7,18 +7,18 @@ import { serviceMap } from '@/types/mappers/service.mapper';
 import { get, patch, post } from './api';
 
 export async function getAllServices(): Promise<Service[]> {
-    const response = await get<ApiResponse<ServiceResponse[]>>('/services');
+    const response = await get<ServiceResponse[]>('/services');
     const servicesResponse = response.data;
     return servicesResponse.map(service => serviceMap(service));
 }
 
 export async function updateServiceStatus(id: number, status: boolean): Promise<boolean> {
-    const response =  await patch<ApiResponse<boolean>>(`/services/status/${id}`, { "status": status });
+    const response =  await patch<boolean>(`/services/status/${id}`, { "status": status });
     return response.data;
 }
 
 export async function createService(createService: CreateServiceDto): Promise<Service> {
-    const response = await post<ApiResponse<ServiceResponse>>('/services', createService);
+    const response = await post<ServiceResponse>('/services', createService);
     const serviceCreated = response.data;
     return serviceMap(serviceCreated);
 }
