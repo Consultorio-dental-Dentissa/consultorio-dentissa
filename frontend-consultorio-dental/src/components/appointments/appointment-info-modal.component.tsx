@@ -2,12 +2,17 @@ import { Modal } from "@/components/common/modal.component"
 import { Button } from "@/components/ui/button"
 import { StatusAppointment } from "@/types/enums/status-appointment.enum";
 import type { Appointment } from "@/types/models/appointment";
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppointmentInfoSecction } from "./appointment-info-section.component";
 import { UpdateAppointmentForm, UPDATE_APPOINTMENT_FORM_ID } from "./update-appointment-form.component";
+import { CreateConsultationForm, CREATE_CONSULTATION_FORM_ID } from "../consultations/create-consultation-form.component";
+import { useConsultations } from "@/hooks/use-consultations";
 import type { Service } from "@/types/models/service";
 import type { Patient } from "@/types/models/patient";
 import type { UpdateAppointmentDto } from "@/types/api/request/update-appointment.dto";
+import type { CreateConsultationDto } from "@/types/api/request/create-consultation.dto";
+import toast from "react-hot-toast";
 
 
 interface AppointmentInfoModalProps {
@@ -26,16 +31,33 @@ export function AppointmentInfoModal({ open, close, appointment, patiensList, se
     const [isCreatingConsultation, setIsCreatingConsultation] = useState(false);
     const [isEditinAppointment, setIsEditingAppointment] = useState(false);
 
+    const { useCreateConsultation, isLoading: isSavingConsultation, error: consultationError } = useConsultations();
+    const navigate = useNavigate();
+
     // Regla de negocio ya definida en RF-015: una consulta solo puede
     // crearse cuando la cita relacionada está en estatus "Completada".
 
-    const canCreateConsultation = appointment.status === StatusAppointment.COMPLETADA || appointment.status === StatusAppointment.CONFIRMADA;
+    const canCreateConsultation = appointment.status === StatusAppointment.COMPLETADA;
+
+    useEffect(() => {
+        consultationError && toast.error(consultationError);
+    }, [consultationError]);
 
     const handleSubmitUpdate = async (dto: UpdateAppointmentDto) => {
         const updatedAppointment = await onUpdateAppointment(appointment.id, dto);
         if (updatedAppointment) {
             setIsEditingAppointment(false);
             close(false);
+        }
+    };
+
+    const handleSubmitConsultation = async (dto: CreateConsultationDto) => {
+        const consultation = await useCreateConsultation(dto);
+        if (consultation) {
+            toast.success('Consulta registrada exitosamente');
+            setIsCreatingConsultation(false);
+            close(false);
+            navigate('/consultas');
         }
     };
 
@@ -50,7 +72,10 @@ export function AppointmentInfoModal({ open, close, appointment, patiensList, se
 
             {
                 isCreatingConsultation ?
-                    "Formulario crear consulta"
+                    <CreateConsultationForm
+                        appointmentId={appointment.id}
+                        onSubmit={handleSubmitConsultation}
+                    />
 
                 :
 
@@ -87,11 +112,11 @@ export function AppointmentInfoModal({ open, close, appointment, patiensList, se
 
                     isCreatingConsultation ?
                         <Fragment key="consultation-actions">
-                            <Button type="button" variant="outline" onClick={() => setIsCreatingConsultation(false)}>
+                            <Button type="button" variant="outline" onClick={() => setIsCreatingConsultation(false)} disabled={isSavingConsultation}>
                                 Cancelar
                             </Button>
 
-                            <Button type="button" onClick={() => {}}>
+                            <Button type="submit" form={CREATE_CONSULTATION_FORM_ID} disabled={isSavingConsultation}>
                                 Guardar consulta
                             </Button>
                         </Fragment>

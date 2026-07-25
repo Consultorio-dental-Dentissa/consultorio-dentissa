@@ -184,8 +184,8 @@ export default function AppointmentsPage() {
                 <div className="p-5">
                     <AppointmentList
                         appointments={appointments}
-                        patiensList={patients}
-                        servicesList={servicesData}
+                        patiensList={patients.filter(p => p.status === true)}
+                        servicesList={servicesData.filter(s => s.status === true)}
                         onUpdateAppointment={handleUpdatedAppointment}
                         isSavingAppointment={isLoading}
                     />
@@ -201,8 +201,8 @@ export default function AppointmentsPage() {
                     onSubmit={handleCreatedAppointment}
                     onCancel={() => setOpenModal(false)}
                     isSaving={isLoading}
-                    services={servicesData}
-                    patients={patients}
+                    patients={patients.filter(p => p.status === true)}
+                    services={servicesData.filter(s => s.status === true)}
                 />
             </Modal>
 

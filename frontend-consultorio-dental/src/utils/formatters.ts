@@ -15,6 +15,7 @@ export function formatTotalMinutesToHours(totalMinutes: number) {
 }
 
 export function formatDate(date: Date) {
+
     return new Intl.DateTimeFormat('es-MX', {
         month: 'long',
         day: 'numeric',
