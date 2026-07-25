@@ -5,6 +5,7 @@ import { Calendar, SquarePlus, Users, MoveRight } from "lucide-react";
 import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
 
 import { useAppointments } from "@/hooks/use-appointments";
+import { usePatients } from "@/hooks/use-patients";
 import { AppointmentsDashboardTable } from "@/components/appointments/appointment-dashboard-table.component";
 import { useEffect, useState } from "react";
 
@@ -16,14 +17,27 @@ export default function DashboardPage() {
   tomorrow.setDate(date.getDate() + 1);
 
   const { appointments, useGetAllAppointments, useGetAppointmentsCount } = useAppointments();
+  const { useGetPatientsCount } = usePatients();
   const [tomorrowAppointmentCount, setTomorrowAppointmentCount] = useState(0);
+  const [activePatientsCount, setActivePatientsCount] = useState(0);
+  const [totalPatientsCount, setTotalPatientsCount] = useState(0);
+
 
   useEffect(() => {
-    
+
     useGetAllAppointments(`date=${toLocalDateString(date)}`);
+
     useGetAppointmentsCount(`date=${toLocalDateString(tomorrow)}`).then(count => {
       if (count !== undefined) setTomorrowAppointmentCount(count);
     });
+
+    useGetPatientsCount('status=true').then(count => {
+      if (count !== undefined) setActivePatientsCount(count);
+    });
+
+    useGetPatientsCount().then(count => {
+      if (count !== undefined) setTotalPatientsCount(count);
+    })
   }, []);
 
 
@@ -50,12 +64,12 @@ export default function DashboardPage() {
         />
         <CardDashboard
           title="Pacientes activos"
-          data="12"
+          data={`${activePatientsCount}`}
           icon={Users}
         />
         <CardDashboard
-          title="Citas de hoy"
-          data="12"
+          title="Pacientes totales"
+          data={`${totalPatientsCount}`}
           icon={Calendar}
         />
       </div>

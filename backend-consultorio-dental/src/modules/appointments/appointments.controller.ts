@@ -18,7 +18,6 @@ export class AppointmentsController {
 
     @Get('count')
     async getAppointmentsCount(@Query() parameters: GetAppointmentsDto) {
-        console.log(parameters)
         return await this.appointmentsServices.getAppointmentsCount(parameters);
     }
 

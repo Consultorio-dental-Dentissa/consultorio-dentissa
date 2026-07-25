@@ -7,7 +7,7 @@ import { Switch } from "../ui/switch";
 import { Trash2, SquarePen } from "lucide-react";
 import { StatusSpan } from "../common/span.component";
 
-import { formatPhone } from "@/utils/formatters";
+import { formatPhone, formatDate } from "@/utils/formatters";
 
 export const getColumns = (onToggleStatus?: (id: number, status: boolean) => void): ColumnDef<User>[] => [
 
@@ -35,7 +35,7 @@ export const getColumns = (onToggleStatus?: (id: number, status: boolean) => voi
     },
     {
         header: "Fecha de registro",
-        cell: ({ row }) => <div>{row.original.created_at.toDateString()}</div>
+        cell: ({ row }) => <div>{formatDate(row.original.created_at)}</div>
     },
     {
         header: 'Estado',

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { CreatePatientDto } from "../dto/create-patient.dto";
+import { GetPatientsDto } from "../dto/get-patient.dto";
 import { Prisma } from '@prisma/client';
 
 
@@ -9,8 +10,19 @@ export class PatientsRepository {
 
     constructor(private prisma: PrismaService) { }
 
-    async getAll() {
+    private buildWhere(filters: GetPatientsDto): Prisma.PatientWhereInput {
+        return {
+            user: filters.status !== undefined ? { status: filters.status } : undefined,
+        };
+    }
+
+    async count(filters: GetPatientsDto) {
+        return this.prisma.patient.count({ where: this.buildWhere(filters) });
+    }
+
+    async getAll(filters: GetPatientsDto) {
         return await this.prisma.patient.findMany({
+            where: this.buildWhere(filters),
             select: {
                 id: true,
                 address: true,
@@ -21,7 +33,8 @@ export class PatientsRepository {
                         name: true,
                         lastname: true,
                         email: true,
-                        phone: true
+                        phone: true,
+                        status: true
                     }
                 }
             }

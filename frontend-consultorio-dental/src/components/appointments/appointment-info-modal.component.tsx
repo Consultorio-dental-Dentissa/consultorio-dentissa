@@ -1,85 +1,95 @@
 import { Modal } from "@/components/common/modal.component"
-import { Separator } from "@/components/ui/separator"
-
+import { Button } from "@/components/ui/button"
+import { StatusAppointment } from "@/types/enums/status-appointment.enum";
 import type { Appointment } from "@/types/models/appointment";
-import { StatusSpan } from "@/components/common/span.component";
-import { formatDate } from "@/utils/formatters";
+import { useState } from "react";
+import { AppointmentInfoSecction } from "./appointment-info-section.component";
+
 
 interface AppointmentInfoModalProps {
     open: boolean;
     close: (open: boolean) => void;
-    appointment: Appointment
+    appointment: Appointment;
 }
 
 export function AppointmentInfoModal({ open, close, appointment }: AppointmentInfoModalProps) {
 
-    const fullName = `${appointment.patient.name} ${appointment.patient.lastname}`;
+    const [isCreatingConsultation, setIsCreatingConsultation] = useState(false);
+    const [isEditinAppointment, setIsEditingAppointment] = useState(false);
+
+    // Regla de negocio ya definida en RF-015: una consulta solo puede
+    // crearse cuando la cita relacionada está en estatus "Completada".
+
+    const canCreateConsultation = appointment.status === StatusAppointment.COMPLETADA || appointment.status === StatusAppointment.CONFIRMADA;
 
     return (
         <Modal
             title="Información de la cita"
             description="Detalles completos de la cita seleccionada"
-            position="right"
+            position="center"
             open={open}
             onClose={close}
         >
-            <div className="space-y-6">
 
-                {/* Paciente */}
-                <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Paciente</p>
-                    <p className="text-base font-medium">{fullName}</p>
-                </div>
+            {
+                isCreatingConsultation ?
+                    "Formulario crear consulta"
 
-                <Separator />
+                :
 
-                {/* Servicio */}
-                <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Servicio</p>
-                    <p className="text-base font-medium">{appointment.service.name}</p>
-                </div>
+                isEditinAppointment ?
+                    "Formulario de editar cita"
+                
+                :
 
-                {/* Grid de detalles */}
-                <div className="grid grid-cols-2 gap-4">
+                <AppointmentInfoSecction
+                    appointment={appointment}
+                />
 
-                    <div className="space-y-1">
-                        <p className="text-sm text-muted-foreground">Duración</p>
-                        <p className="font-medium">{appointment.durationMinutes} min</p>
-                    </div>
+            }
 
-                    <div className="space-y-1">
-                        <p className="text-sm text-muted-foreground">Estado</p>
-                        <StatusSpan
-                            status={appointment.status}>
-                        </StatusSpan>
-                    </div>
+            <div className="flex justify-end gap-2 border-t pt-4">
+                {
+                    !isCreatingConsultation && !isEditinAppointment ?
+                        <>
+                            <Button variant="outline" disabled={!canCreateConsultation} onClick={() => setIsCreatingConsultation(true)}>
+                                Crear consulta
+                            </Button>
 
-                    <div className="space-y-1">
-                        <p className="text-sm text-muted-foreground">Fecha</p>
-                        <p className="font-medium">
-                            {formatDate(appointment.scheduled_at)}
-                        </p>
-                    </div>
+                            <Button onClick={() => setIsEditingAppointment(true)}>
+                                Modificar cita
+                            </Button>
+                        </>
 
-                    <div className="space-y-1">
-                        <p className="text-sm text-muted-foreground">Hora</p>
-                        <p className="font-medium">
-                            {`${appointment.scheduled_at.toLocaleTimeString()} - ${appointment.scheduled_at_end.toLocaleTimeString()}`}
-                            </p>
-                    </div>
+                        :
+                    
+                    isCreatingConsultation ?
+                        <>
+                            <Button variant="outline" onClick={() => setIsCreatingConsultation(false)}>
+                                Cancelar
+                            </Button>
 
-                </div>
+                            <Button onClick={() => {}}>
+                                Guardar consulta
+                            </Button>
+                        </>
 
-                <Separator />
+                        :
+                    
+                    isEditinAppointment ?
+                        <>
+                            <Button variant="outline" onClick={() => setIsEditingAppointment(false)}>
+                                Cancelar
+                            </Button>
 
-                {/* Notas */}
-                <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Notas</p>
-                    <p className="text-sm leading-relaxed">
-                        {appointment.notes || "Sin notas"}
-                    </p>
-                </div>
+                            <Button onClick={() => {}}>
+                                Modificar cita
+                            </Button>
+                        </>
+                    :
 
+                    ''
+                }
             </div>
         </Modal>
     )

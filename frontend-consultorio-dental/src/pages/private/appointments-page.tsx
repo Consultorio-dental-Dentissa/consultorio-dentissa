@@ -6,19 +6,37 @@ import { AppointmentList } from "@/components/appointments/appointment-list.comp
 import { Modal } from "@/components/common/modal.component";
 import { CreateAppointmentForm } from "@/components/appointments/create-appointment-form.component";
 import toast from "react-hot-toast";
+import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
+import { Input } from "@/components/ui/input";
 
 import { useServices } from "@/hooks/use-services";
 import { usePatients } from "@/hooks/use-patients";
 import type { CreateAppointmentDto } from "@/types/api/request/create-appointment.dto";
+import { Calendar } from "lucide-react";
+import { StatusAppointment } from "@/types/enums/status-appointment.enum";
 
 export default function AppointmentsPage() {
 
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false);
-    const { appointments, useGetAllAppointments, useCreateAppointment, isLoading, error } = useAppointments();
+    const {
+        appointments,
+        useGetAllAppointments,
+        useGetAppointmentsCount,
+        useCreateAppointment,
+        isLoading,
+        error
+    } = useAppointments();
 
     const { servicesData, useGetAllServices } = useServices();
     const { patients, useGetAllPatients } = usePatients();
+
+    const [totalAppointments, setTotalAppointments] = useState(0);
+    const [pendingAppointments, setPendingAppointments] = useState(0);
+    const [confirmedAppointments, setConfirmedAppointments] = useState(0);
+    const [canceledAppointments, setCanceledAppointments] = useState(0);
+    const [rescheduledAppointments, setRescheduledAppointments] = useState(0);
+
 
     useEffect(() => {
         setIsLoadingList(true);
@@ -27,6 +45,27 @@ export default function AppointmentsPage() {
 
         useGetAllPatients();
         useGetAllServices();
+
+        useGetAppointmentsCount().then(count => {
+            if (count !== undefined) setTotalAppointments(count);
+        });
+
+        useGetAppointmentsCount(`status=${StatusAppointment.PENDIENTE}`).then(count => {
+            if (count !== undefined) setPendingAppointments(count);
+        });
+
+        useGetAppointmentsCount(`status=${StatusAppointment.CONFIRMADA}`).then(count => {
+            if (count !== undefined) setConfirmedAppointments(count);
+        });
+
+        useGetAppointmentsCount(`status=${StatusAppointment.CANCELADA}`).then(count => {
+            if (count !== undefined) setCanceledAppointments(count);
+        });
+
+        useGetAppointmentsCount(`status=${StatusAppointment.REPROGRAMADA}`).then(count => {
+            if (count !== undefined) setRescheduledAppointments(count);
+        });
+
     }, []);
 
 
@@ -63,8 +102,34 @@ export default function AppointmentsPage() {
         <>
             <div className="flex flex-row justify-between">
                 <PageTitle
-                    titulo="Modulo de citas"
+                    titulo="Panel de citas"
                     subtitulo="Aqui puedes manejar tus citas"
+                />
+            </div>
+
+            <div className="flex w-full gap-3 mt-5">
+                <CardDashboard
+                    title="Pendientes"
+                    icon={Calendar}
+                    data={`${pendingAppointments}`}
+                />
+
+                <CardDashboard
+                    title="Confirmadas"
+                    icon={Calendar}
+                    data={`${confirmedAppointments}`}
+                />
+
+                <CardDashboard
+                    title="Reprogramadas"
+                    icon={Calendar}
+                    data={`${rescheduledAppointments}`}
+                />
+
+                <CardDashboard
+                    title="Canceladas"
+                    icon={Calendar}
+                    data={`${canceledAppointments}`}
                 />
             </div>
 
@@ -85,29 +150,29 @@ export default function AppointmentsPage() {
                 </div>
             </div>
 
-            <div className="mt-5">
-                {
-                    isLoadingList ?
-                        (
-                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
-                                <h2>Cargando...</h2>
-                            </div>
-                        )
-                        :
-                    !appointments.length ?
-                        (
-                            <div className="w-full bg-white p-5 rounded-lg flex justify-center">
-                                <h2>No se han encontrado citas</h2>
-                            </div>
-                        )
-                        :
-                        (
-                            <div>
-                                <h3 className="text-xl font-medium">Citas de hoy</h3>
-                                <AppointmentList appointments={appointments} />
-                            </div>    
-                        )
-                }
+
+
+
+            <div className="bg-white rounded-xl mt-1 border">
+                <div className="p-5 flex justify-between border-b">
+                    <div className="w-full flex gap-1">
+
+                        <Input
+                            className="w-[40%]"
+                            placeholder="Buscar por nombre, correo o telefono"
+                        />
+
+                    </div>
+                    <div className="w-full flex justify-end text-gray-500 text-sm font-medium">
+                        {totalAppointments === 1 ? `${totalAppointments} cita` : `${totalAppointments} citas`}
+                    </div>
+                </div>
+                
+                <div className="p-5">
+                    <AppointmentList 
+                        appointments={appointments}
+                    />
+                </div>
             </div>
 
             <Modal

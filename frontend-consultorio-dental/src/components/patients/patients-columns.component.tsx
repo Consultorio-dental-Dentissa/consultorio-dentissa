@@ -36,7 +36,7 @@ export const getPatientsColumns = (): ColumnDef<Patient>[] => [
             cell: ({ row }) => (
                 <div className="flex justify-center">
                     <ActiveSpan 
-                        status={true}
+                        status={row.original.status}
                     />
                 </div>
             )

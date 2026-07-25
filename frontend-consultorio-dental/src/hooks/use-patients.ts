@@ -1,4 +1,4 @@
-import { getAllPatients, getPatientById } from "../services/patients.service"
+import { getAllPatients, getPatientById, getPatientsCount } from "../services/patients.service"
 import { useState } from "react";
 
 import type { Patient } from "@/types/models/patient";
@@ -10,14 +10,14 @@ export function usePatients() {
     const [isLoadingPatients, setIsLoadingPatients] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function useGetAllPatients() {
+    async function useGetAllPatients(parameters?: string) {
 
         setError(null);
         setIsLoadingPatients(true);
 
         try {
 
-            const patientsData = await getAllPatients();
+            const patientsData = await getAllPatients(parameters);
             setPatients(patientsData);
 
         } catch (error) {
@@ -25,6 +25,23 @@ export function usePatients() {
             setError(errorMessage);
         } finally {
             setIsLoadingPatients(false);
+        }
+    }
+
+    async function useGetPatientsCount(parameters?: string): Promise<number | undefined> {
+
+        setError(null);
+        setIsLoading(true);
+
+        try {
+            const count = await getPatientsCount(parameters);
+            return count;
+
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -49,6 +66,7 @@ export function usePatients() {
     return {
         patients,
         useGetAllPatients,
+        useGetPatientsCount,
         useGetPatientById,
         isLoadingPatients,
         isLoading,

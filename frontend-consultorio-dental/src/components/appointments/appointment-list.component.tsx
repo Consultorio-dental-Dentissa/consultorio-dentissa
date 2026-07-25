@@ -22,7 +22,11 @@ export function AppointmentList({ appointments }: AppoimentListProps) {
             {
                 appointments.length > 0 ?
                     <div className="mt-2 flex flex-row flex-wrap gap-6">
-                        {appointments.map(appointment => <AppointmentCard appointment={appointment} onClick={() => openModalWithAppointmentInfo(appointment)}/>)}
+                        {
+                            appointments.map(appointment => (
+                                <AppointmentCard appointment={appointment} onClick={() => openModalWithAppointmentInfo(appointment)} />
+                            ))
+                        }
                     </div>
 
                     :
@@ -39,7 +43,7 @@ export function AppointmentList({ appointments }: AppoimentListProps) {
                     close={() => setOpenInfoModal(false)}
                     appointment={actualAppointment}
                 />
-                
+
             }
         </>
     );

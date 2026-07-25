@@ -1,7 +1,8 @@
-import { Controller, UseGuards, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, UseGuards, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { PatientsService } from './patients.service';
 import { IsActiveUserGuard } from 'src/infrastructure/security/guards/is-active-user.guard';
+import { GetPatientsDto } from './dto/get-patient.dto';
 
 @UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('patients')
@@ -10,8 +11,13 @@ export class PacientesController {
     constructor(private patientsService: PatientsService) {}
 
     @Get()
-    async get() {
-        return await this.patientsService.getAllPatients();
+    async get(@Query() filters: GetPatientsDto) {
+        return await this.patientsService.getAllPatients(filters);
+    }
+
+    @Get('count')
+    async getCount(@Query() filters: GetPatientsDto) {
+        return await this.patientsService.getPatientsCount(filters);
     }
 
     @Get(':id')
