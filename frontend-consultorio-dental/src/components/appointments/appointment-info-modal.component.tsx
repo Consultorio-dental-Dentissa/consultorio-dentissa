@@ -2,17 +2,26 @@ import { Modal } from "@/components/common/modal.component"
 import { Button } from "@/components/ui/button"
 import { StatusAppointment } from "@/types/enums/status-appointment.enum";
 import type { Appointment } from "@/types/models/appointment";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { AppointmentInfoSecction } from "./appointment-info-section.component";
+import { UpdateAppointmentForm, UPDATE_APPOINTMENT_FORM_ID } from "./update-appointment-form.component";
+import type { Service } from "@/types/models/service";
+import type { Patient } from "@/types/models/patient";
+import type { UpdateAppointmentDto } from "@/types/api/request/update-appointment.dto";
 
 
 interface AppointmentInfoModalProps {
     open: boolean;
     close: (open: boolean) => void;
     appointment: Appointment;
+    patiensList: Patient[]
+    servicesList: Service[]
+    onUpdateAppointment: (id: number, dto: UpdateAppointmentDto) => Promise<Appointment | null>;
+    isSaving: boolean;
 }
 
-export function AppointmentInfoModal({ open, close, appointment }: AppointmentInfoModalProps) {
+
+export function AppointmentInfoModal({ open, close, appointment, patiensList, servicesList, onUpdateAppointment, isSaving }: AppointmentInfoModalProps) {
 
     const [isCreatingConsultation, setIsCreatingConsultation] = useState(false);
     const [isEditinAppointment, setIsEditingAppointment] = useState(false);
@@ -21,6 +30,14 @@ export function AppointmentInfoModal({ open, close, appointment }: AppointmentIn
     // crearse cuando la cita relacionada está en estatus "Completada".
 
     const canCreateConsultation = appointment.status === StatusAppointment.COMPLETADA || appointment.status === StatusAppointment.CONFIRMADA;
+
+    const handleSubmitUpdate = async (dto: UpdateAppointmentDto) => {
+        const updatedAppointment = await onUpdateAppointment(appointment.id, dto);
+        if (updatedAppointment) {
+            setIsEditingAppointment(false);
+            close(false);
+        }
+    };
 
     return (
         <Modal
@@ -38,7 +55,12 @@ export function AppointmentInfoModal({ open, close, appointment }: AppointmentIn
                 :
 
                 isEditinAppointment ?
-                    "Formulario de editar cita"
+                    <UpdateAppointmentForm
+                        appointment={appointment}
+                        patients={patiensList}
+                        services={servicesList}
+                        onSubmit={handleSubmitUpdate}
+                    />
                 
                 :
 
@@ -51,41 +73,41 @@ export function AppointmentInfoModal({ open, close, appointment }: AppointmentIn
             <div className="flex justify-end gap-2 border-t pt-4">
                 {
                     !isCreatingConsultation && !isEditinAppointment ?
-                        <>
-                            <Button variant="outline" disabled={!canCreateConsultation} onClick={() => setIsCreatingConsultation(true)}>
+                        <Fragment key="view-actions">
+                            <Button type="button" variant="outline" disabled={!canCreateConsultation} onClick={() => setIsCreatingConsultation(true)}>
                                 Crear consulta
                             </Button>
 
-                            <Button onClick={() => setIsEditingAppointment(true)}>
+                            <Button type="button" onClick={() => setIsEditingAppointment(true)}>
                                 Modificar cita
                             </Button>
-                        </>
+                        </Fragment>
 
                         :
-                    
+
                     isCreatingConsultation ?
-                        <>
-                            <Button variant="outline" onClick={() => setIsCreatingConsultation(false)}>
+                        <Fragment key="consultation-actions">
+                            <Button type="button" variant="outline" onClick={() => setIsCreatingConsultation(false)}>
                                 Cancelar
                             </Button>
 
-                            <Button onClick={() => {}}>
+                            <Button type="button" onClick={() => {}}>
                                 Guardar consulta
                             </Button>
-                        </>
+                        </Fragment>
 
                         :
-                    
+
                     isEditinAppointment ?
-                        <>
-                            <Button variant="outline" onClick={() => setIsEditingAppointment(false)}>
+                        <Fragment key="edit-actions">
+                            <Button type="button" variant="outline" onClick={() => setIsEditingAppointment(false)} disabled={isSaving}>
                                 Cancelar
                             </Button>
 
-                            <Button onClick={() => {}}>
+                            <Button type="submit" form={UPDATE_APPOINTMENT_FORM_ID} disabled={isSaving}>
                                 Modificar cita
                             </Button>
-                        </>
+                        </Fragment>
                     :
 
                     ''

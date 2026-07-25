@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useServices } from "@/hooks/use-services";
 import { usePatients } from "@/hooks/use-patients";
 import type { CreateAppointmentDto } from "@/types/api/request/create-appointment.dto";
+import type { UpdateAppointmentDto } from "@/types/api/request/update-appointment.dto";
 import { Calendar } from "lucide-react";
 import { StatusAppointment } from "@/types/enums/status-appointment.enum";
 
@@ -24,6 +25,7 @@ export default function AppointmentsPage() {
         useGetAllAppointments,
         useGetAppointmentsCount,
         useCreateAppointment,
+        useUpdateAppointment,
         isLoading,
         error
     } = useAppointments();
@@ -89,6 +91,17 @@ export default function AppointmentsPage() {
             toast.success('Cita agendada exitosamente');
             return;
         }
+    }
+
+    const handleUpdatedAppointment = async (id: number, dto: UpdateAppointmentDto) => {
+
+        const appointment = await useUpdateAppointment(id, dto);
+
+        if (appointment) {
+            toast.success('Cita modificada exitosamente');
+        }
+
+        return appointment;
     }
 
     const appointmentStatus = useMemo(() => [
@@ -169,8 +182,12 @@ export default function AppointmentsPage() {
                 </div>
                 
                 <div className="p-5">
-                    <AppointmentList 
+                    <AppointmentList
                         appointments={appointments}
+                        patiensList={patients}
+                        servicesList={servicesData}
+                        onUpdateAppointment={handleUpdatedAppointment}
+                        isSavingAppointment={isLoading}
                     />
                 </div>
             </div>

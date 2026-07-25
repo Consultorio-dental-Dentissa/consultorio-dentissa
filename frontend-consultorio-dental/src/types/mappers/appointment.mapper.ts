@@ -16,6 +16,8 @@ export function AppointmentMap(appointment: AppointmentResponse): Appointment {
         status: appointment.status,
         created_at: appointment.created_at,
         notes: appointment.notes,
+        patient_id: appointment.patient_id,
+        service_id: appointment.service_id,
         patient: {
             name: appointment.patient.name,
             lastname: appointment.patient.lastname,

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { createAppointment, getAllAppointments, getAppointmentsCount } from "../services/appointments.service"
+import { createAppointment, getAllAppointments, getAppointmentsCount, updateAppointment } from "../services/appointments.service"
 
 import type { CreateAppointmentDto } from "../types/api/request/create-appointment.dto";
+import type { UpdateAppointmentDto } from "../types/api/request/update-appointment.dto";
 import type { Appointment } from "@/types/models/appointment";
 
 export function useAppointments() {
@@ -58,11 +59,30 @@ export function useAppointments() {
                 }
         }
 
+        async function useUpdateAppointment(id: number, updatedAppointment: UpdateAppointmentDto): Promise<Appointment | null> {
+                setError(null);
+                setLoading(true);
+
+                try {
+                        const appointmentUpdated = await updateAppointment(id, updatedAppointment);
+                        setAppointments(prev => prev.map(appointment => appointment.id === id ? appointmentUpdated : appointment));
+                        return appointmentUpdated;
+
+                } catch (error) {
+                        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+                        setError(errorMessage);
+                        return null;
+                } finally {
+                        setLoading(false);
+                }
+        }
+
         return {
                 appointments,
                 useGetAllAppointments,
                 useGetAppointmentsCount,
                 useCreateAppointment,
+                useUpdateAppointment,
                 isLoading,
                 error
         }

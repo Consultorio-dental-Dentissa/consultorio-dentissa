@@ -88,12 +88,19 @@ export default function DashboardPage() {
 
           <div>
             <a className="flex gap-1 items-center text-[#c0685c] font-bold text-sm" href="/citas">
-              Ver agenda <MoveRight size={15}/>
+              Ver agenda <MoveRight size={15} />
             </a>
-          </div>   
+          </div>
         </div>
 
-        <AppointmentsDashboardTable appointments={appointments}/>
+        {appointments.length < 1 ?
+        
+          'No se encontrarónn citas para hoy'
+
+          :
+
+          <AppointmentsDashboardTable appointments={appointments} />
+        }
 
       </div>
     </>

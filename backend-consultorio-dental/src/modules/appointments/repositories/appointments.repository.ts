@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { CreateAppointmentDto } from "../dto/create-appointment.dto";
+import { UpdateAppointmentDto } from "../dto/update-appointment.dto";
 import { GetAppointmentsDto } from "../dto/get-appointment.dto";
-import { Prisma } from "@prisma/client";
+import { AppointmentStatus, Prisma } from "@prisma/client";
 
 @Injectable()
 export class AppointmentsRepository {
@@ -41,6 +42,8 @@ export class AppointmentsRepository {
                 status: true,
                 created_at: true,
                 notes: true,
+                patient_id: true,
+                service_id: true,
                 service: {
                     select: {
                         name: true
@@ -104,7 +107,7 @@ export class AppointmentsRepository {
         })
     }
 
-    async getAppointmentsByDate(date: Date, excluirCitaId?: number) {
+    async getAppointmentsByDate(date: Date, excludeAppointmentId?: number) {
 
         const startOfDay = new Date(date);
         const endOfDay = new Date(date);
@@ -118,7 +121,13 @@ export class AppointmentsRepository {
                     gte: startOfDay,
                     lt: endOfDay,
                 },
-                id: excluirCitaId ? { not: excluirCitaId } : undefined,
+                id: excludeAppointmentId ? { not: excludeAppointmentId } : undefined,
+                /**
+                 * INDICACIÓN (RF-012):
+                 * Las citas canceladas no ocupan horario, por lo que
+                 * no deben tomarse en cuenta al validar choques de horario.
+                 */
+                status: { not: AppointmentStatus.CANCELADA },
             },
             select: {
                 scheduled_at: true,
@@ -134,5 +143,47 @@ export class AppointmentsRepository {
             scheduled_at: a.scheduled_at,
             durationMinutes: a.service.durationMinutes
         }))
+    }
+
+    async update(id: number, updateAppointmentDto: UpdateAppointmentDto & { durationMinutes: number }) {
+        return await this.prisma.appointment.update({
+            where: {
+                id: id
+            },
+            data: {
+                scheduled_at: updateAppointmentDto.scheduled_at,
+                notes: updateAppointmentDto.notes,
+                patient_id: updateAppointmentDto.patient_id,
+                service_id: updateAppointmentDto.service_id,
+                status: updateAppointmentDto.status,
+                reason: updateAppointmentDto.reason,
+                durationMinutes: updateAppointmentDto.durationMinutes,
+            },
+            select: {
+                id: true,
+                scheduled_at: true,
+                status: true,
+                durationMinutes: true,
+                created_at: true,
+                notes: true,
+                patient_id: true,
+                service_id: true,
+                service: {
+                    select: {
+                        name: true
+                    }
+                },
+                patient: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                lastname: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 }

@@ -8,6 +8,8 @@ export interface Appointment {
     status: StatusAppointment;
     created_at: Date;
     notes: string;
+    patient_id: number;
+    service_id: number;
     patient: {
         name: string
         lastname: string

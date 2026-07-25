@@ -5,6 +5,8 @@ export interface AppointmentResponse {
     status: string;
     notes: string;
     created_at: Date;
+    patient_id: number;
+    service_id: number;
     patient: {
         name: string
         lastname: string
