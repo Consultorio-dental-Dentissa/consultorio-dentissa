@@ -15,8 +15,6 @@ async function bootstrap() {
     credentials: true
   });
 
-  console.log(process.env.DATABASE_URL);
-
   app.useGlobalPipes(new ValidationPipe({
     transform: true, // INDICACION: Permite transformar los datos del JSON
     whitelist: true, // INDICACION: Elimina los campos que no están en el DTO
