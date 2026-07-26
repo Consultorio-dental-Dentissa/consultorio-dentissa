@@ -20,7 +20,7 @@ export function CreateServiceForm({ onSubmit, onCancel, isSaving }: CreateServic
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting }
+        formState: { errors }
     } = useForm<ServiceInputData, any, ServiceOutputData>({
         resolver: zodResolver(CreateServiceSchema)
     })

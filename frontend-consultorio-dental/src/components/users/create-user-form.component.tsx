@@ -32,7 +32,7 @@ export function CreateUserForm({ onSubmit, onCancel, isSaving }: CreateUserFormP
         handleSubmit,
         control,
         watch,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm<UserFormData>({
         resolver: zodResolver(createUserSchema),
     });

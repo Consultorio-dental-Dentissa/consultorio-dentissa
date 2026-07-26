@@ -1,32 +1,9 @@
 import type { Appointment } from "@/types/models/appointment"
-import type { ColumnDef } from "@tanstack/react-table"
 import { StatusSpan } from "../common/span.component"
 
 interface AppointmentSmallTableProps {
     appointments: Appointment[]
 }
-
-
-/* Table columns */
-const columns = (): ColumnDef<Appointment>[] => [
-        {
-            header: 'Paciente',
-            cell: ({ row }) => <div> {`${row.original.patient.name} ${row.original.patient.lastname}`} </div>
-        },
-        {
-            header: 'Servicio',
-            cell: ({ row }) => <div> {row.original.service.name} </div>
-
-        },
-        {
-            header: 'Hora',
-            cell: ({ row }) => <div>{row.original.scheduled_at.toLocaleTimeString()}</div>
-        },
-        {
-            header: 'Estatus',
-            cell: ({ row }) => <StatusSpan status={row.original.status}/>
-        }
-    ]
 
 
 export function AppointmentsDashboardTable({ appointments }: AppointmentSmallTableProps) {

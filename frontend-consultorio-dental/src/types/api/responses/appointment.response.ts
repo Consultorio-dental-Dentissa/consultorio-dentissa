@@ -1,8 +1,10 @@
+import type { StatusAppointment } from "@/types/enums/status-appointment.enum";
+
 export interface AppointmentResponse {
     id: number;
     scheduled_at: Date;
     durationMinutes: number;
-    status: string;
+    status: StatusAppointment;
     notes: string;
     created_at: Date;
     patient_id: number;

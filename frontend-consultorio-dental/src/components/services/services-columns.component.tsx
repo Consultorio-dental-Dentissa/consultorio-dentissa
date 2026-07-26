@@ -2,7 +2,6 @@ import type { ColumnDef } from "@tanstack/react-table"
 import type { Service } from "@/types/models/service"
 
 import { formatTotalMinutesToHours } from "@/utils/formatters"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { ActiveSpan } from "../common/span.component"

@@ -1,7 +1,6 @@
 import type { ServiceResponse } from '../types/api/responses/service.response';
 import type { CreateServiceDto } from '../types/api/request/create-service.dto';
 import type { Service } from '@/types/models/service';
-import type { ApiResponse } from '@/types/api/responses/api.response';
 
 import { serviceMap } from '@/types/mappers/service.mapper';
 import { get, patch, post } from './api';

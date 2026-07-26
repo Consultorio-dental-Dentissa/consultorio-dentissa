@@ -4,7 +4,6 @@ import { userMap } from "@/types/mappers/user.mapper";
 import type { User } from "@/types/models/user";
 import type { CreateUserDto } from "../types/api/request/create-user.dto";
 import type { UserResponse } from "../types/api/responses/user.response";
-import type { ApiResponse } from "@/types/api/responses/api.response";
 
 
 export async function getAllUsers(): Promise<User[]> {
