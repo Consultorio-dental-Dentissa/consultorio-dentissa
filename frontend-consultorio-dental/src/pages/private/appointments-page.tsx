@@ -20,6 +20,7 @@ export default function AppointmentsPage() {
 
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
     const {
         appointments,
         useGetAllAppointments,
@@ -33,7 +34,6 @@ export default function AppointmentsPage() {
     const { servicesData, useGetAllServices } = useServices();
     const { patients, useGetAllPatients } = usePatients();
 
-    const [totalAppointments, setTotalAppointments] = useState(0);
     const [pendingAppointments, setPendingAppointments] = useState(0);
     const [confirmedAppointments, setConfirmedAppointments] = useState(0);
     const [canceledAppointments, setCanceledAppointments] = useState(0);
@@ -42,15 +42,10 @@ export default function AppointmentsPage() {
 
     useEffect(() => {
         setIsLoadingList(true);
-        useGetAllAppointments();
-        setIsLoadingList(false);
+        useGetAllAppointments().finally(() => setIsLoadingList(false));
 
         useGetAllPatients();
         useGetAllServices();
-
-        useGetAppointmentsCount().then(count => {
-            if (count !== undefined) setTotalAppointments(count);
-        });
 
         useGetAppointmentsCount(`status=${StatusAppointment.PENDIENTE}`).then(count => {
             if (count !== undefined) setPendingAppointments(count);
@@ -104,11 +99,21 @@ export default function AppointmentsPage() {
         return appointment;
     }
 
+    const handleStatusFilterChange = (status: string) => {
+        setSelectedStatus(status);
+        setIsLoadingList(true);
+
+        useGetAllAppointments(status === 'ALL' ? undefined : `status=${status}`)
+            .finally(() => setIsLoadingList(false));
+    }
+
     const appointmentStatus = useMemo(() => [
         ['ALL', 'Todos'],
-        ['PENDIENTES', 'Pendientes'],
-        ['CONFIRMADAS', 'Confirmadas'],
-        ['CANCELADAS', 'Canceladas']
+        [StatusAppointment.PENDIENTE, 'Pendientes'],
+        [StatusAppointment.CONFIRMADA, 'Confirmadas'],
+        [StatusAppointment.REPROGRAMADA, 'Reprogramadas'],
+        [StatusAppointment.COMPLETADA, 'Completadas'],
+        [StatusAppointment.CANCELADA, 'Canceladas']
     ], []);
 
     return (
@@ -146,11 +151,16 @@ export default function AppointmentsPage() {
                 />
             </div>
 
-            <div className="flex flex-row justify-between bg-white w-full px-5 py-3 mt-5 rounded-md shadow-card">
+            <div className="flex flex-row justify-between bg-white w-full px-5 py-3 mt-5 rounded-lg border">
                 <div className="flex flex-row gap-5">
                     {
                         appointmentStatus.map(([key, label]) => (
-                            <Button variant='ghost'>
+                            <Button
+                                key={key}
+                                type="button"
+                                variant={selectedStatus === key ? 'selectedGhost' : 'ghost'}
+                                onClick={() => handleStatusFilterChange(key)}
+                            >
                                 {label}
                             </Button>
                         ))
@@ -177,18 +187,29 @@ export default function AppointmentsPage() {
 
                     </div>
                     <div className="w-full flex justify-end text-gray-500 text-sm font-medium">
-                        {totalAppointments === 1 ? `${totalAppointments} cita` : `${totalAppointments} citas`}
+                        {appointments.length === 1 ? `${appointments.length} cita` : `${appointments.length} citas`}
                     </div>
                 </div>
                 
                 <div className="p-5">
-                    <AppointmentList
-                        appointments={appointments}
-                        patiensList={patients.filter(p => p.status === true)}
-                        servicesList={servicesData.filter(s => s.status === true)}
-                        onUpdateAppointment={handleUpdatedAppointment}
-                        isSavingAppointment={isLoading}
-                    />
+                    {
+                        isLoadingList ?
+                            (
+                                <div className="flex justify-center">
+                                    <h2>Cargando...</h2>
+                                </div>
+                            )
+                            :
+                            (
+                                <AppointmentList
+                                    appointments={appointments}
+                                    patiensList={patients.filter(p => p.status === true)}
+                                    servicesList={servicesData.filter(s => s.status === true)}
+                                    onUpdateAppointment={handleUpdatedAppointment}
+                                    isSavingAppointment={isLoading}
+                                />
+                            )
+                    }
                 </div>
             </div>
 

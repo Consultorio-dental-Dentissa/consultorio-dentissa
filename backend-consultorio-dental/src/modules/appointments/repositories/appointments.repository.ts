@@ -145,6 +145,20 @@ export class AppointmentsRepository {
         }))
     }
 
+    async hasConsultation(id: number) {
+
+        const consultation = await this.prisma.appointment.findFirst({
+            where: {
+                id: id
+            },
+            select: {
+                consultation: true
+            }
+        });
+
+        return consultation?.consultation;
+    }
+
     async update(id: number, updateAppointmentDto: UpdateAppointmentDto & { durationMinutes: number }) {
         return await this.prisma.appointment.update({
             where: {

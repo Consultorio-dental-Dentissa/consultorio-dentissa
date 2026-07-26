@@ -42,6 +42,7 @@ model Patient {
   user_id         Int      @unique
 
   appointments Appointment[]
+  odontogram   Odontogram?
   user         User          @relation(fields: [user_id], references: [id])
 
   @@map("patients")
@@ -65,7 +66,7 @@ model Service {
 model ServiceImage {
   id         Int     @id @default(autoincrement())
   url        String
-  location  String?
+  location   String?
   service_id Int
 
   service Service @relation(fields: [service_id], references: [id])
@@ -82,14 +83,14 @@ enum AppointmentStatus {
 }
 
 model Appointment {
-  id              Int      @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   scheduled_at    DateTime
   durationMinutes Int
-  status          AppointmentStatus   @default(PENDIENTE)
+  status          AppointmentStatus @default(PENDIENTE)
   notes           String
   reason          String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
   patient_id      Int
   service_id      Int
 
@@ -108,7 +109,7 @@ model Consultation {
   created_at     DateTime @default(now())
   appointment_id Int      @unique
 
-  appointment Appointment           @relation(fields: [appointment_id], references: [id])
+  appointment Appointment         @relation(fields: [appointment_id], references: [id])
   images      ConsultationImage[]
 
   @@map("consultations")
@@ -188,4 +189,45 @@ model Notification {
   user        User         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
   @@map("notifications")
+}
+
+/**
+ * -- Agregamos el odontograma --
+ */
+
+enum TOOTH_STATUS {
+  SANO
+  CARIES
+  OBTURADO
+  AUSENTE
+  EXTRAIDO
+  CORONA
+  IMPLANTE
+}
+
+model Odontogram {
+  id         Int      @id @default(autoincrement())
+  patient_id Int      @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  patient Patient @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  teeth   Tooth[]
+
+  @@map("odontograms")
+}
+
+model Tooth {
+  id            Int          @id @default(autoincrement())
+  odontogram_id Int
+  number        Int
+  status        TOOTH_STATUS @default(SANO)
+  note          String?
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+
+  odontogram Odontogram @relation(fields: [odontogram_id], references: [id], onDelete: Cascade)
+
+  @@unique([odontogram_id, number])
+  @@map("teeth")
 }

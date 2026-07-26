@@ -9,6 +9,8 @@ import { useServices } from "../../hooks/use-services";
 import type { CreateServiceDto } from "@/types/api/request/create-service.dto";
 import { DataTable } from "@/components/common/data-table.component";
 import { getServicesColumns } from "@/components/services/services-columns.component";
+import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
+import { Stethoscope } from "lucide-react";
 
 
 export default function ServicesPage() {
@@ -54,6 +56,12 @@ export default function ServicesPage() {
 
     const servicesTableColumns = useMemo(() => getServicesColumns(updateServiceStatus), []);
 
+    const servicesCount = useMemo(() => ({
+        total: servicesData.length,
+        active: servicesData.filter(s => s.status === true).length,
+        inactive: servicesData.filter(s => s.status === false).length,
+    }), [servicesData]);
+
     return (
         <div>
             <div className="mt-2 w-full flex justify-between items-end">
@@ -65,33 +73,61 @@ export default function ServicesPage() {
                 <Button variant="primary" onClick={() => setOpenModal(true)}>Agregar nuevo servicio</Button>
             </div>
 
-            <div className="w-full mt-5">
+            <div className="flex w-full gap-3 mt-5">
+                <CardDashboard
+                    title="Servicios totales"
+                    icon={Stethoscope}
+                    data={servicesCount.total.toString()}
+                />
 
+                <CardDashboard
+                    title="Servicios activos"
+                    icon={Stethoscope}
+                    data={servicesCount.active.toString()}
+                />
+
+                <CardDashboard
+                    title="Servicios no activos"
+                    icon={Stethoscope}
+                    data={servicesCount.inactive.toString()}
+                />
+            </div>
+
+            <div className="bg-white rounded-xl mt-5 border">
                 {
-                    isLoadingTable ? (
-                        <div className="bg-white w-full rounded-md p-5 flex justify-center">
-                            Cargando...
-                        </div>
-                    )
+                    isLoadingTable ?
+                        (
+                            <div className="bg-white rounded-lg p-5 flex justify-center">
+                                <h2>Cargando...</h2>
+                            </div>
+                        )
+                        :
+                        !servicesData.length ?
+                            (
+                                <div className="bg-white rounded-sm p-5 flex justify-center">
+                                    <h2>No se encontrarón servicios.</h2>
+                                </div>
+                            )
+                            :
+                            (
+                                <div>
+                                    <div className="p-5 flex justify-between">
+                                        <div className="w-full flex gap-1">
+                                            <h2 className="font-bold text-lg">Servicios</h2>
+                                        </div>
 
-                    : 
+                                        <div className="w-full flex justify-end text-gray-500 text-sm font-medium">
+                                            {servicesData.length === 1 ? `${servicesData.length} servicio` : `${servicesData.length} servicios`}
+                                        </div>
+                                    </div>
 
-                    !servicesData.length ? (
-                        <div className="bg-white w-full rounded-md p-5 flex justify-center">
-                            No hay servicios.
-                        </div>
-                    )
-
-                    :
-
-                    <div className="bg-white rounded-md">
-                        <DataTable 
-                        columns={servicesTableColumns}
-                        data={servicesData}
-                        />
-                    </div>
+                                    <DataTable
+                                        columns={servicesTableColumns}
+                                        data={servicesData}
+                                    />
+                                </div>
+                            )
                 }
-
             </div>
 
             <Modal

@@ -127,6 +127,18 @@ export class AppointmentsService {
         const durationMinutes = service.durationMinutes;
 
         /**
+         * INDICACIÓN:
+         * Si la cita ya tiene una consulta registrada, su estatus queda
+         * congelado (el resto de los campos sí se pueden seguir editando).
+         */
+        const hasConsultation = await this.appointmentRepository.hasConsultation(id);
+
+        if (hasConsultation && updateAppointmentDto.status !== existingAppointment.status) {
+            throw new NotAcceptableException('No puedes cambiar el estado de la cita si ya tiene una consulta registrada');
+        }
+
+
+        /**
          * INDICACIÓN (RF-012):
          * Una cita cancelada no ocupa horario, por lo que no tiene
          * sentido validar choques de horario contra sí misma ni contra otras.

@@ -47,7 +47,7 @@ export function useAppointments() {
 
                 try {
                         const appointmentCreated = await createAppointment(newAppointment);
-                        setAppointments(prev => [...prev, appointmentCreated]);
+                        setAppointments(prev => [appointmentCreated, ...prev]);
                         return appointmentCreated;
 
                 } catch (error) {

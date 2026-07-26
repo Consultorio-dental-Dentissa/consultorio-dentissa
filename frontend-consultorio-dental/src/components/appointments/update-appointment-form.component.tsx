@@ -60,8 +60,8 @@ export function UpdateAppointmentForm({ appointment, onSubmit, patients, service
         } } = useForm<UpdateAppointmentInput, any, UpdateAppointmentOutput>({
             resolver: zodResolver(UpdateAppointmentSchema),
             defaultValues: {
-                service_id: appointment.service_id,
-                patient_id: appointment.patient_id,
+                service_id: String(appointment.service_id),
+                patient_id: String(appointment.patient_id),
                 date: toLocalDateString(appointment.scheduled_at),
                 time: appointment.scheduled_at.toTimeString().slice(0, 5),
                 notes: appointment.notes,

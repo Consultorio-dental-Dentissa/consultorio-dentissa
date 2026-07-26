@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { usePatients } from "../../hooks/use-patients";
 import { PageTitle } from "../../components/common/page-title.component";
 import { getPatientsColumns } from "@/components/patients/patients-columns.component";
 import { DataTable } from "@/components/common/data-table.component";
+import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
+import { User } from "lucide-react";
 
 export default function PatientsPage() {
 
@@ -15,6 +17,14 @@ export default function PatientsPage() {
 
     const patientsTableColumns = getPatientsColumns();
 
+    const patientsData = useMemo(() => {
+        return {
+            "totalPatients": patients.length.toString(),
+            "totalActive": patients.filter(p => p.status === true).length.toString(),
+            "totalNonActive": patients.filter(p => p.status === false).length.toLocaleString()
+        };
+    }, [patients]);
+
     return (
         <div>
 
@@ -24,10 +34,23 @@ export default function PatientsPage() {
             />
 
             <div className="mt-3 flex flex-row gap-5">
-                <div className="bg-white rounded-sm px-5 py-2 min-w-[15%] border borer-gray-200">
-                    <p className="text-sm text-gray-500 font-medium">Número de pacientes: </p>                    
-                    <p className="font-bold text-2xl">{patients.length}</p>
-                </div>
+                <CardDashboard
+                    title="Pacientes totales"
+                    data={patientsData.totalPatients}
+                    icon={User}
+                />
+
+                <CardDashboard
+                    title="Pacientes activos"
+                    data={patientsData.totalActive}
+                    icon={User}
+                />
+
+                <CardDashboard
+                    title="Pacientes no activos"
+                    data={patientsData.totalNonActive}
+                    icon={User}
+                />
             </div>
 
             <div className="mt-5">
@@ -38,24 +61,24 @@ export default function PatientsPage() {
                         </div>
                     )
 
-                    :
-                    
-                    !patients.length ? (
-                        <div className="bg-red-500 text-white font-medium rounded-md p-5 flex justify-center">
-                            {error ? error : 'No hay servicios.'}
-                        </div>
-                    )
-                    
-                    :
-                    
-                    (
-                        <div className="bg-white rounded-md">
-                            <DataTable
-                                columns={patientsTableColumns}
-                                data={patients}
-                            />
-                        </div>
-                    )
+                        :
+
+                        !patients.length ? (
+                            <div className="bg-red-500 text-white font-medium rounded-md p-5 flex justify-center">
+                                {error ? error : 'No hay servicios.'}
+                            </div>
+                        )
+
+                            :
+
+                            (
+                                <div className="bg-white rounded-md">
+                                    <DataTable
+                                        columns={patientsTableColumns}
+                                        data={patients}
+                                    />
+                                </div>
+                            )
                 }
             </div>
         </div>

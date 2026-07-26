@@ -11,6 +11,7 @@ import { SecurityModule } from './infrastructure/security/security.module';
 import { ServicesModule } from './modules/services/services.module';
 import { CommonModule } from './infrastructure/common/common.module';
 import { ConsultationsModule } from './modules/consultations/consultations.module';
+import { OdontogramsModule } from './modules/odontograms/odontograms.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConsultationsModule } from './modules/consultations/consultations.modul
     ServicesModule,
     CommonModule,
     ConsultationsModule,
+    OdontogramsModule,
   ],
   controllers: [AppController],
   providers: [

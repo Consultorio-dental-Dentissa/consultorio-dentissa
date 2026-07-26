@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, Param } from '@nestjs/common';
 import { UsersRepository } from './repositories/users.repository';
 import { PatientsRepository } from '../patients/repositories/patients.repository';
+import { OdontogramsRepository } from '../odontograms/repositories/odontograms.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import type { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -15,6 +16,7 @@ export class UsersService {
     constructor(
         private usersRepository: UsersRepository,
         private patientsRepository: PatientsRepository,
+        private odontogramsRepository: OdontogramsRepository,
         private prisma: PrismaService
     ) { }
 
@@ -82,7 +84,8 @@ export class UsersService {
                 const user = await this.usersRepository.create(userData, tx);
                 patientData.user_id = user.id;
 
-                await this.patientsRepository.create(patientData, tx);
+                const patient = await this.patientsRepository.create(patientData, tx);
+                await this.odontogramsRepository.createForPatient(patient.id, tx);
 
                 return user;
             });
