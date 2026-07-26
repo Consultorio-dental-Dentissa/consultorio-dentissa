@@ -9,12 +9,12 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => {
 
-        if (response.data.success && response.data.data) {
+        if (response.data.success && response.data.data !== undefined) {
             const apiResponse: ApiResponse<any> = response.data;
             response.data = apiResponse;
 
         } else {
-            console.warn('`[API] Endpoint ${response.config.url} sin formato ApiResponse`');
+            console.warn(`[API] Endpoint ${response.config.url} sin formato ApiResponse`);
             throw new Error('Hubo un problema inesperado. Espera porfavor');
         }
 

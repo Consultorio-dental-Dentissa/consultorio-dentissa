@@ -94,6 +94,8 @@ export class AppointmentsService {
             status: appointment.status,
             notes: appointment.notes,
             created_at: appointment.created_at,
+            patient_id: appointment.patient_id,
+            service_id: appointment.service_id,
             patient: {
                 name: appointment.patient.user.name,
                 lastname: appointment.patient.user.lastname

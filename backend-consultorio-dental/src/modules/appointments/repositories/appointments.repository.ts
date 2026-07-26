@@ -87,6 +87,8 @@ export class AppointmentsRepository {
                 durationMinutes: true,
                 created_at: true,
                 notes: true,
+                patient_id: true,
+                service_id: true,
                 service: {
                     select: {
                         name: true
