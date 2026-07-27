@@ -23,7 +23,7 @@ export default function PublicLayout() {
                             <a className="p-2 rounded-lg hover:bg-gray-100" href="#seccion-sobre-nosotros">Sobre nosotros</a>
                             <a className="p-2 rounded-lg hover:bg-gray-100" href="#seccion-servicios">Servicios</a>
                             <a className="p-2 rounded-lg hover:bg-gray-100">Preguntas frecuentes</a>
-                            <a className="p-2 rounded-lg hover:bg-gray-100" href="#contacto">Contacto</a>
+                            <a className="p-2 rounded-lg hover:bg-gray-100" href="#seccion-contacto">Contacto</a>
                         </div>
                     </div>
 
