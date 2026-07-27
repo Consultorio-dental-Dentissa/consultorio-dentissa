@@ -31,11 +31,14 @@ export default function HomePage() {
                     <div className="flex gap-3">
                         <Button
                             className="bg-rose-300 p-6 rounded-xl font-bold"
+                            
+                            onClick={() => navigate('/registrate')}
                         >
                             Agenda tu primera cita <ArrowRight /></Button>
-                        <Button
-                            className="p-6 rounded-xl font-bold border border-gray-200 bg-white text-gray-600"
-                        >Ver servicios</Button>
+                        <a
+                            className="p-3 rounded-xl font-bold border border-gray-200 bg-white text-gray-600"
+                            href="#seccion-servicios"
+                        >Ver servicios</a>
                     </div>
 
                     <div className="flex gap-4">
