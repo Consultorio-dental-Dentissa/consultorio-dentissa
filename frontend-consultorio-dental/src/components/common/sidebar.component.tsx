@@ -73,11 +73,11 @@ export function SidebarApp({ logout }: SidebarAppProps) {
 
             <SidebarFooter className="px-5">
                 <button
-                    className="text-[#b4483e] text-sm font-medium flex items-center gap-2 p-2 rounded-md hover:bg-[#fbeeec]"
+                    className="text-white text-sm font-medium flex items-center gap-2 p-2 rounded-md hover:bg-[#fbeeec] hover:text-rose-500"
                     onClick={logout}
                 >
                     <LogOut size={23} className="font-bold"/>
-                    <p className="flex items-center">Cerrar sesión</p>
+                    Cerrar sesión
                 </button>
             </SidebarFooter>
         </Sidebar>

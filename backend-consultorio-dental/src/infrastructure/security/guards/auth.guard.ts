@@ -9,20 +9,21 @@ export class AuthGuard implements CanActivate {
 
     constructor(
         private jwtService: JwtService,
-        // private reflector: Reflector
+        private reflector: Reflector
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
 
+        const isPublic = this.reflector.getAllAndOverride(Public, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+
+        if (isPublic) {
+            return true;
+        }
+
         try {
-
-            /*
-            // Evaluamos si el endpoint que potege el guarda es publico
-            const es_publico = this.reflector.get(Public, context.getHandler());
-            if (es_publico) {
-
-            }
-            */
             const request = context.switchToHttp().getRequest();
             const token = request.cookies['access_token'];
 

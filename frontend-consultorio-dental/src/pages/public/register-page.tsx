@@ -33,14 +33,14 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="auth-container">
-            <div className="auth-card register-card">
-                <div className="auth-header">
-                    <h2>Crear una cuenta</h2>
+        <div className="bg-gray-50 flex justify-center">
+            <div className="flex flex-col w-[50%] bg-white p-10 shadow-card">
+                <div className="flex flex-col items-center gap-3">
+                    <h2 className='font-bold text-3xl'>Crea tu cuenta cuenta</h2>
                     <p>Completa tus datos para registrarte</p>
                 </div>
 
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="auth-form">
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-5 mt-5">
 
                     <FieldGroup className="flex-row">
 

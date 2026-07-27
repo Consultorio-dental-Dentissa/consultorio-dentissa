@@ -1,4 +1,4 @@
 
 import { Reflector } from '@nestjs/core';
 
-export const Public = Reflector.createDecorator();
+export const Public = Reflector.createDecorator<boolean>();

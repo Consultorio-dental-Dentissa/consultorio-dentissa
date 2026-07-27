@@ -18,12 +18,12 @@ export default function LoginPage() {
         error && toast.error(error);
     }, [error]);
 
-    const { 
-        register, 
-        handleSubmit, 
+    const {
+        register,
+        handleSubmit,
         formState: { errors }
     } = useForm<LoginDto>()
-    
+
 
     const handleFormSubmit = async (credentials: LoginDto) => {
         const userLogged = await useLoginUser(credentials);
@@ -36,15 +36,14 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
-                <div className="auth-header">
-                    <h2>Bienvenido de nuevo</h2>
-                    <p>Inicia sesión para acceder a tu cuenta</p>
+        <div className="flex bg-gray-50 justify-center mt-10 items-center h-full">
+            <div className="bg-white w-[30%] p-10 shadow-card">
+                <div className="flex flex-col items-center">
+                    <h2 className="font-medium text-rose-400">Bienvenido de nuevo</h2>
+                    <p className="font-bold text-4xl">Inicia sesión</p>
                 </div>
 
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="auth-form">
-                    
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-8 mt-5">
                     <FieldGroup>
 
                         <InputForm
@@ -65,11 +64,16 @@ export default function LoginPage() {
                         />
                     </FieldGroup>
 
-                    <div className="form-options">
-                        <Link to="/recuperar-password" className="forgot-password">
-                            ¿Olvidaste tu contraseña?
-                        </Link>
-                    </div>
+                    {
+                        /*
+                            <div className="form-options">
+                                <Link to="/recuperar-password" className="forgot-password">
+                                    ¿Olvidaste tu contraseña?
+                                </Link>
+                            </div>
+                        
+                        */
+                    }
 
                     <button type="submit" className="auth-button" disabled={isLoading}>
                         {isLoading ? 'Cargando...' : 'Iniciar sesión'}

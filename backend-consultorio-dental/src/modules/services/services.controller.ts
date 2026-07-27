@@ -3,6 +3,7 @@ import { ServicesService } from './services.service';
 import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { IsActiveUserGuard } from '../../infrastructure/security/guards/is-active-user.guard';
+import { Public } from '../../infrastructure/security/decorators/public.decorator';
 
 @UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('services')
@@ -10,6 +11,12 @@ export class ServiciosController {
 
     constructor(private servicesService: ServicesService) {}
 
+    /**
+     * INDICACIÓN:
+     * La vista pública (home page) necesita listar los servicios
+     * sin que el visitante haya iniciado sesión.
+     */
+    @Public(true)
     @Get()
     async get() {
         return await this.servicesService.getAllServices();

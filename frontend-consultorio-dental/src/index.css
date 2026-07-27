@@ -144,7 +144,13 @@
 
   body {
     @apply bg-background text-foreground;
+    @apply scroll-smooth;
   }
+
+  html {
+    @apply scroll-smooth;
+  }
+
 }
 
 button {
