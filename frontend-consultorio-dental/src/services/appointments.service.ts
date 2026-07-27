@@ -17,6 +17,12 @@ export async function getAllAppointments(parameters?: string): Promise<Appointme
     return appointmentsResponse.map(appointment => AppointmentMap(appointment));
 }
 
+export async function getMyAppointments(): Promise<Appointment[]> {
+    const response = await get<AppointmentResponse[]>('/appointments/me');
+    const appointmentsResponse = response.data;
+    return appointmentsResponse.map(appointment => AppointmentMap(appointment));
+}
+
 export async function getAppointmentsCount(parameters?: string): Promise<number> {
 
     const url = parameters ? `/appointments/count?${parameters}` : '/appointments/count';

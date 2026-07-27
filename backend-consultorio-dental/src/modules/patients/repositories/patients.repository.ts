@@ -84,4 +84,15 @@ export class PatientsRepository {
             }
         }) > 0 ? true : false;
     }
+
+    async getByUserId(userId: number) {
+        return await this.prisma.patient.findUnique({
+            where: {
+                user_id: userId
+            },
+            select: {
+                id: true
+            }
+        });
+    }
 }

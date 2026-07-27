@@ -4,8 +4,12 @@ import { CreateConsultationDto } from './dto/create-consultation.dto';
 import { UpdateConsultationDto } from './dto/update-consultation.dto';
 import { AuthGuard } from 'src/infrastructure/security/guards/auth.guard';
 import { IsActiveUserGuard } from 'src/infrastructure/security/guards/is-active-user.guard';
+import { RolesGuard } from 'src/infrastructure/security/guards/roles.guard';
+import { Roles } from 'src/infrastructure/security/decorators/roles.decorator';
+import { Role } from '../users/enums/rol.enum';
 
-@UseGuards(AuthGuard, IsActiveUserGuard)
+@UseGuards(AuthGuard, IsActiveUserGuard, RolesGuard)
+@Roles([Role.ADMINISTRADOR, Role.ASISTENTE])
 @Controller('consultations')
 export class ConsultationsController {
 

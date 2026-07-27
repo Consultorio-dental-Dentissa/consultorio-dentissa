@@ -8,6 +8,8 @@ import { LayoutGrid, Calendar, Users, User, FileText, Tag,
          MessageSquare, Bell, LogOut, Wrench, ClipboardPlus } from "lucide-react";
 
 import type { IconType } from "react-icons/lib"
+import { useAuth } from "@/context/auth-context-provider";
+import { Role } from "@/types/enums/rol.enum";
 
 
 
@@ -35,12 +37,21 @@ const publicityItems: BusinessItem[] = [
 ]
 
 
+const patientItems: BusinessItem[] = [
+    { href: '/dashboard-paciente', label: 'Dashboard', icon: LayoutGrid },
+]
+
+
 interface SidebarAppProps {
     logout: () => void
 }
 
 
 export function SidebarApp({ logout }: SidebarAppProps) {
+
+    const { user } = useAuth();
+    const isPatient = user?.role === Role.PACIENTE;
+
     return (
         <Sidebar className="">
             <SidebarHeader className="mt-1 flex flex-row justify-start items-center gap-2 p-5">
@@ -58,16 +69,21 @@ export function SidebarApp({ logout }: SidebarAppProps) {
                     <SidebarGroupLabel className="mt-0 text-white font-bold">GENERAL</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenuComponent
-                            items={businessItems}
+                            items={isPatient ? patientItems : businessItems}
                         />
                     </SidebarGroupContent>
 
-                    <SidebarGroupLabel className="mt-0 text-white font-bold">PUBLICIDAD</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenuComponent
-                            items={publicityItems}
-                        />
-                    </SidebarGroupContent>
+                    {
+                        !isPatient &&
+                        <>
+                            <SidebarGroupLabel className="mt-0 text-white font-bold">PUBLICIDAD</SidebarGroupLabel>
+                            <SidebarGroupContent>
+                                <SidebarMenuComponent
+                                    items={publicityItems}
+                                />
+                            </SidebarGroupContent>
+                        </>
+                    }
                 </SidebarGroup>
             </SidebarContent>
 

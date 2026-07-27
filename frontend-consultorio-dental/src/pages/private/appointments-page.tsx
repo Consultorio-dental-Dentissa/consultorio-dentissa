@@ -24,7 +24,6 @@ export default function AppointmentsPage() {
     const {
         appointments,
         useGetAllAppointments,
-        useGetAppointmentsCount,
         useCreateAppointment,
         useUpdateAppointment,
         isLoading,
@@ -34,36 +33,39 @@ export default function AppointmentsPage() {
     const { servicesData, useGetAllServices } = useServices();
     const { patients, useGetAllPatients } = usePatients();
 
-    const [pendingAppointments, setPendingAppointments] = useState(0);
-    const [confirmedAppointments, setConfirmedAppointments] = useState(0);
-    const [canceledAppointments, setCanceledAppointments] = useState(0);
-    const [rescheduledAppointments, setRescheduledAppointments] = useState(0);
-
-
     useEffect(() => {
         setIsLoadingList(true);
         useGetAllAppointments().finally(() => setIsLoadingList(false));
 
         useGetAllPatients();
         useGetAllServices();
-
-        useGetAppointmentsCount(`status=${StatusAppointment.PENDIENTE}`).then(count => {
-            if (count !== undefined) setPendingAppointments(count);
-        });
-
-        useGetAppointmentsCount(`status=${StatusAppointment.CONFIRMADA}`).then(count => {
-            if (count !== undefined) setConfirmedAppointments(count);
-        });
-
-        useGetAppointmentsCount(`status=${StatusAppointment.CANCELADA}`).then(count => {
-            if (count !== undefined) setCanceledAppointments(count);
-        });
-
-        useGetAppointmentsCount(`status=${StatusAppointment.REPROGRAMADA}`).then(count => {
-            if (count !== undefined) setRescheduledAppointments(count);
-        });
-
     }, []);
+
+    /**
+     * INDICACIÓN:
+     * Los contadores se calculan del array de citas que ya está en
+     * memoria (no de /appointments/count) para que se actualicen solos
+     * en cuanto se crea o modifica una cita, sin depender de otra
+     * petición al backend.
+     */
+    const statusCounts = useMemo(() => ({
+        pending: appointments.filter(a => a.status === StatusAppointment.PENDIENTE).length,
+        confirmed: appointments.filter(a => a.status === StatusAppointment.CONFIRMADA).length,
+        rescheduled: appointments.filter(a => a.status === StatusAppointment.REPROGRAMADA).length,
+        canceled: appointments.filter(a => a.status === StatusAppointment.CANCELADA).length,
+    }), [appointments]);
+
+    /**
+     * INDICACIÓN:
+     * El filtro de estatus ahora se aplica sobre el mismo array
+     * (sin volver a pedirle al backend), para que siga reflejando
+     * los cambios en tiempo real igual que los contadores de arriba.
+     */
+    const displayedAppointments = useMemo(() => {
+        return selectedStatus === 'ALL'
+            ? appointments
+            : appointments.filter(a => a.status === selectedStatus);
+    }, [appointments, selectedStatus]);
 
 
     useEffect(() => {
@@ -101,10 +103,6 @@ export default function AppointmentsPage() {
 
     const handleStatusFilterChange = (status: string) => {
         setSelectedStatus(status);
-        setIsLoadingList(true);
-
-        useGetAllAppointments(status === 'ALL' ? undefined : `status=${status}`)
-            .finally(() => setIsLoadingList(false));
     }
 
     const appointmentStatus = useMemo(() => [
@@ -129,25 +127,25 @@ export default function AppointmentsPage() {
                 <CardDashboard
                     title="Pendientes"
                     icon={Calendar}
-                    data={`${pendingAppointments}`}
+                    data={`${statusCounts.pending}`}
                 />
 
                 <CardDashboard
                     title="Confirmadas"
                     icon={Calendar}
-                    data={`${confirmedAppointments}`}
+                    data={`${statusCounts.confirmed}`}
                 />
 
                 <CardDashboard
                     title="Reprogramadas"
                     icon={Calendar}
-                    data={`${rescheduledAppointments}`}
+                    data={`${statusCounts.rescheduled}`}
                 />
 
                 <CardDashboard
                     title="Canceladas"
                     icon={Calendar}
-                    data={`${canceledAppointments}`}
+                    data={`${statusCounts.canceled}`}
                 />
             </div>
 
@@ -187,10 +185,10 @@ export default function AppointmentsPage() {
 
                     </div>
                     <div className="w-full flex justify-end text-gray-500 text-sm font-medium">
-                        {appointments.length === 1 ? `${appointments.length} cita` : `${appointments.length} citas`}
+                        {displayedAppointments.length === 1 ? `${displayedAppointments.length} cita` : `${displayedAppointments.length} citas`}
                     </div>
                 </div>
-                
+
                 <div className="p-5">
                     {
                         isLoadingList ?
@@ -202,7 +200,7 @@ export default function AppointmentsPage() {
                             :
                             (
                                 <AppointmentList
-                                    appointments={appointments}
+                                    appointments={displayedAppointments}
                                     patiensList={patients.filter(p => p.status === true)}
                                     servicesList={servicesData.filter(s => s.status === true)}
                                     onUpdateAppointment={handleUpdatedAppointment}

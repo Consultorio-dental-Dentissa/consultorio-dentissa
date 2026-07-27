@@ -50,6 +50,23 @@ export class AppointmentsService {
         return await this.appointmentRepository.getById(id);
     }
 
+    /**
+     * INDICACIÓN:
+     * El id del paciente se resuelve a partir del usuario autenticado
+     * (nunca de un parámetro que mande el cliente), para que un paciente
+     * solo pueda ver sus propias citas y no las de otro.
+     */
+    async getMyAppointments(userId: number) {
+
+        const patient = await this.patientsRepository.getByUserId(userId);
+
+        if (!patient) {
+            throw new NotFoundException('No se encontró un paciente asociado a este usuario');
+        }
+
+        return await this.getAllAppointments({ patient_id: patient.id });
+    }
+
     async createAppoinment(createAppointmentDto: CreateAppointmentDto) {
 
         
@@ -76,9 +93,7 @@ export class AppointmentsService {
         const conflict = this.existsScheduleConflict(createAppointmentDto, appointmentsOfTheDate); 
 
         if (conflict) {
-            throw new ConflictException(
-                `El horario choca con una cita agendada de ${conflict.startDate.toLocaleTimeString()} a ${conflict.endDate.toLocaleTimeString()}. Porfavor escoja otro horario disponible`
-            )
+            throw new ConflictException(this.formatScheduleConflictMessage(conflict));
         }
 
         const appointment = await this.appointmentRepository.create(createAppointmentDto);
@@ -158,9 +173,7 @@ export class AppointmentsService {
             );
 
             if (conflict) {
-                throw new ConflictException(
-                    `El horario choca con una cita agendada de ${conflict.startDate.toLocaleTimeString()} a ${conflict.endDate.toLocaleTimeString()}. Porfavor escoja otro horario disponible`
-                )
+                throw new ConflictException(this.formatScheduleConflictMessage(conflict));
             }
         }
 
@@ -213,5 +226,25 @@ export class AppointmentsService {
                     return { startDate: startScheludedAppointment, endDate: endScheludedAppointment };
                 }
             }
+    }
+
+    /**
+     * INDICACIÓN:
+     * toLocaleTimeString() sin argumentos usa la zona horaria del
+     * servidor, no la de la clínica. En producción (Railway) el
+     * servidor corre en UTC, así que el mensaje mostraba la hora
+     * desfasada respecto a la hora real de México. Se fuerza la
+     * zona horaria explícitamente para que el mensaje sea correcto
+     * sin importar dónde esté desplegado el servidor.
+     */
+    private formatScheduleConflictMessage(conflict: { startDate: Date; endDate: Date }): string {
+
+        const formatter = new Intl.DateTimeFormat('es-MX', {
+            timeZone: 'America/Mexico_City',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+
+        return `El horario choca con una cita agendada de ${formatter.format(conflict.startDate)} a ${formatter.format(conflict.endDate)}. Porfavor escoja otro horario disponible`;
     }
 }

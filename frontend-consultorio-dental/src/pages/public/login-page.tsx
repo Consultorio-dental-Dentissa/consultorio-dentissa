@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import toast from "react-hot-toast";
 import type { LoginDto } from "@/types/api/request/login.dto";
 import { useAuth } from "@/context/auth-context-provider";
+import { Role } from "@/types/enums/rol.enum";
 
 export default function LoginPage() {
 
@@ -30,7 +31,7 @@ export default function LoginPage() {
 
         if (userLogged && userLogged.user) {
             saveUserData(userLogged.user);
-            navigate('/dashboard');
+            navigate(userLogged.user.role === Role.PACIENTE ? '/dashboard-paciente' : '/dashboard');
         }
 
     }

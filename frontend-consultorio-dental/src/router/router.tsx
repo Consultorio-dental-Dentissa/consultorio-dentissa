@@ -11,6 +11,7 @@ import PublicServicesPage from "../pages/public/public-services-page"
 
 // Vistas privadas
 import DashboardPage from "../pages/private/dashboard-page"
+import PatientDashboardPage from "../pages/private/patient-dashboard-page"
 import UsersPage from "../pages/private/users-page"
 import PatientsPage from "../pages/private/patients-page"
 import ServicesPage from "../pages/private/services-page"
@@ -38,6 +39,7 @@ export default function Router() {
 
                 <Route element={<PrivateLayout />}>
                     <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/dashboard-paciente" element={<PatientDashboardPage />} />
                     <Route path="/usuarios" element={<UsersPage />} />
                     <Route path="/pacientes" element={<PatientsPage />} />
                     <Route path="/pacientes/:id" element={<PatientProfile />} />

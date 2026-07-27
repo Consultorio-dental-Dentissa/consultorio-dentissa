@@ -4,8 +4,12 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { IsActiveUserGuard } from '../../infrastructure/security/guards/is-active-user.guard';
+import { RolesGuard } from '../../infrastructure/security/guards/roles.guard';
+import { Roles } from '../../infrastructure/security/decorators/roles.decorator';
+import { Role } from './enums/rol.enum';
 
-@UseGuards(AuthGuard, IsActiveUserGuard)
+@UseGuards(AuthGuard, IsActiveUserGuard, RolesGuard)
+@Roles([Role.ADMINISTRADOR, Role.ASISTENTE])
 @Controller('users')
 export class UsersController {
 
