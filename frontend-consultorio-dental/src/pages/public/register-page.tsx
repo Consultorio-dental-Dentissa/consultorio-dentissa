@@ -4,7 +4,9 @@ import { InputForm } from '@/components/common/input.component'
 import { useForm } from "react-hook-form"
 import { useRegister } from '@/hooks/use-register';
 import { useEffect } from 'react';
+
 import type { CreateUserDto } from '@/types/api/request/create-user.dto';
+
 import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
@@ -33,14 +35,14 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="auth-container">
-            <div className="auth-card register-card">
-                <div className="auth-header">
-                    <h2>Crear una cuenta</h2>
+        <div className="bg-gray-50 flex justify-center">
+            <div className="flex flex-col w-[50%] bg-white p-10 shadow-card">
+                <div className="flex flex-col items-center gap-3">
+                    <h2 className='font-bold text-3xl'>Crea tu cuenta cuenta</h2>
                     <p>Completa tus datos para registrarte</p>
                 </div>
 
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="auth-form">
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-5 mt-5">
 
                     <FieldGroup className="flex-row">
 
@@ -145,13 +147,16 @@ export default function RegisterPage() {
                     </FieldGroup>
 
 
-                    <button type="submit" className="auth-button" disabled={isSubmitting}>
+                    <button 
+                        type="submit"
+                        className="bg-rose-400 text-white rounded-lg font-bold p-3 transition-shadow duration-300 hover:shadow-lg hover:shadow-rose-300" 
+                        disabled={isSubmitting}>
                         {isSubmitting ? 'Cargando...' : "Registrarse"}
                     </button>
                 </form>
 
-                <div className="auth-footer">
-                    <p>¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link></p>
+                <div className="text-center mt-5 pt-5 border-t-2">
+                    <p className="text-md">¿Ya tienes una cuenta? <Link to="/login" className="text-rose-400 font-bold">Inicia sesión</Link></p>
                 </div>
             </div>
         </div>
