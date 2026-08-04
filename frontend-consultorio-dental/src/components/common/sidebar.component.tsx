@@ -3,14 +3,15 @@ import {
     SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
     SidebarHeader, SidebarFooter,
 } from "@/components/ui/sidebar"
-import { IoIosLogOut } from "react-icons/io"
-import { MdDashboard, MdPeople, MdMedicalServices } from "react-icons/md"
-import { FaUserMd, FaCalendarAlt, FaStethoscope } from "react-icons/fa"
-import { IoNotifications } from "react-icons/io5"
-import { BiSolidOffer } from "react-icons/bi"
-import { FaQuestion } from "react-icons/fa"
-import { FaTooth } from "react-icons/fa";
+
+import { LayoutGrid, Calendar, Users, User, FileText, Tag,
+         MessageSquare, Bell, LogOut, Wrench, ClipboardPlus } from "lucide-react";
+
 import type { IconType } from "react-icons/lib"
+import { useAuth } from "@/context/auth-context-provider";
+import { Role } from "@/types/enums/rol.enum";
+
+
 
 interface BusinessItem {
     href: string;
@@ -18,59 +19,80 @@ interface BusinessItem {
     icon: IconType;
 }
 
+
 const businessItems: BusinessItem[] = [
-    { href: '/dashboard', label: 'Resumen', icon: MdDashboard },
-    { href: '/usuarios', label: 'Usuarios', icon: MdPeople },
-    { href: '/pacientes', label: 'Pacientes', icon: FaUserMd },
-    { href: '/citas', label: 'Citas', icon: FaCalendarAlt },
-    { href: '/consultas', label: 'Consultas', icon: FaStethoscope },
-    { href: '/servicios', label: 'Servicios', icon: MdMedicalServices },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
+    { href: '/usuarios', label: 'Usuarios', icon: Users },
+    { href: '/pacientes', label: 'Pacientes', icon: User },
+    { href: '/citas', label: 'Citas', icon: Calendar },
+    { href: '/consultas', label: 'Consultas', icon: FileText },
+    { href: '/servicios', label: 'Servicios', icon: Wrench },
 ]
 
+
 const publicityItems: BusinessItem[] = [
-    { href: '/preguntas', label: 'Preguntas frecuentes', icon: FaQuestion },
-    { href: '/ofertas', label: 'Ofertas', icon: BiSolidOffer },
-    { href: '/notificaciones', label: 'Notificaciones', icon: IoNotifications },
+    { href: '/preguntas', label: 'Preguntas frecuentes', icon: MessageSquare },
+    { href: '/ofertas', label: 'Ofertas', icon: Tag },
+    { href: '/notificaciones', label: 'Notificaciones', icon: Bell },
 ]
+
+
+const patientItems: BusinessItem[] = [
+    { href: '/dashboard-paciente', label: 'Dashboard', icon: LayoutGrid },
+]
+
 
 interface SidebarAppProps {
     logout: () => void
 }
 
+
 export function SidebarApp({ logout }: SidebarAppProps) {
+
+    const { user } = useAuth();
+    const isPatient = user?.role === Role.PACIENTE;
+
     return (
-        <Sidebar className="border-none">
-            <SidebarHeader className="mt-3 flex flex-row justify-center items-center gap-1">
-                <div className="bg-white p-2 rounded-sm">
-                    <FaTooth className="text-sidebar text-xl" />
+        <Sidebar className="">
+            <SidebarHeader className="mt-1 flex flex-row justify-start items-center gap-2 p-5">
+                <div className="bg-rose-300 p-2 rounded-lg">
+                    <ClipboardPlus className="text-white"/>
                 </div>
-                <h2 className="text-2xl font-bold text-white">Dentissa</h2>
+                <div>
+                    <p className="text-md font-bold text-white">Dentissa</p>
+                    <p className="text-xs font-medium text-white">Panel clinico</p>
+                </div>
             </SidebarHeader>
 
-            <SidebarContent className="text-black">
+            <SidebarContent className="text-black px-3">
                 <SidebarGroup>
-                    <SidebarGroupLabel className="mt-5 text-white">Manejo de negocio</SidebarGroupLabel>
+                    <SidebarGroupLabel className="mt-0 text-white font-bold">GENERAL</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenuComponent
-                            items={businessItems}
+                            items={isPatient ? patientItems : businessItems}
                         />
                     </SidebarGroupContent>
 
-                    <SidebarGroupLabel className="mt-5 text-white">Publicidad</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenuComponent
-                            items={publicityItems}
-                        />
-                    </SidebarGroupContent>
+                    {
+                        !isPatient &&
+                        <>
+                            <SidebarGroupLabel className="mt-0 text-white font-bold">PUBLICIDAD</SidebarGroupLabel>
+                            <SidebarGroupContent>
+                                <SidebarMenuComponent
+                                    items={publicityItems}
+                                />
+                            </SidebarGroupContent>
+                        </>
+                    }
                 </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter className="px-5">
                 <button
-                    className="text-gray-500 flex items-center gap-2 p-2 rounded-md hover:bg-red-700 hover:text-white"
+                    className="text-white text-sm font-medium flex items-center gap-2 p-2 rounded-md hover:bg-[#fbeeec] hover:text-rose-500"
                     onClick={logout}
                 >
-                    <IoIosLogOut size={18} />
+                    <LogOut size={23} className="font-bold"/>
                     Cerrar sesión
                 </button>
             </SidebarFooter>
@@ -78,27 +100,46 @@ export function SidebarApp({ logout }: SidebarAppProps) {
     )
 }
 
+
+
+
 interface SidebarMenuComponentProps {
     items: BusinessItem[]
 }
-function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
 
+
+function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
     const currentUrl = new URL(window.location.href).pathname.toString();
-    const activeStyles = 'bg-sidebar-accent text-sidebar';
 
     return (
         <SidebarMenu className="flex-col gap-1">
-            {items.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild className={`text-white font-medium py-5 active:text-sidebar active:bg-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar ${currentUrl === item.href && activeStyles}`
-                    }>
-                        <a href={item.href} className="flex items-center gap-3">
-                            <item.icon size={18} />
-                            {item.label}
-                        </a>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            ))}
+            {items.map((item) => {
+                const isActive = currentUrl === item.href;
+
+                return (
+                    <SidebarMenuItem key={item.href}>
+                        <SidebarMenuButton
+                            asChild
+                            className={`group/link font-normal py-3 hover:bg-[#fda4af] ${
+                                isActive ? 'bg-[#fbeeec] font-bold' : ''}`}
+                        >
+                            <a href={item.href} className="flex items-center gap-3">
+                                <item.icon
+                                    size={18}
+                                    className={`group-hover/link:text-[#ffece9] font-bold ${
+                                        isActive ? 'text-[#c0685c]' : 'text-white'}`}
+                                />
+                                <p
+                                    className={`text-sm group-hover/link:text-[#ffece9] group-hover/link:font-bold font-bold ${
+                                        isActive ? 'text-[#c0685c] font-bold' : 'text-white'}`}
+                                >
+                                    {item.label}
+                                </p>
+                            </a>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+            })}
         </SidebarMenu>
-    )
+    );
 }
