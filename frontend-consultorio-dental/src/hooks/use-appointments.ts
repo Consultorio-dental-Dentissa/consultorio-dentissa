@@ -7,12 +7,13 @@ import type { Appointment } from "@/types/models/appointment";
 export function useAppointments() {
 
         const [appointments, setAppointments] = useState<Appointment[]>([]);
+        const [isLoadingFetching, setIsLoadingFetching] = useState(false);
         const [isLoading, setLoading] = useState<boolean>(false);
         const [error, setError] = useState<string | null>(null);
 
         async function useGetAllAppointments(parameters?: string) {
                 setError(null);
-                setLoading(true);
+                setIsLoadingFetching(true);
 
                 try {
                         const appointments = await getAllAppointments(parameters);
@@ -21,7 +22,7 @@ export function useAppointments() {
                         const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
                         setError(errorMessage);
                 } finally {
-                        setLoading(false);
+                        setIsLoadingFetching(false);
                 }
 
         }
@@ -35,7 +36,7 @@ export function useAppointments() {
                         setAppointments(prev => [...prev, appointmentCreated]);
                         return appointmentCreated;
 
-                } catch(error) {
+                } catch (error) {
                         const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
                         setError(errorMessage);
                         return null;
@@ -49,6 +50,7 @@ export function useAppointments() {
                 useGetAllAppointments,
                 useCreateAppointment,
                 isLoading,
+                isLoadingFetching,
                 error
         }
 }
