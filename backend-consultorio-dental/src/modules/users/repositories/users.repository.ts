@@ -85,6 +85,7 @@ export class UsersRepository {
                 email: true,
                 phone: true,
                 status: true,
+                created_at: true,
                 role: {
                     select: {
                         role: true
