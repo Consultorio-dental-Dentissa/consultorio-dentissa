@@ -15,25 +15,6 @@ export const getServicesColumns = (
 
 ): ColumnDef<Service>[] => [
         {
-            id: 'select',
-            header: ({ table }) => (
-                <Checkbox
-                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                    onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label='Select all'
-                />
-            ),
-            cell: ({ row }) => (
-                <Checkbox
-                    checked={row.getIsSelected()}
-                    onCheckedChange={value => row.toggleSelected(!!value)}
-                    aria-label='Select row'
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false
-        },
-        {
             header: 'Nombre',
             cell: ({ row }) => <div className="font-medium"> {row.original.name} </div>
         },
@@ -46,23 +27,19 @@ export const getServicesColumns = (
             cell: ({ row }) => <div>${row.original.price}</div>
         },
         {
-            header: 'Modificar estado',
+            header: 'ESTADO',
             cell: ({ row }) => (
-                <div className="flex justify-center">
-                    <Switch
-                        checked={row.original.status}
-                        onClick={() => updateStatus(row.original.id, !row.original.status)}
-                    />
-                </div>
+                <Switch
+                    checked={row.original.status}
+                    onClick={() => updateStatus(row.original.id, !row.original.status)}
+                />
             )
         },
         {
             header: 'Estado',
             cell: ({ row }) => (
-                <div className="flex justify-center">
-                    <ActiveSpan
-                        status={row.original.status}
-                    />
+                <div>
+                    {row.original.description}
                 </div>
             )
         },
