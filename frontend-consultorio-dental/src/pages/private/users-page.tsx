@@ -4,12 +4,12 @@ import { SearchInput } from "@/components/common/input.component";
 import { DataTable } from "@/components/common/data-table.component";
 import { PageTitle } from "@/components/common/page-title.component";
 import { Modal } from "@/components/common/modal.component";
-import { CreateUserForm } from "@/components/users/create-user-form.component";
-import { getUsersTableColumns } from "@/components/users/users-colums.component";
-import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
+import { CreateUserForm } from "@/features/users/components/create-user-form.component";
+import { getUsersTableColumns } from "@/features/users/components/users-colums.component";
+import { CardDashboard } from "@/components/common/card-dashboard.component";
 import { Users, User, Shield } from "lucide-react";
-import { useUsers } from "@/hooks/use-users";
-import type { CreateUserDto } from "@/types/api/request/create-user.dto";
+import { useUsers } from "@/features/users/hooks/use-users";
+import type { CreateUserDto } from "@/features/users/types/create-user.dto";
 
 import toast from "react-hot-toast";
 

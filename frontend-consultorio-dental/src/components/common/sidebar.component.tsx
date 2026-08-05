@@ -8,8 +8,8 @@ import { LayoutGrid, Calendar, Users, User, FileText, Tag,
          MessageSquare, Bell, LogOut, Wrench, ClipboardPlus } from "lucide-react";
 
 import type { IconType } from "react-icons/lib"
-import { useAuth } from "@/context/auth-context-provider";
-import { Role } from "@/types/enums/rol.enum";
+import { useAuth } from "@/features/auth/context/auth-context-provider";
+import { Role } from "@/features/users/types/rol.enum";
 
 
 

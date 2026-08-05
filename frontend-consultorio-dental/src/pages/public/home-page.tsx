@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useServices } from "@/hooks/use-services";
+import { useServices } from "@/features/services/hooks/use-services";
 import { ArrowRight, BriefcaseMedical, Heart, Activity, Phone, Mail, ClipboardPlus } from "lucide-react";
 import { useEffect } from "react";
 import consultorioImg from '@/assets/consultorio.jpg';

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { usePatients } from "../../hooks/use-patients";
+import { usePatients } from "@/features/patients/hooks/use-patients";
 import { PageTitle } from "../../components/common/page-title.component";
-import { getPatientsColumns } from "@/components/patients/patients-columns.component";
+import { getPatientsColumns } from "@/features/patients/components/patients-columns.component";
 import { DataTable } from "@/components/common/data-table.component";
-import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
+import { CardDashboard } from "@/components/common/card-dashboard.component";
 import { SearchInput } from "@/components/common/input.component";
 import { User } from "lucide-react";
 

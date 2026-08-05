@@ -1,5 +1,5 @@
-import { StatusAppointment } from "@/types/enums/status-appointment.enum";
-import { Role } from "@/types/enums/rol.enum";
+import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
+import { Role } from "@/features/users/types/rol.enum";
 import { Badge, type BadgeVariant } from "../ui/badge";
 import { formatFirstLetterUppercase } from "@/utils/formatters";
 

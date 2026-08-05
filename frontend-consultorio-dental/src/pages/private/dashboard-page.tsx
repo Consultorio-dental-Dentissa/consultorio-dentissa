@@ -2,10 +2,10 @@ import { PageTitle } from "@/components/common/page-title.component";
 import { formatDate } from "@/utils/formatters";
 import { Calendar, SquarePlus, Users, MoveRight } from "lucide-react";
 
-import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
+import { CardDashboard } from "@/components/common/card-dashboard.component";
 
-import { useAppointments } from "@/hooks/use-appointments";
-import { AppointmentsDashboardTable } from "@/components/appointments/appointment-dashboard-table.component";
+import { useAppointments } from "@/features/appointments/hooks/use-appointments";
+import { AppointmentsDashboardTable } from "@/features/appointments/components/appointment-dashboard-table.component";
 import { useEffect } from "react";
 
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/auth-context-provider"
+import { useAuth } from "@/features/auth/context/auth-context-provider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { SidebarApp } from "@/components/common/sidebar.component"
 import { Header } from "@/components/common/header.component"

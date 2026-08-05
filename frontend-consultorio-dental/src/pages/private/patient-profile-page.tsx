@@ -1,14 +1,14 @@
 import { PageTitle } from "@/components/common/page-title.component"
 import { useEffect, useState } from "react"
-import { usePatients } from "@/hooks/use-patients"
-import { useAppointments } from "@/hooks/use-appointments";
+import { usePatients } from "@/features/patients/hooks/use-patients"
+import { useAppointments } from "@/features/appointments/hooks/use-appointments";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { AppointmentSmallTable } from "@/components/appointments/appointment-small-table.component";
-import { StatusAppointment } from "@/types/enums/status-appointment.enum";
+import { AppointmentSmallTable } from "@/features/appointments/components/appointment-small-table.component";
+import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
 import { Separator } from "@/components/ui/separator";
 import { formatDate, formatPhone } from "@/utils/formatters";
-import type { Patient } from "@/types/models/patient";
+import type { Patient } from "@/features/patients/types/patient";
 
 
 export default function PatientProfile() {

@@ -1,5 +1,5 @@
 import Router from './router/router'
-import { AuthProvider } from './context/auth-context-provider'
+import { AuthProvider } from '@/features/auth/context/auth-context-provider'
 import { Toaster } from 'react-hot-toast'
 
 
