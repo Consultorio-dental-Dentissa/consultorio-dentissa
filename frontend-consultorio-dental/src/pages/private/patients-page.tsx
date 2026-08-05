@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { usePatients } from "@/features/patients/hooks/use-patients";
-import { PageTitle } from "../../components/common/page-title.component";
+import { PageTitle } from "../../components/shared/page-title.component";
 import { getPatientsColumns } from "@/features/patients/components/patients-columns.component";
-import { DataTable } from "@/components/common/data-table.component";
-import { CardDashboard } from "@/components/common/card-dashboard.component";
-import { SearchInput } from "@/components/common/input.component";
+import { DataTable } from "@/components/shared/data-table.component";
+import { CardDashboard } from "@/components/shared/card-dashboard.component";
+import { SearchInput } from "@/components/shared/input.component";
 import { User } from "lucide-react";
 
 export default function PatientsPage() {

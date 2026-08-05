@@ -5,7 +5,7 @@ import { formatTotalMinutesToHours } from "@/utils/formatters"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { ActiveSpan } from "@/components/common/span.component"
+import { ActiveSpan } from "@/components/shared/span.component"
 
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FiEdit2 } from "react-icons/fi";

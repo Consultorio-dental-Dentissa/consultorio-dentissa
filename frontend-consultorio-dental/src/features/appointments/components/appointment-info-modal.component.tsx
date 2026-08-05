@@ -1,8 +1,8 @@
-import { Modal } from "@/components/common/modal.component"
+import { Modal } from "@/components/shared/modal.component"
 import { Separator } from "@/components/ui/separator"
 
 import type { Appointment } from "@/features/appointments/types/appointment";
-import { StatusSpan } from "@/components/common/span.component";
+import { StatusSpan } from "@/components/shared/span.component";
 import { formatDate } from "@/utils/formatters";
 
 interface AppointmentInfoModalProps {

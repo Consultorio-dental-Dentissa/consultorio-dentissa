@@ -1,4 +1,4 @@
-import { PageTitle } from "@/components/common/page-title.component"
+import { PageTitle } from "@/components/shared/page-title.component"
 import { useEffect, useState } from "react"
 import { usePatients } from "@/features/patients/hooks/use-patients"
 import { useAppointments } from "@/features/appointments/hooks/use-appointments";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PageTitle } from "../../components/common/page-title.component";
+import { PageTitle } from "../../components/shared/page-title.component";
 
 export default function ConsultationPage() {
 

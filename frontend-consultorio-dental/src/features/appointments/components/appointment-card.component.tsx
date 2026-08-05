@@ -1,4 +1,4 @@
-import { StatusSpan } from "@/components/common/span.component";
+import { StatusSpan } from "@/components/shared/span.component";
 import { Badge } from "@/components/ui/badge";
 import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
 import type { Appointment } from "@/features/appointments/types/appointment"

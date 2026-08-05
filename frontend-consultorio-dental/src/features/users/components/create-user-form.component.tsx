@@ -2,12 +2,12 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { UserFormData } from "@/features/users/components/user.schema";
 import { FieldGroup } from "@/components/ui/field";
-import { InputForm, SelectForm } from "@/components/common/input.component";
+import { InputForm, SelectForm } from "@/components/shared/input.component";
 import { createUserSchema } from "@/features/users/components/user.schema";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Role } from "@/features/users/types/rol.enum";
-import type { SelectData } from "@/components/common/select.component";
+import type { SelectData } from "@/components/shared/select.component";
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";
 import { Spinner } from "@/components/ui/spinner";
 

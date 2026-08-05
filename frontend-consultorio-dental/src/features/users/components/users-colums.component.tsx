@@ -3,7 +3,7 @@ import type { User } from "@/features/users/types/user";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { StatusSpan } from "@/components/common/span.component";
+import { StatusSpan } from "@/components/shared/span.component";
 import { formatPhone, formatDate } from "@/utils/formatters";
 import { Trash, Edit } from "lucide-react"
 

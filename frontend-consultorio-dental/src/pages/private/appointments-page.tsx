@@ -1,11 +1,11 @@
 import { useEffect, useState, useMemo } from "react"
-import { PageTitle } from "@/components/common/page-title.component"
+import { PageTitle } from "@/components/shared/page-title.component"
 import { Button } from "@/components/ui/button"
 import { useAppointments } from "@/features/appointments/hooks/use-appointments";
 import { AppointmentList } from "@/features/appointments/components/appointment-list.component";
-import { Modal } from "@/components/common/modal.component";
+import { Modal } from "@/components/shared/modal.component";
 import { CreateAppointmentForm } from "@/features/appointments/components/create-appointment-form.component";
-import { CardDashboard } from "@/components/common/card-dashboard.component";
+import { CardDashboard } from "@/components/shared/card-dashboard.component";
 import { Calendar, CalendarCheck, Clock, CalendarSync, Calendars } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { useServices } from "@/features/services/hooks/use-services";

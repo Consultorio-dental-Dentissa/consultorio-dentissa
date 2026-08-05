@@ -1,7 +1,7 @@
 // AppointmmentDasboardTable
 
 import type { Appointment } from "@/features/appointments/types/appointment"
-import { StatusSpan } from "@/components/common/span.component"
+import { StatusSpan } from "@/components/shared/span.component"
 import { Badge } from "@/components/ui/badge"
 
 interface AppointmentSmallTableProps {

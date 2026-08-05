@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { PageTitle } from "../../components/common/page-title.component";
-import { Modal } from "@/components/common/modal.component";
+import { PageTitle } from "../../components/shared/page-title.component";
+import { Modal } from "@/components/shared/modal.component";
 import { Button } from "@/components/ui/button";
 import { CreateServiceForm } from "@/features/services/components/create-service-form.component";
 import { useServices } from "@/features/services/hooks/use-services";
-import { DataTable } from "@/components/common/data-table.component";
-import { SearchInput } from "@/components/common/input.component";
-import { CardDashboard } from "@/components/common/card-dashboard.component";
+import { DataTable } from "@/components/shared/data-table.component";
+import { SearchInput } from "@/components/shared/input.component";
+import { CardDashboard } from "@/components/shared/card-dashboard.component";
 import { getServicesColumns } from "@/features/services/components/services-columns.component";
 import { Check, X, ClipboardPlus } from "lucide-react";
 import type { CreateServiceDto } from "@/features/services/types/create-service.dto";

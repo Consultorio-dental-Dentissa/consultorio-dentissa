@@ -2,7 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import type { Patient } from "@/features/patients/types/patient"
 import { formatDate, formatPhone } from "@/utils/formatters"
 import { Button } from "@/components/ui/button"
-import { ActiveSpan } from "@/components/common/span.component"
+import { ActiveSpan } from "@/components/shared/span.component"
 import { Eye } from "lucide-react"
 
 export const getPatientsColumns = (): ColumnDef<Patient>[] => [

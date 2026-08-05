@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button"
-import { SearchInput } from "@/components/common/input.component";
-import { DataTable } from "@/components/common/data-table.component";
-import { PageTitle } from "@/components/common/page-title.component";
-import { Modal } from "@/components/common/modal.component";
+import { SearchInput } from "@/components/shared/input.component";
+import { DataTable } from "@/components/shared/data-table.component";
+import { PageTitle } from "@/components/shared/page-title.component";
+import { Modal } from "@/components/shared/modal.component";
 import { CreateUserForm } from "@/features/users/components/create-user-form.component";
 import { getUsersTableColumns } from "@/features/users/components/users-colums.component";
-import { CardDashboard } from "@/components/common/card-dashboard.component";
+import { CardDashboard } from "@/components/shared/card-dashboard.component";
 import { Users, User, Shield } from "lucide-react";
 import { useUsers } from "@/features/users/hooks/use-users";
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";

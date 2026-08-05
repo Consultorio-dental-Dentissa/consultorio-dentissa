@@ -1,7 +1,7 @@
 import type { Appointment } from "@/features/appointments/types/appointment"
-import { StatusSpan } from "@/components/common/span.component"
+import { StatusSpan } from "@/components/shared/span.component"
 import type { ColumnDef } from "@tanstack/react-table"
-import { DataTable } from "@/components/common/data-table.component"
+import { DataTable } from "@/components/shared/data-table.component"
 import { formatDate } from "@/utils/formatters"
 
 

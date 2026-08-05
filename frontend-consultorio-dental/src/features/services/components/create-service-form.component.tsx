@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateServiceSchema } from "@/features/services/components/service.schema";
 import type { ServiceInputData, ServiceOutputData } from "@/features/services/components/service.schema";
 import { FieldGroup } from "@/components/ui/field"
-import { InputForm } from "@/components/common/input.component"
+import { InputForm } from "@/components/shared/input.component"
 import { Button } from '@/components/ui/button'
 import type { CreateServiceDto } from '@/features/services/types/create-service.dto';
 import { Spinner } from "@/components/ui/spinner";

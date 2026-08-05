@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field';
-import { InputForm } from '@/components/common/input.component';
+import { InputForm } from '@/components/shared/input.component';
 import { useMemo } from 'react';
-import { SelectForm } from '@/components/common/input.component';
+import { SelectForm } from '@/components/shared/input.component';
 import type { Service } from '@/features/services/types/service';
 import type { Patient } from '@/features/patients/types/patient';
 import { useForm, Controller } from 'react-hook-form';
