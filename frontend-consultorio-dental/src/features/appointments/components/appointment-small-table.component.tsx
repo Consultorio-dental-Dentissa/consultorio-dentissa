@@ -1,4 +1,4 @@
-import type { Appointment } from "@/features/appointments/types/appointment"
+import type { Appointment } from "@/features/appointments/types/appointment.model"
 import { StatusSpan } from "@/components/shared/span.component"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/shared/data-table.component"

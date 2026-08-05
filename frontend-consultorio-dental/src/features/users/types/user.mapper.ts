@@ -1,5 +1,5 @@
 import type { UserResponse } from "@/features/users/types/user.response";
-import type { User } from "@/features/users/types/user";
+import type { User } from "@/features/users/types/user.model";
 
 export function userMap(data: UserResponse): User {
     return {

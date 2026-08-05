@@ -1,5 +1,5 @@
 import type { AppointmentResponse } from "@/features/appointments/types/appointment.response";
-import type { Appointment } from "@/features/appointments/types/appointment";
+import type { Appointment } from "@/features/appointments/types/appointment.model";
 
 export function AppointmentMap(appointment: AppointmentResponse): Appointment {
 

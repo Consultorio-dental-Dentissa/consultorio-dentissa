@@ -8,7 +8,7 @@ import { AppointmentSmallTable } from "@/features/appointments/components/appoin
 import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
 import { Separator } from "@/components/ui/separator";
 import { formatDate, formatPhone } from "@/utils/formatters";
-import type { Patient } from "@/features/patients/types/patient";
+import type { Patient } from "@/features/patients/types/patient.model";
 
 
 export default function PatientProfile() {

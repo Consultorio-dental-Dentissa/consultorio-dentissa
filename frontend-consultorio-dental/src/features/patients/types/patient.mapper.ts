@@ -1,5 +1,5 @@
 import type { PatientResponse } from "@/features/patients/types/patient.response";
-import type { Patient } from "@/features/patients/types/patient";
+import type { Patient } from "@/features/patients/types/patient.model";
 
 export function patientMap(patient: PatientResponse): Patient {
     return {

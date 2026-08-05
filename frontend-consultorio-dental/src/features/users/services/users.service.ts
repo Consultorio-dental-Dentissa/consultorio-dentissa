@@ -1,7 +1,7 @@
 import { get, post, patch } from "@/services/api";
 import { userMap } from "@/features/users/types/user.mapper";
 
-import type { User } from "@/features/users/types/user";
+import type { User } from "@/features/users/types/user.model";
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";
 import type { UserResponse } from "@/features/users/types/user.response";
 import type { ApiResponse } from "@/types/api.response";

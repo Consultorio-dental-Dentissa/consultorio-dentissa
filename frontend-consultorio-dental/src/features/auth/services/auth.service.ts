@@ -1,6 +1,6 @@
 import type { LoginResponse } from "@/features/auth/types/login.response";
 import type { UserResponse } from "@/features/users/types/user.response"
-import type { User } from "@/features/users/types/user"
+import type { User } from "@/features/users/types/user.model"
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";
 import type { LoginDto } from "@/features/auth/types/login.dto";
 import type { ApiResponse } from "@/types/api.response";

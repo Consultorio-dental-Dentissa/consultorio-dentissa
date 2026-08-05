@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createAppointment, getAllAppointments } from "@/features/appointments/services/appointments.service"
 
 import type { CreateAppointmentDto } from "@/features/appointments/types/create-appointment.dto";
-import type { Appointment } from "@/features/appointments/types/appointment";
+import type { Appointment } from "@/features/appointments/types/appointment.model";
 
 export function useAppointments() {
 

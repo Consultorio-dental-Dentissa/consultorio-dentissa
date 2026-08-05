@@ -1,5 +1,5 @@
 import type { ServiceResponse } from "@/features/services/types/service.response";
-import type { Service } from "@/features/services/types/service";
+import type { Service } from "@/features/services/types/service.model";
 
 export function serviceMap(service: ServiceResponse): Service {
     return {

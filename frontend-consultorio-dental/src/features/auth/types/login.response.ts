@@ -1,4 +1,4 @@
-import type { User } from "@/features/users/types/user";
+import type { User } from "@/features/users/types/user.model";
 
 export interface LoginResponse {
     logged: boolean;

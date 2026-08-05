@@ -1,7 +1,7 @@
 import { StatusSpan } from "@/components/shared/span.component";
 import { Badge } from "@/components/ui/badge";
 import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
-import type { Appointment } from "@/features/appointments/types/appointment"
+import type { Appointment } from "@/features/appointments/types/appointment.model"
 import { formatFirstLetterUppercase, formatTotalMinutesToHours } from "@/utils/formatters";
 
 export interface AppointmentCardProps {

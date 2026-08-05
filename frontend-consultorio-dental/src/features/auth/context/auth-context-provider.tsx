@@ -1,7 +1,7 @@
 import { AuthContext, } from '@/features/auth/context/auth-context';
 import { useState, useContext, type ReactNode, useEffect } from 'react';
 import { useLogin } from '@/features/auth/hooks/use-login';
-import type { User } from '@/features/users/types/user';
+import type { User } from '@/features/users/types/user.model';
 
 interface AuthProviderProps {
     children: ReactNode;

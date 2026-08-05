@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { User } from "@/features/users/types/user";
+import type { User } from "@/features/users/types/user.model";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";

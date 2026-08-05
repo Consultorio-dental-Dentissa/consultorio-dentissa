@@ -1,7 +1,7 @@
 import { getAllPatients, getPatientById } from "@/features/patients/services/patients.service"
 import { useState } from "react";
 
-import type { Patient } from "@/features/patients/types/patient";
+import type { Patient } from "@/features/patients/types/patient.model";
 
 export function usePatients() {
 

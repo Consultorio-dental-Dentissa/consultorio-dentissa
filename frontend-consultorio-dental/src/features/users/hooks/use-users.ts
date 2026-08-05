@@ -2,7 +2,7 @@ import { useState } from "react";
 import { updateUserStatus, createUser, getAllUsers } from "@/features/users/services/users.service"
 
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";
-import type { User } from "@/features/users/types/user"
+import type { User } from "@/features/users/types/user.model"
 
 export function useUsers() {
 

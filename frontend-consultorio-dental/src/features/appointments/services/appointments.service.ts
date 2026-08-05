@@ -3,7 +3,7 @@ import { AppointmentMap } from '@/features/appointments/types/appointment.mapper
 
 import type { AppointmentResponse } from '@/features/appointments/types/appointment.response';
 import type { CreateAppointmentDto } from '@/features/appointments/types/create-appointment.dto';
-import type { Appointment } from '@/features/appointments/types/appointment';
+import type { Appointment } from '@/features/appointments/types/appointment.model';
 import type { ApiResponse } from '@/types/api.response';
 
 export async function getAllAppointments(parameters?: string): Promise<Appointment[]> {

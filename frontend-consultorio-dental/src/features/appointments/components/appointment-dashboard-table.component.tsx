@@ -1,6 +1,6 @@
 // AppointmmentDasboardTable
 
-import type { Appointment } from "@/features/appointments/types/appointment"
+import type { Appointment } from "@/features/appointments/types/appointment.model"
 import { StatusSpan } from "@/components/shared/span.component"
 import { Badge } from "@/components/ui/badge"
 

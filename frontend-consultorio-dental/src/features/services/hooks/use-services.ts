@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getAllServices, updateServiceStatus, createService } from "@/features/services/services/services.service";
 
-import type { Service } from "@/features/services/types/service";
+import type { Service } from "@/features/services/types/service.model";
 import type { CreateServiceDto } from "@/features/services/types/create-service.dto";
 
 export function useServices() {

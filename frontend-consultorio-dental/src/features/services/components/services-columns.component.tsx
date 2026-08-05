@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table"
-import type { Service } from "@/features/services/types/service"
+import type { Service } from "@/features/services/types/service.model"
 
 import { formatTotalMinutesToHours } from "@/utils/formatters"
 import { Checkbox } from "@/components/ui/checkbox"

@@ -1,7 +1,7 @@
 import { Modal } from "@/components/shared/modal.component"
 import { Separator } from "@/components/ui/separator"
 
-import type { Appointment } from "@/features/appointments/types/appointment";
+import type { Appointment } from "@/features/appointments/types/appointment.model";
 import { StatusSpan } from "@/components/shared/span.component";
 import { formatDate } from "@/utils/formatters";
 
