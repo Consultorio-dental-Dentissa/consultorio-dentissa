@@ -1,4 +1,4 @@
-import type { ApiResponse } from '@/types/api/responses/api.response';
+import type { ApiResponse } from '@/types/api.response';
 import axios from 'axios';
 
 const api = axios.create({

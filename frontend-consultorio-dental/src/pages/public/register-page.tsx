@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { FieldGroup } from '@/components/ui/field'
-import { InputForm } from '@/components/common/input.component'
+import { InputForm } from '@/components/shared/input.component'
 import { useForm } from "react-hook-form"
-import { useRegister } from '@/hooks/use-register';
+import { useRegister } from '@/features/auth/hooks/use-register';
 import { useEffect } from 'react';
 
-import type { CreateUserDto } from '@/types/api/request/create-user.dto';
+import type { CreateUserDto } from '@/features/users/types/create-user.dto';
 
 import toast from 'react-hot-toast';
 

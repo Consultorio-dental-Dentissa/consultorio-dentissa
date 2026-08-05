@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLogin } from "../../hooks/use-login";
+import { useLogin } from "@/features/auth/hooks/use-login";
 import { FieldGroup } from '@/components/ui/field'
-import { InputForm } from '@/components/common/input.component'
+import { InputForm } from '@/components/shared/input.component'
 import { useForm } from "react-hook-form"
-import { useAuth } from "@/context/auth-context-provider";
+import { useAuth } from "@/features/auth/context/auth-context-provider";
 
-import type { LoginDto } from "@/types/api/request/login.dto";
+import type { LoginDto } from "@/features/auth/types/login.dto";
 
 import toast from "react-hot-toast";
 
