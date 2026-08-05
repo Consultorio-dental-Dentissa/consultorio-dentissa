@@ -1,4 +1,5 @@
 import { StatusAppointment } from "@/types/enums/status-appointment.enum";
+import { Role } from "@/types/enums/rol.enum";
 import { Badge, type BadgeVariant } from "../ui/badge";
 import { formatFirstLetterUppercase } from "@/utils/formatters";
 
@@ -21,19 +22,43 @@ export function StatusSpan({ status }: StatusSpanProps) {
     let variant: BadgeVariant;
 
     switch (status) {
-        case StatusAppointment.PENDIENTE:
-            variant = "base";
+        case "true":
+            variant = "success";
             break;
-        case StatusAppointment.CONFIRMADA:
-            variant = "primary";
-            break;
-        case StatusAppointment.CANCELADA:
+        case "false":
             variant = "destructive";
             break;
+
+        /* Badges for appointment status */
+        case StatusAppointment.PENDIENTE:
+            variant = "pending";
+            break;
+        case StatusAppointment.COMPLETADA:
+            variant = "completed";
+            break;
+        case StatusAppointment.CONFIRMADA:
+            variant = "confirmed";
+            break;
+        case StatusAppointment.CANCELADA:
+            variant = "canceled";
+            break;
         case StatusAppointment.REPROGRAMADA: {
-            variant = "warning";
+            variant = "rescheduled";
             break;
         }
+
+        /* Badges for users roles */
+        case Role.ADMINISTRADOR:
+            variant = "admin";
+            break;
+        case Role.ASISTENTE:
+            variant = "assistant";
+            break;
+        case Role.PACIENTE: {
+            variant = "patient";
+            break;
+        }
+
 
         default:
             variant = "base";

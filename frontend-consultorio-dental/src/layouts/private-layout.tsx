@@ -1,18 +1,37 @@
+import { useEffect } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/auth-context-provider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { SidebarApp } from "@/components/common/sidebar.component"
 import { Header } from "@/components/common/header.component"
 import { formatFirstLetterUppercase } from "@/utils/formatters"
+import { Spinner } from "@/components/ui/spinner"
 
 export default function PrivateLayout() {
 
-    const { isAuthenticated, user, logOut } = useAuth();
+    const { isAuthenticated, user, logOut, loading } = useAuth();
     const navigate = useNavigate();
 
+    useEffect(() => {
+
+        if (!loading && (!isAuthenticated || !user)) {
+            navigate('/login', { replace: true });
+            return;
+        }
+
+
+    }, [loading, isAuthenticated, user, navigate]);
+
+    if (loading) {
+        return (
+            <div className="h-screen flex items-center justify-center">
+                <Spinner className="size-8" />
+            </div>
+        );
+    }
+
     if (!isAuthenticated || !user) {
-        navigate('/login');
-        return;
+        return null;
     }
 
     const handleLogout = () => {

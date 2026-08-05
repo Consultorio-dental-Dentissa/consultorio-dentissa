@@ -1,29 +1,30 @@
 import { useEffect, useState, useMemo } from "react";
-import { useUsers } from "@/hooks/use-users";
 import { Button } from "@/components/ui/button"
+import { SearchInput } from "@/components/common/input.component";
 import { DataTable } from "@/components/common/data-table.component";
 import { PageTitle } from "@/components/common/page-title.component";
 import { Modal } from "@/components/common/modal.component";
 import { CreateUserForm } from "@/components/users/create-user-form.component";
-import { getColumns } from "@/components/users/data-table-colums.component";
-
+import { getUsersTableColumns } from "@/components/users/users-colums.component";
+import { CardDashboard } from "@/components/dashboard/card-dashboard.component";
+import { Users, User, Shield } from "lucide-react";
+import { useUsers } from "@/hooks/use-users";
 import type { CreateUserDto } from "@/types/api/request/create-user.dto";
 
 import toast from "react-hot-toast";
 
 export default function UsersPage() {
 
-    const [selectedRole, setSelectedRole] = useState<string>('ALL');
     const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false);
 
-    const { 
-        users, 
-        useGetAllUsers, 
-        useUpdateUserStatus, 
-        useCreateUser, 
+    const {
+        users,
+        useGetAllUsers,
+        useUpdateUserStatus,
+        useCreateUser,
         isLoading,
-        error 
+        error
     } = useUsers();
 
     useEffect(() => {
@@ -44,32 +45,17 @@ export default function UsersPage() {
 
     }
 
-    const handleUpdatedUserStatus = async (id: number, status: boolean) => {
+    const handleUpdateUserStatus = async (id: number, status: boolean) => {
         const isStatusUpdated = await useUpdateUserStatus(id, status);
         if (isStatusUpdated) {
             toast.success('El estado se actualizó correctamente');
         }
     }
 
-    const columns = useMemo(
-        () => getColumns(handleUpdatedUserStatus), 
-    []);
+    const usersTableColumns = useMemo(
+        () => getUsersTableColumns(handleUpdateUserStatus),
+        []);
 
-    const roles = useMemo(() => [
-        { key: 'ALL', label: 'Todos' },
-        { key: 'ADMINISTRADOR', label: 'Administrador' },
-        { key: 'ASISTENTE', label: 'Asistente' },
-        { key: 'PACIENTE', label: 'Paciente' }
-    ], []);
-
-    const filteredUsers = useMemo(() => {
-
-        if (selectedRole === 'ALL') {
-            return users;
-        }
-
-        return users.filter(user => user.role === selectedRole);
-    }, [users, selectedRole]);
 
     return (
         <div>
@@ -77,27 +63,53 @@ export default function UsersPage() {
             <div className="mt-2 w-full flex justify-between items-end">
                 <PageTitle
                     titulo="Panel de usuarios"
-                    subtitulo="Aqui puedes manejar tus usuarios"
+                    subtitulo="Administra las cuentas de administradores, asistentes y pacientes"
                 />
 
-                <Button variant="primary" onClick={() => setOpenModal(true)}>
+                <Button
+                    variant="primary"
+                    onClick={() => setOpenModal(true)}
+                >
                     Agregar nuevo usuario
                 </Button>
             </div>
 
-            <div className="bg-white rounded-sm p-3 mt-5 shadow-card">
-                {
-                    roles.map(role => (
-                        <Button
-                            variant={selectedRole === role.key ? 'selectedGhost' : 'ghost'}
-                            onClick={() => setSelectedRole(role.key)}>
-                                { role.label }
-                        </Button>
-                    ))
-                }
+            <div className="flex gap-5 mt-5">
+                <CardDashboard
+                    title="Usuarios"
+                    icon={Users}
+                    data="0"
+                />
+
+                <CardDashboard
+                    title="Administradores"
+                    icon={Shield}
+                    data="0"
+                />
+
+                <CardDashboard
+                    title="Asistentes"
+                    icon={User}
+                    data="0"
+                />
+
+                <CardDashboard
+                    title="Pacientes"
+                    icon={User}
+                    data="0"
+                />
             </div>
 
-            <div className="bg-white rounded-md mt-5 shadow-card">
+            <div className="bg-white rounded-xl mt-5 border">
+                <div className="p-5 flex items-center justify-between">
+                    <div className="w-[30%]">
+                        <SearchInput placeholder="Buscar por nombre, correo o telefono" />
+                    </div>
+
+                    <p className="text-neutral-400 text-sm font-semibold">
+                        {users.length === 1 ? `${users.length} usuario` : `${users.length} usuarios`}
+                    </p>
+                </div>
                 {
                     isLoadingTable ?
                         (
@@ -105,18 +117,22 @@ export default function UsersPage() {
                                 <h2>Cargando...</h2>
                             </div>
                         )
-                    :
-                    !filteredUsers.length ?
+
+                        :
+
+                    !users.length ?
                         (
                             <div className="bg-white rounded-sm p-5 flex justify-center">
                                 <h2>No se encontrarón usuarios.</h2>
                             </div>
                         )
-                    :
+
+                        :
+                        
                         (
                             <DataTable
-                                columns={columns}
-                                data={filteredUsers}
+                                columns={usersTableColumns}
+                                data={users}
                             />
                         )
                 }
@@ -133,7 +149,6 @@ export default function UsersPage() {
                     isSaving={isLoading}
                 />
             </Modal>
-
         </div>
     );
 

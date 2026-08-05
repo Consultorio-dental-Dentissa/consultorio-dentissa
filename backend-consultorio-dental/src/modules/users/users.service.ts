@@ -98,6 +98,11 @@ export class UsersService {
     }
 
     async updateUserStatus(id: number, status: boolean) {
+
+        if (!await this.usersRepository.getById(id)) {
+            throw new NotFoundException('El usuario cuyo estatus quieres actualizar no existe');
+        }
+        
         return await this.usersRepository.updateUserStatus(id, status)
     }
 }

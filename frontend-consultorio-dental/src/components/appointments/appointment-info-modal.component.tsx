@@ -19,7 +19,6 @@ export function AppointmentInfoModal({ open, close, appointment }: AppointmentIn
         <Modal
             title="Información de la cita"
             description="Detalles completos de la cita seleccionada"
-            position="right"
             open={open}
             onClose={close}
         >

@@ -9,20 +9,32 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        default: "bg-primary text-primary-foreground font-bold rounded-md [a]:hover:bg-primary/80",
         secondary:
           "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
         destructive:
-          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20 border-red-300",
+          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20 font-bold rounded-md",
         outline:
           "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-green-100 text-green-700 border-green-500",
-        base: "bg-gray-200 text-gray-600 border-gray-300",
-        warning: "bg-orange-100 text-orange-800 border-orange-400",
-        primary: "bg-blue-200 text-blue-800 border-blue-500"
+        success: "bg-green-100 text-green-700 font-bold rounded-md",
+        base: "bg-gray-200 font-bold text-gray-600 rounded-md",
+        warning: "bg-orange-100 text-orange-800 font-bold rounded-md",
+        primary: "bg-green-200 text-green-800 font-bold rounded-md",
+
+        /* Badges for appointments statuses */
+        pending: "bg-gray-200 text-gray-800 font-bold rounded-md",
+        completed: "bg-blue-200 text-blue-800 font-bold rounded-md",
+        canceled: "bg-red-200 text-red-800 font-bold rounded-md",
+        confirmed: "bg-green-200 text-green-800 font-bold rounded-md",
+        rescheduled: "bg-orange-200 text-orange-800 font-bold rounded-md",
+
+        /* Badges for users roles */
+        admin: "bg-rose-200 text-rose-800 font-bold rounded-md",
+        assistant: "bg-purple-200 text-purple-800 font-bold rounded-md",
+        patient: "bg-blue-100 text-blue-800 font-bold rounded-md",
       },
     },
     defaultVariants: {
@@ -41,7 +53,14 @@ export type BadgeVariant =
   | "success"
   | "base"
   | "warning"
-  | "primary";
+  | "pending"
+  | "confirmed"
+  | "canceled"
+  | "completed"
+  | "rescheduled"
+  | "admin"
+  | "assistant"
+  | "patient";
 
 function Badge({
   className,
