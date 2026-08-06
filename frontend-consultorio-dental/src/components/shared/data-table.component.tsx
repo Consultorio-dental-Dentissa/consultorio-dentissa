@@ -15,8 +15,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     })
 
     return (
-        <div className="bg-transparent max-h-[500px] overflow-auto">
-            <Table className="">
+        <div className="bg-transparent max-h-[500px] w-full overflow-auto">
+            <Table className="w-full">
                 <TableHeader className="bg-neutral-50 border-t">
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
