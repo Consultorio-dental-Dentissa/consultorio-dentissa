@@ -2,12 +2,12 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "@/features/users/types/user.model";
 
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+import { UserStatusSwitch } from "@/features/users/components/user-status-switch";
 import { StatusSpan } from "@/components/shared/span.component";
 import { formatPhone, formatDate } from "@/utils/formatters";
 import { Trash, Edit } from "lucide-react"
 
-export const getUsersTableColumns = (handleUpdateUserStatus: (id: number, status: boolean) => void): ColumnDef<User>[] => [
+export const getUsersTableColumns = (): ColumnDef<User>[] => [
     {
         header: "NOMBRE",
         cell: ({ row }) => (
@@ -31,12 +31,7 @@ export const getUsersTableColumns = (handleUpdateUserStatus: (id: number, status
     },
     {
         header: 'ESTADO',
-        cell: ({ row }) => (
-            <Switch
-                checked={row.original.status}
-                onClick={() => handleUpdateUserStatus(row.original.id, !row.original.status)}
-            />
-        )
+        cell: ({ row }) => <UserStatusSwitch user={row.original} />
     },
     {
         header: "ACCIONES",

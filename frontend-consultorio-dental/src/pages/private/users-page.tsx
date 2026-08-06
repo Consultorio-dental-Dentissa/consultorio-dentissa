@@ -1,65 +1,41 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button"
 import { SearchInput } from "@/components/shared/input.component";
-import { DataTable } from "@/components/shared/data-table.component";
 import { PageTitle } from "@/components/shared/page-title.component";
-import { Modal } from "@/components/shared/modal.component";
+import { UsersTable } from "@/features/users/components/users-table.component";
 import { CreateUserForm } from "@/features/users/components/create-user-form.component";
-import { getUsersTableColumns } from "@/features/users/components/users-colums.component";
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
+import { Modal } from "@/components/shared/modal.component";
 import { Users, User, Shield } from "lucide-react";
-import { useUsers } from "@/features/users/hooks/use-users";
-import type { CreateUserDto } from "@/features/users/types/create-user.dto";
+import { useCreateUser, useUsers } from "@/features/users/hooks/use-users";
 
+import type { CreateUserDto } from "@/features/users/types/create-user.dto";
 import toast from "react-hot-toast";
 
 export default function UsersPage() {
 
-    const [isLoadingTable, setIsLoadingTable] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState(false);
-
-    const {
-        users,
-        useGetAllUsers,
-        useUpdateUserStatus,
-        useCreateUser,
-        isLoading,
-        error
-    } = useUsers();
-
-    useEffect(() => {
-        setIsLoadingTable(true);
-        useGetAllUsers().finally(() => setIsLoadingTable(false));
-    }, []);
-
-    useEffect(() => {
-        error && toast.error(error);
-    }, [error]);
+    
+    const users = useUsers();
+    const createUser = useCreateUser();
 
     const handleAddUser = async (userData: CreateUserDto) => {
-        const user = await useCreateUser(userData);
-        if (user) {
-            toast.success(`El usuario ${user.name} ha sido registrado correctamente.`);
-            setOpenModal(false);
-        }
-
+        createUser.mutate(userData, {
+            onSuccess: () => {
+                toast.success('El usuario se registró correctamente');
+                setOpenModal(false);
+            },
+            onError: (error) => toast.error(error.message)
+        });
     }
 
-    const handleUpdateUserStatus = async (id: number, status: boolean) => {
-        const isStatusUpdated = await useUpdateUserStatus(id, status);
-        if (isStatusUpdated) {
-            toast.success('El estado se actualizó correctamente');
-        }
-    }
-
-    const usersTableColumns = useMemo(
-        () => getUsersTableColumns(handleUpdateUserStatus),
-        []);
-
+    const totalUsers = useMemo(() => users.data ? users.data?.length : 0, [users.data]);
+    const totalAdmins = useMemo(() => users.data ? users.data?.filter(u => u.role === 'ADMINISTRADOR').length : 0, [users.data]);
+    const totalAssistans = useMemo(() => users.data ? users.data?.filter(u => u.role === 'ASISTENTE').length : 0, [users.data]);
+    const totalPatients = useMemo(() => users.data ? users.data?.filter(u => u.role === 'PACIENTE').length : 0, [users.data]);
 
     return (
         <div>
-
             <div className="mt-2 w-full flex justify-between items-end">
                 <PageTitle
                     titulo="Panel de usuarios"
@@ -78,25 +54,25 @@ export default function UsersPage() {
                 <CardDashboard
                     title="Usuarios"
                     icon={Users}
-                    data="0"
+                    data={totalUsers.toString()}
                 />
 
                 <CardDashboard
                     title="Administradores"
                     icon={Shield}
-                    data="0"
+                    data={totalAdmins.toString()}
                 />
 
                 <CardDashboard
                     title="Asistentes"
                     icon={User}
-                    data="0"
+                    data={totalAssistans.toString()}
                 />
 
                 <CardDashboard
                     title="Pacientes"
                     icon={User}
-                    data="0"
+                    data={totalPatients.toString()}
                 />
             </div>
 
@@ -107,35 +83,13 @@ export default function UsersPage() {
                     </div>
 
                     <p className="text-neutral-400 text-sm font-semibold">
-                        {users.length === 1 ? `${users.length} usuario` : `${users.length} usuarios`}
+                        {totalUsers} {totalUsers === 1 ? 'usuario' : 'usuarios'}
                     </p>
                 </div>
-                {
-                    isLoadingTable ?
-                        (
-                            <div className="bg-white rounded-sm p-5 flex justify-center">
-                                <h2>Cargando...</h2>
-                            </div>
-                        )
 
-                        :
-
-                    !users.length ?
-                        (
-                            <div className="bg-white rounded-sm p-5 flex justify-center">
-                                <h2>No se encontrarón usuarios.</h2>
-                            </div>
-                        )
-
-                        :
-                        
-                        (
-                            <DataTable
-                                columns={usersTableColumns}
-                                data={users}
-                            />
-                        )
-                }
+                <div className="flex justify-center pb-2">
+                    <UsersTable />
+                </div>
             </div>
 
             <Modal
@@ -146,10 +100,9 @@ export default function UsersPage() {
                 <CreateUserForm
                     onSubmit={handleAddUser}
                     onCancel={() => setOpenModal(false)}
-                    isSaving={isLoading}
+                    isSaving={createUser.isPending}
                 />
             </Modal>
         </div>
     );
-
 }
