@@ -1,34 +1,36 @@
 import { PageTitle } from "@/components/shared/page-title.component";
 import { formatDate } from "@/utils/formatters";
 import { Calendar, SquarePlus, Users, MoveRight } from "lucide-react";
-
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
-
 import { useAppointments } from "@/features/appointments/hooks/use-appointments";
 import { AppointmentsDashboardTable } from "@/features/appointments/components/appointment-dashboard-table.component";
-import { useEffect } from "react";
-
+import { useMemo } from "react";
+import { Spinner } from "@/components/ui/spinner";
+import toast from "react-hot-toast";
 
 export default function DashboardPage() {
 
-  const date = new Date();
-  const { appointments, useGetAllAppointments } = useAppointments();
+  const appointments = useAppointments();
 
-  useEffect(() => { useGetAllAppointments() }, []);
+  const totalAppointments = useMemo(() =>
+    appointments.data ? appointments.data.length : 0, [appointments.data]
+  );
 
   return (
     <>
+
+      {appointments.error && toast.error(appointments.error.message)}
+
       <PageTitle
         titulo="Panel general"
-        subtitulo={`Resumen del consultorio ${formatDate(date)}`}
+        subtitulo={`Resumen del consultorio ${formatDate(new Date())}`}
       />
-
 
       <div className="flex w-full mt-3 gap-5">
 
         <CardDashboard
           title="Citas de hoy"
-          data={appointments.length.toString()}
+          data={totalAppointments.toString()}
           icon={Calendar}
         />
 
@@ -57,13 +59,13 @@ export default function DashboardPage() {
           <div>
             <h3 className="font-bold">Citas de hoy</h3>
             <p className="text-sm text-gray-400">
-              {appointments.length === 1 ? `${appointments.length} cita programada` : `${appointments.length} citas programadas`}
+              {totalAppointments} {totalAppointments === 1 ? 'cita' : 'citas'}
             </p>
           </div>
-          
+
           <div>
-            <a 
-              className="flex gap-1 items-center text-[#c0685c] font-bold text-sm" 
+            <a
+              className="flex gap-1 items-center text-[#c0685c] font-bold text-sm"
               href="/citas"
             >
               Ver agenda <MoveRight size={15} />
@@ -71,20 +73,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {appointments.length < 1 ?
-        
-          <div className="p-5">
-            No se encontrarónn citas para hoy
-          </div>
-          
-
-          :
-
-          <AppointmentsDashboardTable 
-            appointments={appointments} 
-          />
-        }
-
+        <div className="p-5 flex justify-center">
+          <AppointmentsDashboardTable />
+        </div>
       </div>
     </>
   )

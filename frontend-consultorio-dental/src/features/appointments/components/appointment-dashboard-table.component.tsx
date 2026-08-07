@@ -1,15 +1,23 @@
-// AppointmmentDasboardTable
-
-import type { Appointment } from "@/features/appointments/types/appointment.model"
 import { StatusSpan } from "@/components/shared/span.component"
-import { Badge } from "@/components/ui/badge"
+import { useAppointments } from "@/features/appointments/hooks/use-appointments";
+import { Spinner } from "@/components/ui/spinner";
 
-interface AppointmentSmallTableProps {
-    appointments: Appointment[]
-}
+export function AppointmentsDashboardTable() {
 
+  const appointments = useAppointments();
 
-export function AppointmentsDashboardTable({ appointments }: AppointmentSmallTableProps) {
+  if (appointments.isLoading) {
+    return <Spinner />
+  }
+
+  if (!appointments.data?.length) {
+    return (
+      <div>
+        No se encontraron citas
+      </div>
+    )
+  }
+
   return (
     <div className="border overflow-hidden">
       <div className="grid grid-cols-[1.5fr_1.2fr_0.7fr_1fr] px-5 py-2.5 border-b bg-zinc-50 border-zinc-100 text-[10.5px] font-bold text-zinc-400 uppercase tracking-wide">
@@ -19,7 +27,7 @@ export function AppointmentsDashboardTable({ appointments }: AppointmentSmallTab
         <span>Estatus</span>
       </div>
 
-      {appointments.map((appointment, index) => {
+      {appointments.data.map((appointment, index) => {
 
         return (
           <div

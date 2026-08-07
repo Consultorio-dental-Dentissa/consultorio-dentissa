@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { AppointmentCard } from "@/features/appointments/components/appointment-card.component";
 import { AppointmentInfoModal } from "@/features/appointments/components/appointment-info-modal.component";
+import { useAppointments } from "@/features/appointments/hooks/use-appointments";
+import { Spinner } from "@/components/ui/spinner";
 import type { Appointment } from "@/features/appointments/types/appointment.model"
 
-export interface AppoimentListProps {
-    appointments: Appointment[]
-}
-
-export function AppointmentList({ appointments }: AppoimentListProps) {
+export function AppointmentList() {
 
     const [openInfoModal, setOpenInfoModal] = useState(false);
     const [actualAppointment, setActualAppointment] = useState<Appointment | null>(null);
@@ -17,19 +15,35 @@ export function AppointmentList({ appointments }: AppoimentListProps) {
         setActualAppointment(appointment);
     }
 
+    const appointments = useAppointments();
+
     return (
         <>
             {
-                appointments.length > 0 ?
+                appointments.isLoading ? (
+                    <div className="flex justify-center">
+                        <Spinner className="size-5"/>
+                    </div>
+                )
+                
+                :
+
+                appointments.data?.length ? (
                     <div className="mt-2 w-full flex flex-row flex-wrap gap-3">
-                        {appointments.map(appointment => <AppointmentCard appointment={appointment} onClick={() => openModalWithAppointmentInfo(appointment)}/>)}
+                        {appointments.data.map(appointment => 
+                            <AppointmentCard 
+                                appointment={appointment} 
+                                onClick={() => openModalWithAppointmentInfo(appointment)} 
+                            />
+                        )}
                     </div>
+                )
 
-                    :
+                :
 
-                    <div className="flex justify-center items-center text-lg">
-                        No se encontrarón citas aún.
-                    </div>
+                <div className="flex justify-center items-center text-md">
+                    No se encontrarón citas aún.
+                </div>
             }
 
             {
@@ -39,7 +53,7 @@ export function AppointmentList({ appointments }: AppoimentListProps) {
                     close={() => setOpenInfoModal(false)}
                     appointment={actualAppointment}
                 />
-                
+
             }
         </>
     );
