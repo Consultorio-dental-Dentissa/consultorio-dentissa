@@ -1,15 +1,16 @@
 import { useEffect, useState, useMemo } from "react"
 import { PageTitle } from "@/components/shared/page-title.component"
 import { Button } from "@/components/ui/button"
-import { useAppointments } from "@/features/appointments/hooks/use-appointments";
+import { useAppointments, useCreateAppointment } from "@/features/appointments/hooks/use-appointments";
 import { AppointmentList } from "@/features/appointments/components/appointment-list.component";
 import { Modal } from "@/components/shared/modal.component";
 import { CreateAppointmentForm } from "@/features/appointments/components/create-appointment-form.component";
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
 import { Calendar, CalendarCheck, Clock, CalendarSync, Calendars } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
 import { useServices } from "@/features/services/hooks/use-services";
 import { usePatients } from "@/features/patients/hooks/use-patients";
+import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
+import { formatFirstLetterUppercase } from "@/utils/formatters";
 
 import type { CreateAppointmentDto } from "@/features/appointments/types/create-appointment.dto";
 import toast from "react-hot-toast";
@@ -19,43 +20,52 @@ export default function AppointmentsPage() {
 
     const [openModal, setOpenModal] = useState(false);
 
-    const { appointments, useGetAllAppointments, useCreateAppointment, isLoading, isLoadingFetching, error } = useAppointments();
+    const appointments = useAppointments();
+    const createAppointmentMutation = useCreateAppointment();
+
     const { servicesData, useGetAllServices } = useServices();
     const { patients, useGetAllPatients } = usePatients();
 
     useEffect(() => {
-        useGetAllAppointments();
         useGetAllPatients();
         useGetAllServices();
     }, []);
 
-
-    useEffect(() => {
-        error && toast.error(error);
-    }, [error]);
-
-
-
-    const handleCreatedAppointment = async (dto: CreateAppointmentDto) => {
-
-        const appointment = await useCreateAppointment(dto);
-
-        if (appointment) {
-            setOpenModal(false);
-            toast.success('Cita agendada exitosamente');
-            return;
-        }
+    const handleCreatedAppointment = async (appointmentDto: CreateAppointmentDto) => {
+        createAppointmentMutation.mutate(appointmentDto, {
+            onSuccess: () => {
+                toast.success('Se agendó una nueva cita');
+                setOpenModal(false);
+            },
+            onError: (error) => toast.error(error.message)
+        });
     }
 
-    const appointmentStatus = useMemo(() => [
-        ['ALL', 'Todos'],
-        ['PENDIENTES', 'Pendientes'],
-        ['CONFIRMADAS', 'Confirmadas'],
-        ['CANCELADAS', 'Canceladas'],
-        ['REPROGRAMADAS', 'Reprogramadas'],
-        ['COMPLETADAS', 'Completadas']
-
-    ], []);
+    const cardDashboardData = useMemo(() => [
+        {
+            title: 'Total de citas',
+            icon: Calendar,
+            data: (appointments.data ? appointments.data.length : 0).toString()
+        },
+        {
+            title: 'Pendientes',
+            icon: Clock,
+            data: (appointments.data ? 
+                appointments.data.filter(a => a.status === STATUS_APPOINTMENT.PENDIENTE).length : 0).toString()
+        },
+        {
+            title: 'Confirmadas',
+            icon: CalendarCheck,
+            data: (appointments.data ? 
+                appointments.data.filter(a => a.status === STATUS_APPOINTMENT.CONFIRMADA).length : 0).toString()
+        },
+        {
+            title: 'Reprogramadas',
+            icon: Calendar,
+            data: (appointments.data ? 
+                appointments.data.filter(a => a.status === STATUS_APPOINTMENT.REPROGRAMADA).length : 0).toString()
+        }
+    ], [appointments.data]);
 
     return (
         <>
@@ -67,39 +77,21 @@ export default function AppointmentsPage() {
             </div>
 
             <div className="flex gap-5 mt-5">
-                <CardDashboard
-                    title="Total de citas"
-                    icon={Calendar}
-                    data={appointments.length.toString()}
-                />
-
-                <CardDashboard
-                    title="Pendientes"
-                    icon={Clock}
-                    data={appointments.filter(a => a.status === 'PENDIENTE').length.toString()}
-                />
-
-                <CardDashboard
-                    title="Confirmadas"
-                    icon={CalendarCheck}
-                    data={appointments.filter(a => a.status === 'CONFIRMADA').length.toString()}
-                />
-
-                <CardDashboard
-                    title="Reprogramadas"
-                    icon={CalendarSync}
-                    data={appointments.filter(a => a.status === 'REPROGRAMADA').length.toString()}                
-                />
+                {cardDashboardData.map(data => (
+                    <CardDashboard 
+                        title={data.title}
+                        icon={data.icon}
+                        data={data.data}
+                    />
+                ))}
             </div>
 
             <div className="rounded-xl bg-white">
                 <div className="flex flex-row justify-between w-full px-5 py-3 mt-5">
                     <div className="flex flex-row">
                         {
-                            appointmentStatus.map(([key, label]) => (
-                                <Button variant='ghost'>
-                                    {label}
-                                </Button>
+                            Object.keys(STATUS_APPOINTMENT).map(data => (
+                                <Button variant="ghost">{formatFirstLetterUppercase(data)}</Button>
                             ))
                         }
                     </div>
@@ -116,28 +108,8 @@ export default function AppointmentsPage() {
                     </div>
                 </div>
 
-                <div className="border-t p-5">
-                    {
-                        isLoadingFetching ?
-                            (
-                                <div className="w-full bg-white p-5 rounded-lg flex justify-center">
-                                    <Spinner />
-                                </div>
-                            )
-                            :
-                            !appointments.length ?
-                                (
-                                    <div className="w-full bg-white p-5 rounded-lg flex justify-center">
-                                        <h2>No se han encontrado citas</h2>
-                                    </div>
-                                )
-                                :
-                                (
-                                    <AppointmentList 
-                                        appointments={appointments}
-                                    />
-                                )
-                    }
+                <div className="border-t p-5">   
+                    <AppointmentList />
                 </div>
             </div>
 
@@ -150,7 +122,7 @@ export default function AppointmentsPage() {
                 <CreateAppointmentForm
                     onSubmit={handleCreatedAppointment}
                     onCancel={() => setOpenModal(false)}
-                    isSaving={isLoading}
+                    isSaving={createAppointmentMutation.isPending}
                     services={servicesData}
                     patients={patients}
                 />

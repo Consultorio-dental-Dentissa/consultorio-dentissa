@@ -5,7 +5,7 @@ import { useAppointments } from "@/features/appointments/hooks/use-appointments"
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AppointmentSmallTable } from "@/features/appointments/components/appointment-small-table.component";
-import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
+import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
 import { Separator } from "@/components/ui/separator";
 import { formatDate, formatPhone } from "@/utils/formatters";
 import type { Patient } from "@/features/patients/types/patient.model";
@@ -14,20 +14,19 @@ import type { Patient } from "@/features/patients/types/patient.model";
 export default function PatientProfile() {
 
     const { useGetPatientById } = usePatients();
-    const { appointments, useGetAllAppointments } = useAppointments();
     const [patient, setPatient] = useState<Patient | null>(null);
     const { id } = useParams();
+
+    const appointments = useAppointments(`patient_id=${id}`);
 
     useEffect(() => {
 
         async function fetchData() {
             const patientInfo = await useGetPatientById(Number(id));
             patientInfo && setPatient(patientInfo);
-
-            useGetAllAppointments(`patient_id=${id}`);
         }
 
-        fetchData()
+        fetchData();
     }, [])
 
     if (!patient) {
@@ -88,14 +87,14 @@ export default function PatientProfile() {
                 <div className="flex flex-col mt-5">
 
                     <h2 className="font-medium">Historial de consultas realizadas:</h2>
-                    <div className="flex flex-col p-5 max-h-[300px] overflow-y-auto border border-gray-300 rounded-lg">
+                    <div className="flex flex-col p-5 max-h-75 overflow-y-auto border border-gray-300 rounded-lg">
                         No hay consultas.
                     </div>
 
                     <h2 className="font-medium mt-5">Citas agendadas:</h2>
-                    <div className="max-h-[300px] overflow-y-auto">
+                    <div className="max-h-75 overflow-y-auto">
                         {
-                            !appointments.length ?
+                            !appointments.data?.length ?
                                 (
                                     <h2>No hay citas.</h2>
                                 )
@@ -105,7 +104,7 @@ export default function PatientProfile() {
                                 (
                                     <div className="bg-white rounded-md">
                                         <AppointmentSmallTable
-                                            appointments={appointments.filter(a => a.status != StatusAppointment.CANCELADA)}
+                                            appointments={appointments.data.filter(a => a.status != STATUS_APPOINTMENT.CANCELADA)}
                                         />
                                     </div>
                                 )
