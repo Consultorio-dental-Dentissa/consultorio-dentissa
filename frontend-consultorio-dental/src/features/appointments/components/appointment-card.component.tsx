@@ -1,6 +1,6 @@
 import { StatusSpan } from "@/components/shared/span.component";
 import { Badge } from "@/components/ui/badge";
-import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
+import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
 import type { Appointment } from "@/features/appointments/types/appointment.model"
 import { formatFirstLetterUppercase, formatTotalMinutesToHours } from "@/utils/formatters";
 
@@ -10,12 +10,12 @@ export interface AppointmentCardProps {
 }
 
 
-const COLORS_BY_STATUS: Record<StatusAppointment, string> = {
-    [StatusAppointment.PENDIENTE]: 'bg-neutral-200 text-neutral-700',
-    [StatusAppointment.CONFIRMADA]: 'bg-green-200 text-green-700',
-    [StatusAppointment.COMPLETADA]: 'bg-blue-200 text-blue-700',
-    [StatusAppointment.CANCELADA]: 'bg-red-200 text-red-700',
-    [StatusAppointment.REPROGRAMADA]: 'bg-orange-200 text-orange-700',
+const COLORS_BY_STATUS: Record<STATUS_APPOINTMENT, string> = {
+    [STATUS_APPOINTMENT.PENDIENTE]: 'bg-neutral-200 text-neutral-700',
+    [STATUS_APPOINTMENT.CONFIRMADA]: 'bg-green-200 text-green-700',
+    [STATUS_APPOINTMENT.COMPLETADA]: 'bg-blue-200 text-blue-700',
+    [STATUS_APPOINTMENT.CANCELADA]: 'bg-red-200 text-red-700',
+    [STATUS_APPOINTMENT.REPROGRAMADA]: 'bg-orange-200 text-orange-700',
 };
 
 
