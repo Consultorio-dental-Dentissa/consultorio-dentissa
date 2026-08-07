@@ -1,4 +1,4 @@
-import { StatusAppointment } from "@/features/appointments/types/status-appointment.enum";
+import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
 import { Role } from "@/features/users/types/rol.enum";
 import { Badge, type BadgeVariant } from "../ui/badge";
 import { formatFirstLetterUppercase } from "@/utils/formatters";
@@ -30,19 +30,19 @@ export function StatusSpan({ status }: StatusSpanProps) {
             break;
 
         /* Badges for appointment status */
-        case StatusAppointment.PENDIENTE:
+        case STATUS_APPOINTMENT.PENDIENTE:
             variant = "pending";
             break;
-        case StatusAppointment.COMPLETADA:
+        case STATUS_APPOINTMENT.COMPLETADA:
             variant = "completed";
             break;
-        case StatusAppointment.CONFIRMADA:
+        case STATUS_APPOINTMENT.CONFIRMADA:
             variant = "confirmed";
             break;
-        case StatusAppointment.CANCELADA:
+        case STATUS_APPOINTMENT.CANCELADA:
             variant = "canceled";
             break;
-        case StatusAppointment.REPROGRAMADA: {
+        case STATUS_APPOINTMENT.REPROGRAMADA: {
             variant = "rescheduled";
             break;
         }

@@ -1,4 +1,4 @@
-export const StatusAppointment = {
+export const STATUS_APPOINTMENT = {
     PENDIENTE: 'PENDIENTE',
     CONFIRMADA: 'CONFIRMADA',
     CANCELADA: 'CANCELADA',
@@ -6,4 +6,4 @@ export const StatusAppointment = {
     COMPLETADA: 'COMPLETADA'
 } as const;
 
-export type StatusAppointment = typeof StatusAppointment[keyof typeof StatusAppointment];
+export type STATUS_APPOINTMENT = typeof STATUS_APPOINTMENT[keyof typeof STATUS_APPOINTMENT];
