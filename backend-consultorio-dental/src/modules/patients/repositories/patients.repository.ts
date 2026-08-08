@@ -21,7 +21,8 @@ export class PatientsRepository {
                         name: true,
                         lastname: true,
                         email: true,
-                        phone: true
+                        phone: true,
+                        status: true
                     }
                 }
             }
