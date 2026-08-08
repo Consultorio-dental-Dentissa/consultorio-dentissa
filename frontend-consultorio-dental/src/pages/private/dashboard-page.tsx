@@ -5,7 +5,6 @@ import { CardDashboard } from "@/components/shared/card-dashboard.component";
 import { useAppointments } from "@/features/appointments/hooks/use-appointments";
 import { AppointmentsDashboardTable } from "@/features/appointments/components/appointment-dashboard-table.component";
 import { useMemo } from "react";
-import { Spinner } from "@/components/ui/spinner";
 import toast from "react-hot-toast";
 
 export default function DashboardPage() {
@@ -73,7 +72,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="p-5 flex justify-center">
+        <div className="flex justify-center">
           <AppointmentsDashboardTable />
         </div>
       </div>
