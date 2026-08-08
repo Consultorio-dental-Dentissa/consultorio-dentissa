@@ -6,5 +6,6 @@ export interface Patient {
     name: string,
     lastname: string,
     email: string,
-    phone: string
+    phone: string,
+    status: boolean
 }

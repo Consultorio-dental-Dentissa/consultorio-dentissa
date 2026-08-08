@@ -36,7 +36,7 @@ export const getPatientsColumns = (): ColumnDef<Patient>[] => [
         header: 'ESTADO',
         cell: ({ row }) => (
             <ActiveSpan
-                status={true}
+                status={row.original.status}
             />
         )
     },

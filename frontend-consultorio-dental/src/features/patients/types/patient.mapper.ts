@@ -10,6 +10,7 @@ export function patientMap(patient: PatientResponse): Patient {
         name: patient.user.name,
         lastname: patient.user.lastname,
         email: patient.user.email,
-        phone: patient.user.phone
+        phone: patient.user.phone,
+        status: patient.user.status
     }
 }

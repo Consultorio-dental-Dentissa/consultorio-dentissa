@@ -7,6 +7,7 @@ export interface PatientResponse {
         name: string,
         lastname: string,
         email: string,
-        phone: string
+        phone: string,
+        status: boolean
     }
 }
