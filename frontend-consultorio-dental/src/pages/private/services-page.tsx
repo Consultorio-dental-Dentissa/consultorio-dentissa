@@ -1,60 +1,37 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PageTitle } from "../../components/shared/page-title.component";
 import { Modal } from "@/components/shared/modal.component";
 import { Button } from "@/components/ui/button";
 import { CreateServiceForm } from "@/features/services/components/create-service-form.component";
-import { useServices } from "@/features/services/hooks/use-services";
-import { DataTable } from "@/components/shared/data-table.component";
+import { useCreateService, useServices } from "@/features/services/hooks/use-services";
 import { SearchInput } from "@/components/shared/input.component";
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
-import { getServicesColumns } from "@/features/services/components/services-columns.component";
 import { Check, X, ClipboardPlus } from "lucide-react";
+import { ServicesTable } from "@/features/services/components/services-table.component";
 import type { CreateServiceDto } from "@/features/services/types/create-service.dto";
 import toast from "react-hot-toast";
 
 export default function ServicesPage() {
 
-    const [isLoadingTable, setIsLoadingTable] = useState(false);
-    const [openModal, setOpenModal] = useState<boolean>(false);
+    const [openModal, setOpenModal] = useState(false);
 
-    const {
-        servicesData,
-        useGetAllServices,
-        useCreateService,
-        useUpdateServiceStatus,
-        isLoading,
-        error
-    } = useServices();
-
-    useEffect(() => {
-        setIsLoadingTable(true);
-        useGetAllServices().
-            finally(() => setIsLoadingTable(false));
-    }, []);
-
-    useEffect(() => {
-        error && toast.error(error);
-    }, [error]);
-
+    const services = useServices();
+    const createServiceMutation = useCreateService();
 
     const handleNewService = async (newService: CreateServiceDto): Promise<void> => {
-
-        const service = await useCreateService(newService);
-        if (service) {
-            setOpenModal(false);
-            toast.success(`El servicio llamado ${service.name} ha sido agregado`);
-        }
-    }
-
-    const updateServiceStatus = async (serviceId: number, status: boolean) => {
-        const isStatusUpdated = await useUpdateServiceStatus(serviceId, status);
-        if (isStatusUpdated) {
-            toast.success('El estado se ha actualizado correctamente');
-        }
-    }
-
-    const servicesTableColumns = useMemo(() => getServicesColumns(updateServiceStatus), []);
-
+        createServiceMutation.mutate(newService, {
+            onSuccess: () => {
+                toast.success('Se registró un nuevo servicio');
+                setOpenModal(false);
+            },
+            onError: (error) => toast.error(error.message),
+        });
+    }  
+    
+    const totalServices = services.data ? services.data.length : 0;
+    const activeServices = services.data ? services.data.filter(s => s.status).length : 0;
+    const inactiveServices = services.data ? services.data.filter(s => !s.status).length : 0;
+    
     return (
         <div>
             <div className="mt-2 w-full flex justify-between items-end">
@@ -70,19 +47,19 @@ export default function ServicesPage() {
                 <CardDashboard
                     title="Servicios"
                     icon={ClipboardPlus}
-                    data={servicesData.length.toString()}
+                    data={totalServices.toString()}
                 />
 
                 <CardDashboard
                     title="Activos"
                     icon={Check}
-                    data="0"
+                    data={activeServices.toString()}
                 />
 
                 <CardDashboard
                     title="No activos"
                     icon={X}
-                    data="0"
+                    data={inactiveServices.toString()}
                 />
             </div>
 
@@ -93,39 +70,17 @@ export default function ServicesPage() {
                     </div>
 
                     <p className="text-neutral-400 text-sm font-semibold">
-                        {servicesData.length === 1 ? `${servicesData.length} servicio` : `${servicesData.length} servicios`}
+                        {totalServices} {totalServices != 1 ? 'servicios' : 'servicio'}
                     </p>
                 </div>
 
-                {
-                    isLoadingTable ? (
-                        <div className="bg-white w-full rounded-md p-5 flex justify-center">
-                            Cargando...
-                        </div>
-                    )
-
-                        :
-
-                        !servicesData.length ? (
-                            <div className="bg-white w-full rounded-md p-5 flex justify-center">
-                                No hay servicios.
-                            </div>
-                        )
-
-                            :
-
-                            <div className="bg-white rounded-md">
-                                <DataTable
-                                    columns={servicesTableColumns}
-                                    data={servicesData}
-                                />
-                            </div>
-                }
-
+                <div className={`flex justify-center ${(!totalServices || services.isLoading) && 'p-5'}`}>
+                    <ServicesTable />
+                </div>
             </div>
 
             <Modal
-                title="Registrar nuevo servicio"
+                title="Registrar Servicio"
                 description="Por favor llene todos los campos del servicio"
                 open={openModal}
                 onClose={() => setOpenModal(false)}
@@ -133,7 +88,7 @@ export default function ServicesPage() {
                 <CreateServiceForm
                     onSubmit={handleNewService}
                     onCancel={() => setOpenModal(false)}
-                    isSaving={isLoading}
+                    isSaving={createServiceMutation.isPending}
                 />
             </Modal>
         </div>

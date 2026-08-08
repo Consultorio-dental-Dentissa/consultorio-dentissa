@@ -2,49 +2,31 @@ import type { ColumnDef } from "@tanstack/react-table"
 import type { Service } from "@/features/services/types/service.model"
 
 import { formatTotalMinutesToHours } from "@/utils/formatters"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { ActiveSpan } from "@/components/shared/span.component"
 
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FiEdit2 } from "react-icons/fi";
+import { ServiceStatusSwitch } from "./service-status-switch.component"
 
-export const getServicesColumns = (
-    updateStatus: (serviceId: number, status: boolean) => void
-
-): ColumnDef<Service>[] => [
+export const getServicesColumns = (): ColumnDef<Service>[] => [
         {
-            header: 'Nombre',
+            header: 'NOMBRE',
             cell: ({ row }) => <div className="font-medium"> {row.original.name} </div>
         },
         {
-            header: 'Duración total',
+            header: 'DURACIÓN',
             cell: ({ row }) => <div> {formatTotalMinutesToHours(row.original.durationMinutes)} </div>
         },
         {
-            header: 'Precio del servicio',
+            header: 'PRECIO',
             cell: ({ row }) => <div>${row.original.price}</div>
         },
         {
             header: 'ESTADO',
-            cell: ({ row }) => (
-                <Switch
-                    checked={row.original.status}
-                    onClick={() => updateStatus(row.original.id, !row.original.status)}
-                />
-            )
+            cell: ({ row }) => <ServiceStatusSwitch service={row.original} />
         },
         {
-            header: 'Estado',
-            cell: ({ row }) => (
-                <div>
-                    {row.original.description}
-                </div>
-            )
-        },
-        {
-            header: 'Acciones',
+            header: 'ACCIONES',
             cell: () => (
                 <div className="flex gap-2">
                     <Button variant='destructive'><FaRegTrashCan /></Button>
