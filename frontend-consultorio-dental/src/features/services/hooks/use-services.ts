@@ -1,76 +1,37 @@
-import { useState } from "react";
 import { getAllServices, updateServiceStatus, createService } from "@/features/services/services/services.service";
-
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import type { Service } from "@/features/services/types/service.model";
 import type { CreateServiceDto } from "@/features/services/types/create-service.dto";
 
 export function useServices() {
+    return useQuery({
+        queryKey: ['services'],
+        queryFn: () => getAllServices()
+    });
+}
 
-    const [servicesData, setServicesData] = useState<Service[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+export function useCreateService() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newAppointment: CreateServiceDto) => createService(newAppointment),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['services'] })
+    });
+}
 
-    async function useCreateService(createServiceDto: CreateServiceDto): Promise<Service | null> {
-        setError(null);
-        setIsLoading(true);
+export function useUpdateServiceStatus() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, status }: { id: number, status: boolean }) => updateServiceStatus(id, status),
+        onSuccess: (success, variables) => {
 
-        try {
-            const serviceCreated = await createService(createServiceDto);
-            setServicesData(prev => [...prev, serviceCreated]);
-            return serviceCreated;
+            /**
+             * Update the status of the service status 
+             * to avoid making a new GET request to the API
+             */
 
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            setError(errorMessage);
-            return null;
-
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    async function useGetAllServices() {
-
-        setError(null);
-        setIsLoading(true);
-
-        try {
-            const users = await getAllServices();
-            setServicesData(users);
-
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            setError(errorMessage);
-
-        } finally { setIsLoading(false) }
-
-    }
-
-    async function useUpdateServiceStatus(id: number, status: boolean): Promise<boolean> {
-        setError(null);
-        setIsLoading(true);
-
-        try {
-            const isStatusUpdated = await updateServiceStatus(id, status);
-            isStatusUpdated && setServicesData(prev => prev.map(service => service.id === id ? {...service, status} : service));
-            return isStatusUpdated;
-
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            setError(errorMessage);
-            return false;
-
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    return { 
-        servicesData, 
-        useGetAllServices, 
-        useUpdateServiceStatus, 
-        useCreateService, 
-        isLoading, 
-        error 
-    }
+            queryClient.setQueryData<Service[]>(['services'], prev => 
+                prev?.map(service => (service.id === variables.id) ? {...service, status: variables.status} : service)
+            );
+        },
+    });
 }
