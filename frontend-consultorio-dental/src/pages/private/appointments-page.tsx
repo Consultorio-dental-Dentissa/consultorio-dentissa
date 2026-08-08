@@ -6,7 +6,7 @@ import { AppointmentList } from "@/features/appointments/components/appointment-
 import { Modal } from "@/components/shared/modal.component";
 import { CreateAppointmentForm } from "@/features/appointments/components/create-appointment-form.component";
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
-import { Calendar, CalendarCheck, Clock, CalendarSync, Calendars } from "lucide-react";
+import { Calendar, CalendarCheck, Clock, Calendars } from "lucide-react";
 import { useServices } from "@/features/services/hooks/use-services";
 import { usePatients } from "@/features/patients/hooks/use-patients";
 import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
@@ -23,12 +23,11 @@ export default function AppointmentsPage() {
     const appointments = useAppointments();
     const createAppointmentMutation = useCreateAppointment();
 
-    const { servicesData, useGetAllServices } = useServices();
+    const services = useServices();
     const { patients, useGetAllPatients } = usePatients();
 
     useEffect(() => {
         useGetAllPatients();
-        useGetAllServices();
     }, []);
 
     const handleCreatedAppointment = async (appointmentDto: CreateAppointmentDto) => {
@@ -113,21 +112,20 @@ export default function AppointmentsPage() {
                 </div>
             </div>
 
-
-            <Modal
+            {services.data && (
+                <Modal
                 open={openModal}
                 title='Agendar nueva cita'
-                onClose={() => setOpenModal(false)}
-            >
-                <CreateAppointmentForm
-                    onSubmit={handleCreatedAppointment}
-                    onCancel={() => setOpenModal(false)}
-                    isSaving={createAppointmentMutation.isPending}
-                    services={servicesData}
-                    patients={patients}
-                />
-            </Modal>
-
+                onClose={() => setOpenModal(false)}>
+                    <CreateAppointmentForm
+                        onSubmit={handleCreatedAppointment}
+                        onCancel={() => setOpenModal(false)}
+                        isSaving={createAppointmentMutation.isPending}
+                        services={services.data}
+                        patients={patients}
+                    />
+                </Modal>
+            )}
         </>
     )
 }

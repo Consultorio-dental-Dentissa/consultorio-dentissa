@@ -7,19 +7,23 @@ export function AppointmentsDashboardTable() {
   const appointments = useAppointments();
 
   if (appointments.isLoading) {
-    return <Spinner />
+    return (
+      <div className="p-5">
+        <Spinner />
+      </div>
+    )
   }
 
   if (!appointments.data?.length) {
     return (
-      <div>
+      <div className="p-5">
         No se encontraron citas
       </div>
     )
   }
 
   return (
-    <div className="border overflow-hidden">
+    <div className="border overflow-hidden w-full">
       <div className="grid grid-cols-[1.5fr_1.2fr_0.7fr_1fr] px-5 py-2.5 border-b bg-zinc-50 border-zinc-100 text-[10.5px] font-bold text-zinc-400 uppercase tracking-wide">
         <span>Paciente</span>
         <span>Servicio</span>
