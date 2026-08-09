@@ -1,26 +1,20 @@
-import { useEffect } from "react";
 import { usePatients } from "@/features/patients/hooks/use-patients";
 import { PageTitle } from "../../components/shared/page-title.component";
-import { getPatientsColumns } from "@/features/patients/components/patients-columns.component";
-import { DataTable } from "@/components/shared/data-table.component";
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
+import { PatientsTable } from "@/features/patients/components/patients-table.component";
 import { SearchInput } from "@/components/shared/input.component";
 import { User } from "lucide-react";
 
 export default function PatientsPage() {
 
-    const { patients, useGetAllPatients, isLoadingPatients, error } = usePatients();
+    const patients = usePatients();
 
-    useEffect(() => {
-        useGetAllPatients();
-
-    }, []);
-
-    const patientsTableColumns = getPatientsColumns();
+    const totalPatients = patients.data ? patients.data.length : 0;
+    const activePatients = patients.data ? patients.data.filter(p => p.status).length : 0;
+    const inactivePatients = patients.data ? patients.data.filter(p => !p.status).length : 0;
 
     return (
-        <div>
-
+        <>
             <PageTitle
                 titulo="Panel de pacientes"
                 subtitulo="Aqui puedes manejar tus pacientes"
@@ -29,22 +23,29 @@ export default function PatientsPage() {
             <div className="mt-3 flex flex-row gap-5">
                 <CardDashboard
                     title="Pacientes"
-                    data={patients.length.toString()}
+                    data={totalPatients.toString()}
                     icon={User}
                 />
 
                 <CardDashboard
                     title="Activos"
-                    data="0"
+                    data={activePatients.toString()}
                     icon={User}
                 />
 
                 <CardDashboard
                     title="No activos"
-                    data="0"
+                    data={inactivePatients.toString()}
                     icon={User}
                 />
 
+                {
+                /**
+                 * TODO:
+                 * Remember add patientsWithScheduledAppointment property in 
+                 * get patients responses in the future
+                 */
+                }
                 <CardDashboard
                     title="Con cita pendiente"
                     data="0"
@@ -59,37 +60,13 @@ export default function PatientsPage() {
                     </div>
 
                     <p className="text-neutral-400 text-sm font-semibold">
-                        {patients.length === 1 ? `${patients.length} paciente` : `${patients.length} pacientes`}
+                        {totalPatients} {totalPatients != 1 ? 'pacientes' : 'paciente'}
                     </p>
                 </div>
-                {
-                    isLoadingPatients ? (
-                        <div className="bg-white rounded-md p-5 flex justify-center">
-                            Cargando...
-                        </div>
-                    )
-
-                        :
-
-                        !patients.length ? (
-                            <div className="bg-red-500 text-white font-medium rounded-md p-5 flex justify-center">
-                                {error ? error : 'No hay servicios.'}
-                            </div>
-                        )
-
-                            :
-
-                            (
-                                <div className="bg-white rounded-md">
-                                    <DataTable
-                                        columns={patientsTableColumns}
-                                        data={patients}
-                                    />
-                                </div>
-                            )
-                }
+                <div className={`flex justify-center ${(patients.isLoading || !patients.data?.length) && 'p-5'}`}>
+                    <PatientsTable />
+                </div>
             </div>
-        </div>
+        </>
     );
-
 }
