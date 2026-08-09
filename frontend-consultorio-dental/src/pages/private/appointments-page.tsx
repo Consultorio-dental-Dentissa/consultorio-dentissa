@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { PageTitle } from "@/components/shared/page-title.component"
 import { Button } from "@/components/ui/button"
 import { useAppointments, useCreateAppointment } from "@/features/appointments/hooks/use-appointments";
@@ -24,11 +24,7 @@ export default function AppointmentsPage() {
     const createAppointmentMutation = useCreateAppointment();
 
     const services = useServices();
-    const { patients, useGetAllPatients } = usePatients();
-
-    useEffect(() => {
-        useGetAllPatients();
-    }, []);
+    const patients = usePatients();
 
     const handleCreatedAppointment = async (appointmentDto: CreateAppointmentDto) => {
         createAppointmentMutation.mutate(appointmentDto, {
@@ -112,7 +108,7 @@ export default function AppointmentsPage() {
                 </div>
             </div>
 
-            {services.data && (
+            {(services.data && patients.data) && (
                 <Modal
                 open={openModal}
                 title='Agendar nueva cita'
@@ -122,7 +118,7 @@ export default function AppointmentsPage() {
                         onCancel={() => setOpenModal(false)}
                         isSaving={createAppointmentMutation.isPending}
                         services={services.data}
-                        patients={patients}
+                        patients={patients.data}
                     />
                 </Modal>
             )}
