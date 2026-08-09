@@ -4,7 +4,7 @@ import type { CreateAppointmentDto } from "@/features/appointments/types/create-
 
 export function useAppointments(filters?: string) {
     return useQuery({
-        queryKey: ['appointments'],
+        queryKey: ['appointments', filters],
         queryFn: () => getAllAppointments(filters)
     })
 }
