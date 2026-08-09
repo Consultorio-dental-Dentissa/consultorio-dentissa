@@ -3,6 +3,9 @@ import { StatusSpan } from "@/components/shared/span.component"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/shared/data-table.component"
 import { formatDate } from "@/utils/formatters"
+import { useAppointments } from "../hooks/use-appointments"
+import { Spinner } from "@/components/ui/spinner"
+import { STATUS_APPOINTMENT } from "../types/status-appointment.enum"
 
 
 interface AppointmentSmallTableProps {
@@ -35,14 +38,22 @@ const columns = (): ColumnDef<Appointment>[] => [
     ]
 
 
-export function AppointmentSmallTable({ appointments }: AppointmentSmallTableProps) {
+export function AppointmentSmallTable({ patientId }: { patientId: number }) {
     
-    console.log("CITAS:", appointments);
+    const patientAppointments = useAppointments(`patient_id=${patientId}`);
+
+    if (patientAppointments.isLoading) {
+        return <Spinner />
+    }
+
+    if (!patientAppointments.data || !patientAppointments.data.length) {
+        return <p>No se encontraron citas</p>
+    }
 
     return (
         <DataTable
             columns={columns()}
-            data={appointments}
+            data={patientAppointments.data.filter(a => a.status != STATUS_APPOINTMENT.CANCELADA)}
         />
     )
 }
