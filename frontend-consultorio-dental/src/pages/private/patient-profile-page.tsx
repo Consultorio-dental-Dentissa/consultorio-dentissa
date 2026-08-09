@@ -1,38 +1,32 @@
 import { PageTitle } from "@/components/shared/page-title.component"
-import { useEffect, useState } from "react"
-import { usePatients } from "@/features/patients/hooks/use-patients"
+import { useActualPatient } from "@/features/patients/hooks/use-patients";
 import { useAppointments } from "@/features/appointments/hooks/use-appointments";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AppointmentSmallTable } from "@/features/appointments/components/appointment-small-table.component";
-import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
 import { Separator } from "@/components/ui/separator";
 import { formatDate, formatPhone } from "@/utils/formatters";
-import type { Patient } from "@/features/patients/types/patient.model";
+import { Spinner } from "@/components/ui/spinner";
 
 
 export default function PatientProfile() {
 
-    const { useGetPatientById } = usePatients();
-    const [patient, setPatient] = useState<Patient | null>(null);
-    const { id } = useParams();
+    const {id} = useParams();
+    const actualPatient = useActualPatient(Number(id));
+    const actualPatientAppointments = useAppointments(`patient_id=${id}`);
 
-    const appointments = useAppointments(`patient_id=${id}`);
+    if (!id) {
+        return null;
+    }
 
-    useEffect(() => {
+    const totalAppointments = actualPatientAppointments.data ? actualPatientAppointments.data.length : 0;
 
-        async function fetchData() {
-            const patientInfo = await useGetPatientById(Number(id));
-            patientInfo && setPatient(patientInfo);
-        }
+    if (actualPatient.isLoading) {
+        return <Spinner />
+    }
 
-        fetchData();
-    }, [])
-
-    if (!patient) {
-        return (
-            <h2>No se ha encontrado información de este paciente</h2>
-        )
+    if (!actualPatient.data) {
+        return <p>No se ha encontrado información de este paciente</p>
     }
 
     return (
@@ -44,7 +38,7 @@ export default function PatientProfile() {
 
             <div className="bg-white p-5 rounded-lg flex flex-col">
                 <div className="flex justify-between items-center">
-                    <p className="font-medium text-xl"> {`${patient?.name} ${patient?.lastname}`} </p>
+                    <p className="font-medium text-xl"> {`${actualPatient.data?.name} ${actualPatient.data?.lastname}`} </p>
                     <Button variant="primary">Editar perfil</Button>
                 </div>
 
@@ -58,28 +52,28 @@ export default function PatientProfile() {
                     <div className="flex mt-5 justify-between">
                         <div>
                             <p className="font-base text-gray-500">Correo electronico:</p>
-                            <p className="font-medium">{patient.email}</p>
+                            <p className="font-medium">{actualPatient.data.email}</p>
                         </div>
 
-                        <Separator orientation="vertical"/>
+                        <Separator orientation="vertical" />
 
                         <div>
                             <p className="font-base text-gray-500">Telefono:</p>
-                            <p className="font-medium">{formatPhone(patient.phone)}</p>
+                            <p className="font-medium">{formatPhone(actualPatient.data.phone)}</p>
                         </div>
 
-                        <Separator orientation="vertical"/>
+                        <Separator orientation="vertical" />
 
                         <div>
                             <p className="font-base text-gray-500">Telefono de emergencia:</p>
-                            <p className="font-medium">{formatPhone(patient.emergency_phone)}</p>
+                            <p className="font-medium">{formatPhone(actualPatient.data.emergency_phone)}</p>
                         </div>
 
-                        <Separator orientation="vertical"/>
+                        <Separator orientation="vertical" />
 
                         <div>
                             <p className="font-base text-gray-500">Fecha de nacimiento:</p>
-                            <p className="font-medium">{formatDate(patient.birth_date)}</p>
+                            <p className="font-medium">{formatDate(actualPatient.data.birth_date)}</p>
                         </div>
                     </div>
                 </div>
@@ -92,23 +86,12 @@ export default function PatientProfile() {
                     </div>
 
                     <h2 className="font-medium mt-5">Citas agendadas:</h2>
-                    <div className="max-h-75 overflow-y-auto">
-                        {
-                            !appointments.data?.length ?
-                                (
-                                    <h2>No hay citas.</h2>
-                                )
-
-                                :
-
-                                (
-                                    <div className="bg-white rounded-md">
-                                        <AppointmentSmallTable
-                                            appointments={appointments.data.filter(a => a.status != STATUS_APPOINTMENT.CANCELADA)}
-                                        />
-                                    </div>
-                                )
-                        }
+                    <div className={`flex justify-center w-full max-h-75 overflow-y-auto ${(actualPatientAppointments.isLoading || !totalAppointments) && 'p-5'}`}>
+                        
+                        <AppointmentSmallTable
+                            patientId={Number(id)}
+                        />
+                        
                     </div>
                 </div>
             </div>
