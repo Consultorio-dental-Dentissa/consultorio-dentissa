@@ -4,12 +4,11 @@ import { useAuth } from "@/features/auth/context/auth-context-provider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { SidebarApp } from "@/components/shared/sidebar.component"
 import { Header } from "@/components/shared/header.component"
-import { formatFirstLetterUppercase } from "@/utils/formatters"
 import { Spinner } from "@/components/ui/spinner"
 
 export default function PrivateLayout() {
 
-    const { isAuthenticated, user, logOut, loading } = useAuth();
+    const { isAuthenticated, user, loading } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,44 +21,34 @@ export default function PrivateLayout() {
 
     }, [loading, isAuthenticated, user, navigate]);
 
+    
     if (loading) {
         return (
-            <div className="h-screen flex items-center justify-center">
-                <Spinner className="size-8" />
+            <div className="h-screen flex flex-col items-center justify-center gap-2">
+                <Spinner className="size-8" /> Por favor espere...
             </div>
         );
     }
+    
 
     if (!isAuthenticated || !user) {
         return null;
     }
 
-    const handleLogout = () => {
-        logOut();
-        navigate('/login');
-    }
-
-    const username = `${user?.name} ${user?.lastname}`;
-    const role = formatFirstLetterUppercase(user?.role);
-
     return (
-        <div className="h-screen overflow-hidden">
+        <div className="flex w-full h-screen">
             <SidebarProvider>
-                <SidebarApp
-                    logout={handleLogout}
-                />
+                <SidebarApp />
 
-                <main className="flex-1 min-w-0 h-screen flex flex-col">
-                    <Header
-                        username={username}
-                        userRol={role || ''}
-                    />
-                    <div className="bg-gray-100 px-7 py-7 overflow-y-auto flex-1">
-                        <Outlet />
+                <div className="w-full h-full overflow-y-auto flex flex-col">
+                    <Header />
+                    <div className="w-full mx-auto bg-neutral-100 px-7 py-7 flex-1">
+                        <main className="grow">
+                            <Outlet />
+                        </main>
                     </div>
-                </main>
+                </div>
             </SidebarProvider>
-
         </div>
     )
 }

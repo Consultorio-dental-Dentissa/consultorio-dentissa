@@ -9,7 +9,7 @@ import { LayoutGrid, Calendar, Users, User, FileText, Tag,
 
 import type { IconType } from "react-icons/lib"
 import { useAuth } from "@/features/auth/context/auth-context-provider";
-import { Role } from "@/features/users/types/rol.enum";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -36,21 +36,15 @@ const publicityItems: BusinessItem[] = [
     { href: '/notificaciones', label: 'Notificaciones', icon: Bell },
 ]
 
+export function SidebarApp() {
 
-const patientItems: BusinessItem[] = [
-    { href: '/dashboard-paciente', label: 'Dashboard', icon: LayoutGrid },
-]
+    const navigate = useNavigate();
+    const { logOut } = useAuth();
 
-
-interface SidebarAppProps {
-    logout: () => void
-}
-
-
-export function SidebarApp({ logout }: SidebarAppProps) {
-
-    const { user } = useAuth();
-    const isPatient = user?.role === Role.PACIENTE;
+    const handleLogout = () => {
+        logOut();
+        navigate('/login');
+    }
 
     return (
         <Sidebar className="">
@@ -66,31 +60,28 @@ export function SidebarApp({ logout }: SidebarAppProps) {
 
             <SidebarContent className="text-black px-3">
                 <SidebarGroup>
+                    
                     <SidebarGroupLabel className="mt-0 text-white font-bold">GENERAL</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenuComponent
-                            items={isPatient ? patientItems : businessItems}
+                            items={businessItems}
                         />
                     </SidebarGroupContent>
 
-                    {
-                        !isPatient &&
-                        <>
-                            <SidebarGroupLabel className="mt-0 text-white font-bold">PUBLICIDAD</SidebarGroupLabel>
-                            <SidebarGroupContent>
-                                <SidebarMenuComponent
-                                    items={publicityItems}
-                                />
-                            </SidebarGroupContent>
-                        </>
-                    }
+                    <SidebarGroupLabel className="mt-0 text-white font-bold">PUBLICIDAD</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenuComponent
+                            items={publicityItems}
+                        />
+                    </SidebarGroupContent>
+                        
                 </SidebarGroup>
             </SidebarContent>
 
             <SidebarFooter className="px-5">
                 <button
                     className="text-white text-sm font-medium flex items-center gap-2 p-2 rounded-md hover:bg-[#fbeeec] hover:text-rose-500"
-                    onClick={logout}
+                    onClick={handleLogout}
                 >
                     <LogOut size={23} className="font-bold"/>
                     Cerrar sesión
@@ -109,7 +100,7 @@ interface SidebarMenuComponentProps {
 
 
 function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
-    const currentUrl = new URL(window.location.href).pathname.toString();
+    const currentUrl = new URL(window.location.href).pathname;
 
     return (
         <SidebarMenu className="flex-col gap-1">
