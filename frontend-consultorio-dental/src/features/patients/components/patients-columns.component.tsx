@@ -1,8 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Patient } from "@/features/patients/types/patient.model"
 import { formatDate, formatPhone } from "@/utils/formatters"
-import { Button } from "@/components/ui/button"
 import { ActiveSpan } from "@/components/shared/span.component"
+import { Link } from "react-router-dom"
 import { Eye } from "lucide-react"
 
 export const getPatientsColumns = (): ColumnDef<Patient>[] => [
@@ -43,10 +43,12 @@ export const getPatientsColumns = (): ColumnDef<Patient>[] => [
     {
         header: 'PERFIL',
         cell: ({ row }) => (
-            <div className="flex justify-center">
-                <Button variant='secondary' className="w-full" onClick={() =>
-                    document.location.href = `/pacientes/${row.original.id}`}> <Eye />
-                </Button>
+            <div className="flex">
+                <Link 
+                    to={`/pacientes/${row.original.id}`}
+                    className="bg-gray-100 w-full flex justify-center border-2 border-gray-300 rounded-sm p-1">
+                        <Eye size={19}/>
+                </Link>
             </div>
         )
     }
