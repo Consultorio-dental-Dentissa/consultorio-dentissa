@@ -9,7 +9,7 @@ import { LayoutGrid, Calendar, Users, User, FileText, Tag,
 
 import type { IconType } from "react-icons/lib"
 import { useAuth } from "@/features/auth/context/auth-context-provider";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 
 
@@ -100,7 +100,8 @@ interface SidebarMenuComponentProps {
 
 
 function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
-    const currentUrl = new URL(window.location.href).pathname;
+    
+    const { pathname: currentUrl } = useLocation();
 
     return (
         <SidebarMenu className="flex-col gap-1">
@@ -114,7 +115,7 @@ function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
                             className={`group/link font-normal py-3 hover:bg-[#fda4af] ${
                                 isActive ? 'bg-[#fbeeec] font-bold' : ''}`}
                         >
-                            <a href={item.href} className="flex items-center gap-3">
+                            <Link to={item.href} className="flex items-center gap-3">
                                 <item.icon
                                     size={18}
                                     className={`group-hover/link:text-[#ffece9] font-bold ${
@@ -126,7 +127,7 @@ function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
                                 >
                                     {item.label}
                                 </p>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 );
