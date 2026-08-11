@@ -8,7 +8,7 @@ export default function PublicLayout() {
     return (
 
         <div className="flex flex-col h-full px-25 bg-gray-50">
-            <nav className="p-5 bg-gray-50 border-b border-gray-100">
+            <nav className="p-5 shrink-0 bg-gray-50 border-b border-gray-100">
                 <div className="flex flex-row items-center justify-between">
                     <div className="flex items-center">
                         {/* Logo */}
