@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import HomePage from "../pages/public/home-page"
 import About from "../pages/public/about-us-page"
 import LoginPage from "../pages/public/login-page"
-import RegisterPage from "../pages/public/register-page"
+import SignUpPage from "../pages/public/sign-up-page"
 import PublicServicesPage from "../pages/public/public-services-page"
 
 
@@ -33,7 +33,7 @@ export default function Router() {
                     <Route path="/sobre-nosotros" element={<About />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/nuestros-servicios" element={<PublicServicesPage />} />
-                    <Route path="/registrate" element={<RegisterPage />} />
+                    <Route path="/registrate" element={<SignUpPage />} />
                 </Route>
 
                 <Route element={<PrivateLayout />}>

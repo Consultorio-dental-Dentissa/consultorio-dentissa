@@ -21,7 +21,8 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40 border-red-300",
         link: "text-primary underline-offset-4 hover:underline",
-        primary: "bg-rose-400 text-white border-rose-300 hover:bg-rose-500"
+        primary: "bg-rose-400 text-white border-rose-300 hover:bg-rose-500",
+        login: "border-0 flex justify-center items-center gap-3 bg-rose-400 text-white rounded-lg font-bold p-3 transition-shadow duration-300 hover:shadow-lg hover:shadow-rose-300 disabled:bg-rose-300"
       },
       size: {
         default:
@@ -35,6 +36,7 @@ const buttonVariants = cva(
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
+        great: "h-12"
       },
     },
     defaultVariants: {
