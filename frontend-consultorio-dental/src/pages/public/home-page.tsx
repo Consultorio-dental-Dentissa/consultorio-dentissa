@@ -1,18 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { useServices } from "@/features/services/hooks/use-services";
 import { ArrowRight, BriefcaseMedical, Heart, Activity, Phone, Mail, ClipboardPlus } from "lucide-react";
-import { useEffect } from "react";
 import consultorioImg from '@/assets/consultorio.jpg';
 import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
 
     const navigate = useNavigate();
-    const { servicesData, useGetAllServices } = useServices();
+    const services = useServices();
 
-    useEffect(() => {
-        useGetAllServices();
-    }, []);
+    const totalServices = services.data ? services.data.length : 0;
 
     return (
 
@@ -48,7 +45,7 @@ export default function HomePage() {
                         </div>
 
                         <div>
-                            <p className="text-3xl font-bold">{servicesData.length}</p>
+                            <p className="text-3xl font-bold">{ totalServices }</p>
                             <p className="text-gray-400 text-xs font-bold">Servicios</p>
                         </div>
                     </div>
@@ -122,8 +119,8 @@ export default function HomePage() {
                 <div className="flex gap-4 mt-5">
 
                     {
-                        servicesData.length > 0 ?
-                            servicesData.map(service => (
+                        (services.data && totalServices > 0) ?
+                            services.data.map(service => (
                                 <div className="p-5 border bg-white rounded-xl w-[20%]">
                                     <div className="border-b pb-3">
                                         <p className="font-medium text-lg">{service.name}</p>
