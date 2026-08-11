@@ -1,6 +1,6 @@
 import { AuthContext, } from '@/features/auth/context/auth-context';
 import { useState, useContext, type ReactNode, useEffect } from 'react';
-import { useLogin } from '@/features/auth/hooks/use-login';
+import { useLogoutUser } from '@/features/auth/hooks/use-login';
 import type { User } from '@/features/users/types/user.model';
 
 interface AuthProviderProps {
@@ -14,7 +14,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const { useLogoutUser } = useLogin();
+    const logoutMutation = useLogoutUser();
 
     useEffect(() => {
 
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAuthenticated(false);
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
-        await useLogoutUser();
+        logoutMutation.mutate();
     };
 
     return (

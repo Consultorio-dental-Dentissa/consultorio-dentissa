@@ -14,7 +14,7 @@ export async function requestLogin(credentials : LoginDto): Promise<LoginRespons
     return loginResponse;
 }
 
-export async function requestRegister(user: CreateUserDto) : Promise<User> {
+export async function requestSignUp(user: CreateUserDto) : Promise<User> {
     const response = await post<ApiResponse<UserResponse>>('/auth/register', user);
     const userCreated = response.data;
     return userMap(userCreated);
