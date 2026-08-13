@@ -14,7 +14,7 @@ export function Header() {
     const userRole = user ? formatFirstLetterUppercase(user.role) : '';
     
     return (
-        <div className="sticky top-0 shrink-0 backdrop-blur-xl py-5 h-16 bg-neutral-300/30 border-b px-5 flex flex-row items-center justify-between">
+        <div className="sticky top-0 shrink-0 backdrop-blur-xl py-5 h-16 bg-neutral-300/30 border-b px-5 flex flex-row items-center justify-between z-50">
             <SidebarTrigger className="text-black" />
 
             <div className="flex-col justify-center">
