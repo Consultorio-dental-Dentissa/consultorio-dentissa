@@ -1,38 +1,19 @@
-import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button"
 import { SearchInput } from "@/components/shared/input.component";
 import { PageTitle } from "@/components/shared/page-title.component";
 import { UsersTable } from "@/features/users/components/users-table.component";
-import { CreateUserForm } from "@/features/users/components/create-user-form.component";
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
-import { Modal } from "@/components/shared/modal.component";
 import { Users, User, Shield } from "lucide-react";
-import { useCreateUser, useUsers } from "@/features/users/hooks/use-users";
-
-import type { CreateUserDto } from "@/features/users/types/create-user.dto";
-import toast from "react-hot-toast";
+import { useUsers } from "@/features/users/hooks/use-users";
+import { CreateUserModal } from "@/features/users/components/create-user-modal.component";
 
 export default function UsersPage() {
-
-    const [openModal, setOpenModal] = useState(false);
     
     const users = useUsers();
-    const createUser = useCreateUser();
 
-    const handleAddUser = async (userData: CreateUserDto) => {
-        createUser.mutate(userData, {
-            onSuccess: () => {
-                toast.success('El usuario se registró correctamente');
-                setOpenModal(false);
-            },
-            onError: (error) => toast.error(error.message)
-        });
-    }
-
-    const totalUsers = useMemo(() => users.data ? users.data?.length : 0, [users.data]);
-    const totalAdmins = useMemo(() => users.data ? users.data?.filter(u => u.role === 'ADMINISTRADOR').length : 0, [users.data]);
-    const totalAssistans = useMemo(() => users.data ? users.data?.filter(u => u.role === 'ASISTENTE').length : 0, [users.data]);
-    const totalPatients = useMemo(() => users.data ? users.data?.filter(u => u.role === 'PACIENTE').length : 0, [users.data]);
+    const totalUsers = users.data ? users.data.length : 0;
+    const totalAdmins = users.data ? users.data.filter(u => u.role === 'ADMINISTRADOR').length : 0;
+    const totalAssistans = users.data ? users.data.filter(u => u.role === 'ASISTENTE').length : 0;
+    const totalPatients = users.data ? users.data.filter(u => u.role === 'PACIENTE').length : 0;
 
     return (
         <div>
@@ -42,12 +23,7 @@ export default function UsersPage() {
                     subtitulo="Administra las cuentas de administradores, asistentes y pacientes"
                 />
 
-                <Button
-                    variant="primary"
-                    onClick={() => setOpenModal(true)}
-                >
-                    Agregar nuevo usuario
-                </Button>
+                <CreateUserModal />
             </div>
 
             <div className="flex gap-5 mt-5">
@@ -91,18 +67,6 @@ export default function UsersPage() {
                     <UsersTable />
                 </div>
             </div>
-
-            <Modal
-                title='Registrar nuevo usuario'
-                description='Porfavor llena todos los campos'
-                open={openModal}
-                onClose={() => setOpenModal(false)}>
-                <CreateUserForm
-                    onSubmit={handleAddUser}
-                    onCancel={() => setOpenModal(false)}
-                    isSaving={createUser.isPending}
-                />
-            </Modal>
         </div>
     );
 }

@@ -1,41 +1,34 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { UserFormData } from "@/features/users/components/user.schema";
 import { FieldGroup } from "@/components/ui/field";
 import { InputForm, SelectForm } from "@/components/shared/input.component";
 import { createUserSchema } from "@/features/users/components/user.schema";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Role } from "@/features/users/types/rol.enum";
+import { Spinner } from "@/components/ui/spinner";
+import { useCreateUser } from "../hooks/use-users";
 import type { SelectData } from "@/components/shared/select.component";
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";
-import { Spinner } from "@/components/ui/spinner";
+import type { UserFormData } from "@/features/users/components/user.schema";
+import toast from "react-hot-toast";
 
 
-interface CreateUserFormProps {
-    onSubmit: (data: CreateUserDto) => void;
-    onCancel: () => void;
-    isSaving: boolean;
-}
-
-
-const ROLES: SelectData[] = [
+const ROLES_SELECT_DATA: SelectData[] = [
     { value: Role.ADMINISTRADOR, data: "Administrador" },
     { value: Role.ASISTENTE, data: "Asistente" },
     { value: Role.PACIENTE, data: "Paciente" },
 ];
 
 
-export function CreateUserForm({ onSubmit, onCancel, isSaving }: CreateUserFormProps) {
-    const {
-        register,
-        handleSubmit,
-        control,
-        watch,
-        formState: { errors, isSubmitting },
-    } = useForm<UserFormData>({
+export function CreateUserForm({ onSubmit, onCancel }: { onSubmit: () => void, onCancel: () => void }) {
+
+    const { register, handleSubmit, control, watch, formState: { errors } } = useForm<UserFormData>({
         resolver: zodResolver(createUserSchema),
+        mode: 'onChange'
     });
+
+    const createUserMutation = useCreateUser();
 
     const isPatient = watch("role") === Role.PACIENTE;
 
@@ -52,7 +45,13 @@ export function CreateUserForm({ onSubmit, onCancel, isSaving }: CreateUserFormP
 
         createUserDto.role !== Role.PACIENTE && delete createUserDto.patient;
 
-        onSubmit(createUserDto);
+        createUserMutation.mutate(createUserDto, {
+            onSuccess: () => {
+                onSubmit();
+                toast.success('Has registrado un usuario correctamente');
+            },
+            onError: (error) => toast.error(error.message)
+        });
     };
 
     return (
@@ -94,7 +93,7 @@ export function CreateUserForm({ onSubmit, onCancel, isSaving }: CreateUserFormP
                 <Controller control={control} name="role"
                     render={({ field }) => (
                         <SelectForm label="Rol" title="Roles" placeholder="Seleccione un rol"
-                            DATA={ROLES}
+                            DATA={ROLES_SELECT_DATA}
                             onChange={field.onChange}
                             value={field.value}
                             error={errors.role?.message}
@@ -130,12 +129,12 @@ export function CreateUserForm({ onSubmit, onCancel, isSaving }: CreateUserFormP
             <Separator />
 
             <div className="flex justify-end gap-2 mt-2">
-                <Button variant="secondary" type="button" onClick={onCancel}>
+                <Button variant="secondary" type="button" onClick={() => onCancel()}>
                     Cancelar
                 </Button>
                 
-                <Button variant="primary" type="submit" disabled={isSaving}>
-                    {isSaving ? <Spinner />  : 'Registrar usuario'}
+                <Button variant="primary" type="submit" disabled={createUserMutation.isPending}>
+                    {createUserMutation.isPending && <Spinner />} Registrar usuario
                 </Button>
             </div>
         </form>
