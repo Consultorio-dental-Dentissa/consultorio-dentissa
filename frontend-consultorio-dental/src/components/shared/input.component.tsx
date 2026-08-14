@@ -4,7 +4,9 @@ import { ErrorSpan } from "./span.component";
 import { Field } from "@/components/ui/field"
 import { SelectComponent, type SelectData } from "./select.component";
 import { Search } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea";
 import type { UseFormRegisterReturn } from "react-hook-form"
+import { useState } from "react";
 
 interface InputFormProps {
     label?: string;
@@ -26,6 +28,42 @@ export function InputForm({ label, placeholder, error, type, step, registration 
                 step={step}
                 className={`p-5 rounded-md ${error && 'border-2 border-red-400'}`}>
             </Input>
+            {error && <ErrorSpan message={error} />}
+        </Field>
+    )
+}
+
+export function TextareaForm({ placeholder, error, registration, label }: InputFormProps) {
+
+    const [charLenght, setCharLenght] = useState(0);
+
+    return (
+        <Field>
+            <Label>{label}</Label>
+            <div className='relative'>
+                <div className='text-muted-foreground pointer-events-none absolute bottom-3 right-0 flex items-center justify-center pr-3 peer-disabled:opacity-50'>
+                    {charLenght}
+                </div>
+                <Textarea
+                    placeholder={placeholder}
+                    {...registration}
+                    className={`p-5 pb-10 rounded-md ${error && 'border-2 border-red-400'}`}
+                    onChange={(e) => {
+
+                        /**
+                         * INDICACIÓN:
+                         * el campo registration tiene su propio onChange,
+                         * sin embargo al usar un onChange a parte el anterior
+                         * se sobreescribe y solo se ejecuta el onChange que 
+                         * definimos explicitamente. Con esta solucion, nos
+                         * aseguramos de que ambos onChange se ejecuten sin que
+                         * uno reemplace al otro
+                         */
+                        registration?.onChange(e);
+                        setCharLenght(e.target.value.length);
+                    }}
+                />
+            </div>
             {error && <ErrorSpan message={error} />}
         </Field>
     )
@@ -73,7 +111,7 @@ export function SelectForm({ label, title, placeholder, DATA, onChange, value, e
                 data={DATA}
                 onChange={onChange}
                 value={value}
-                styles={error && 'border-2 border-red-400'}
+                styles={`p-5 ${error && 'border-2 border-red-400'}`}
             />
             {error && <ErrorSpan message={error} />}
         </Field>
