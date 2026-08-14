@@ -1,32 +1,14 @@
-import { useMemo, useState } from "react";
-import { PageTitle } from "../../components/shared/page-title.component";
-import { Modal } from "@/components/shared/modal.component";
-import { Button } from "@/components/ui/button";
-import { CreateServiceForm } from "@/features/services/components/create-service-form.component";
-import { useCreateService, useServices } from "@/features/services/hooks/use-services";
+import { PageTitle } from "@/components/shared/page-title.component";
+import { useServices } from "@/features/services/hooks/use-services";
 import { SearchInput } from "@/components/shared/input.component";
 import { CardDashboard } from "@/components/shared/card-dashboard.component";
 import { Check, X, ClipboardPlus } from "lucide-react";
 import { ServicesTable } from "@/features/services/components/services-table.component";
-import type { CreateServiceDto } from "@/features/services/types/create-service.dto";
-import toast from "react-hot-toast";
+import { CreateServiceModal } from "@/features/services/components/create-service-modal.component";
 
 export default function ServicesPage() {
 
-    const [openModal, setOpenModal] = useState(false);
-
     const services = useServices();
-    const createServiceMutation = useCreateService();
-
-    const handleNewService = async (newService: CreateServiceDto): Promise<void> => {
-        createServiceMutation.mutate(newService, {
-            onSuccess: () => {
-                toast.success('Se registró un nuevo servicio');
-                setOpenModal(false);
-            },
-            onError: (error) => toast.error(error.message),
-        });
-    }  
     
     const totalServices = services.data ? services.data.length : 0;
     const activeServices = services.data ? services.data.filter(s => s.status).length : 0;
@@ -40,7 +22,7 @@ export default function ServicesPage() {
                     subtitulo="Aqui puedes manejar tus servicios"
                 />
 
-                <Button variant="primary" onClick={() => setOpenModal(true)}>Agregar nuevo servicio</Button>
+                <CreateServiceModal />
             </div>
 
             <div className="flex gap-5 mt-5">
@@ -78,19 +60,6 @@ export default function ServicesPage() {
                     <ServicesTable />
                 </div>
             </div>
-
-            <Modal
-                title="Registrar Servicio"
-                description="Por favor llene todos los campos del servicio"
-                open={openModal}
-                onClose={() => setOpenModal(false)}
-            >
-                <CreateServiceForm
-                    onSubmit={handleNewService}
-                    onCancel={() => setOpenModal(false)}
-                    isSaving={createServiceMutation.isPending}
-                />
-            </Modal>
         </div>
     );
 

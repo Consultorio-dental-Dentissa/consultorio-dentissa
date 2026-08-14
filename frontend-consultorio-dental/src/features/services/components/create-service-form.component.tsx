@@ -3,26 +3,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateServiceSchema } from "@/features/services/components/service.schema";
 import type { ServiceInputData, ServiceOutputData } from "@/features/services/components/service.schema";
 import { FieldGroup } from "@/components/ui/field"
-import { InputForm } from "@/components/shared/input.component"
+import { InputForm, TextareaForm } from "@/components/shared/input.component"
 import { Button } from '@/components/ui/button'
 import type { CreateServiceDto } from '@/features/services/types/create-service.dto';
 import { Spinner } from "@/components/ui/spinner";
+import { useCreateService } from "../hooks/use-services";
+import toast from "react-hot-toast";
 
 
 interface CreateServiceFormProps {
-    onSubmit: (nuevoServicio: CreateServiceDto) => Promise<void>
+    onSubmit: () => void
     onCancel: () => void;
-    isSaving: boolean;
 }
 
-export function CreateServiceForm({ onSubmit, onCancel, isSaving }: CreateServiceFormProps) {
+export function CreateServiceForm({ onSubmit, onCancel }: CreateServiceFormProps) {
+
+    const createService = useCreateService();
 
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting }
+        formState: { errors }
     } = useForm<ServiceInputData, any, ServiceOutputData>({
-        resolver: zodResolver(CreateServiceSchema)
+        resolver: zodResolver(CreateServiceSchema),
+        mode: 'onChange'
     })
 
     const handleFormSubmit = async (data: ServiceOutputData) => {
@@ -36,7 +40,13 @@ export function CreateServiceForm({ onSubmit, onCancel, isSaving }: CreateServic
             description: data.description
         }
 
-        onSubmit(createServiceDto);
+        createService.mutate(createServiceDto, {
+            onSuccess: () => {
+                onSubmit();
+                toast.success('Servicio registrado exitosamente')
+            },
+            onError: (error) => toast.error(error.message)
+        });
     }
 
     return (
@@ -70,7 +80,9 @@ export function CreateServiceForm({ onSubmit, onCancel, isSaving }: CreateServic
             </FieldGroup>
             <FieldGroup className='flex-row'>
 
-                <InputForm label="Descripción" placeholder="Ingresa una descripción del servicio"
+                <TextareaForm 
+                    label="Descripción" 
+                    placeholder="Ingresa una descripción del servicio"
                     registration={register('description')}
                     error={errors.description?.message}
                 />
@@ -87,8 +99,8 @@ export function CreateServiceForm({ onSubmit, onCancel, isSaving }: CreateServic
 
             <FieldGroup className="flex flex-row justify-end gap-2 mt-2">
                 <Button variant="secondary" onClick={onCancel} type="button">Cancelar</Button>
-                <Button variant="primary" type="submit" disabled={isSaving}>
-                    {isSaving ? <Spinner /> : 'Registrar servicio'}
+                <Button variant="primary" type="submit" disabled={createService.isPending}>
+                    {createService.isPending && <Spinner /> } Registrar servicio
                 </Button>
             </FieldGroup>
         </form>
