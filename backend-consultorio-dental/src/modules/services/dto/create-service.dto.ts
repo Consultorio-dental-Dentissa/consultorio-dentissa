@@ -4,7 +4,8 @@ import {
     Min, 
     IsNumber, 
     IsInt, 
-    IsDefined 
+    IsDefined, 
+    MaxLength
 } from 'class-validator'
 
 export class CreateServiceDto {
@@ -22,6 +23,7 @@ export class CreateServiceDto {
     @IsDefined({ message: 'La descripción del servicio es requerida' })
     @IsNotEmpty({ message: 'La descripción del servicio es requerida' })
     @IsString({ message: "La descripción del servicio debe ser un texto plano" })
+    @MaxLength(300, { message: 'La descripción debe tener maximo 300 caracteres' })
     description!: string;
 
     @IsDefined({ message: 'El precio del servicio es requerido' })
