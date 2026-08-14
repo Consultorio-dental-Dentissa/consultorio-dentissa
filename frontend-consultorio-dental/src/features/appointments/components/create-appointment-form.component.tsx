@@ -1,43 +1,40 @@
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field';
-import { InputForm } from '@/components/shared/input.component';
+import { InputForm, TextareaForm } from '@/components/shared/input.component';
 import { useMemo } from 'react';
 import { SelectForm } from '@/components/shared/input.component';
-import type { Service } from '@/features/services/types/service.model';
-import type { Patient } from '@/features/patients/types/patient.model';
+import { useServices } from "@/features/services/hooks/use-services";
+import { usePatients } from "@/features/patients/hooks/use-patients";
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Spinner } from '@/components/ui/spinner';
-import type { CreateAppointmentDto } from '@/features/appointments/types/create-appointment.dto';
+import { type CreateAppointmentDto } from '@/features/appointments/types/create-appointment.dto';
+import { type CreateAppointmentInput, type CreateAppointmentOutput, CreateAppointmentSchema } from '@/features/appointments/components/appointment.schema';
+import { useCreateAppointment } from '../hooks/use-appointments';
+import toast from 'react-hot-toast';
 
-import { 
-    type CreateAppointmentInput, 
-    type CreateAppointmentOutput, 
-    CreateAppointmentSchema 
-} from '@/features/appointments/components/appointment.schema';
 
 interface CreateAppointmentFormProps {
-    onSubmit: (dto: CreateAppointmentDto) => void;
+    onSubmit: () => void;
     onCancel: () => void;
-    isSaving: boolean;
-    services: Service[];
-    patients: Patient[];
 }
 
 
-export function CreateAppointmentForm({ onSubmit, onCancel, isSaving, patients, services }: CreateAppointmentFormProps) {
+export function CreateAppointmentForm({ onSubmit, onCancel }: CreateAppointmentFormProps) {
 
-    /**
-     * Definimos el esquema
-     */
+
+    const patients = usePatients();
+    const services = useServices();
+    const createAppointmentMutation = useCreateAppointment();
+
+    // Definimos el esquema
     const {
         register,
         handleSubmit,
         control,
-        formState: {
-            errors
-        } } = useForm<CreateAppointmentInput, any, CreateAppointmentOutput>({
-            resolver: zodResolver(CreateAppointmentSchema)
+        formState: { errors } } = useForm<CreateAppointmentInput, any, CreateAppointmentOutput>({
+            resolver: zodResolver(CreateAppointmentSchema),
+            mode: 'onChange'
         });
 
     /**
@@ -60,38 +57,34 @@ export function CreateAppointmentForm({ onSubmit, onCancel, isSaving, patients, 
             notes: data.notes
         }
 
-        onSubmit(dto);
+        createAppointmentMutation.mutate(dto, {
+            onSuccess: () => {
+                onSubmit();
+                toast.success('Cita agendada correctamente');
+            },
+            onError: (error) => toast.error(error.message)
+        })
     }
 
-    /**
-     * INDICACIÓN:
-     * Definimos los arrays de datos para los select
-     */
-
-    const servicesSelectData = useMemo(() => services.map(ser => ({ 
-        value: ser.id, 
-        data: ser.name 
-    })), [services]);
+    // Arrays de datos para los selects
+    const servicesSelectData = useMemo(() => services.data ? services.data?.filter(s => s.status).map(service => ({ value: service.id, data: service.name })) : [], [services.data]);
     
-    const patientsSelectData = useMemo(() => patients.map(pa => ({ 
-        value: pa.id, 
-        data: `${pa.name} ${pa.lastname}` 
-    })), [patients]);
+    const patientsSelectData = useMemo(() => patients.data ? patients.data?.filter(s => s.status).map(patient => ({ value: patient.id, data: `${patient.name} ${patient.lastname}` })) : [], [patients.data]);
 
 
     return (
-        <form className='flex flex-col gap-5' onSubmit={handleSubmit(handleSubmitForm)}>
+        <form className='flex flex-col gap-5 max-w-full' onSubmit={handleSubmit(handleSubmitForm)}>
             <FieldGroup className='flex-row'>
 
                 <Controller control={control} name="service_id"
                     render={({ field }) => (
                         <SelectForm 
-                            label="Servicio" 
+                            label="Servicio"
                             title="Servicios" 
                             onChange={field.onChange}
                             value={field.value}
                             DATA={servicesSelectData}
-                            placeholder={ !servicesSelectData.length ? 'No hay servicios' : 'Seleccione un servicio' }
+                            placeholder={servicesSelectData.length ? 'Seleccione un servicio' : 'No hay servicios' }
                             error={errors.service_id?.message}
                         />
                     )}
@@ -100,12 +93,12 @@ export function CreateAppointmentForm({ onSubmit, onCancel, isSaving, patients, 
                 <Controller control={control} name="patient_id"
                     render={({ field }) => (
                         <SelectForm 
-                            label="Paciete" 
+                            label="Paciente" 
                             title="Pacientes" 
                             onChange={field.onChange}
                             DATA={patientsSelectData}
                             value={field.value}
-                            placeholder={ !patientsSelectData.length ? 'No hay pacientes' : 'Seleccione un paciente' }
+                            placeholder={patientsSelectData.length ? 'Seleccione un paciente' : 'No hay pacientes'}
                             error={errors.patient_id?.message}
                         />
                     )}
@@ -132,7 +125,7 @@ export function CreateAppointmentForm({ onSubmit, onCancel, isSaving, patients, 
             </FieldGroup>
 
             <FieldGroup>
-                <InputForm
+                <TextareaForm
                     label='Notas'
                     placeholder='Por favor escriba una nota previa para la cita'
                     registration={register('notes')}
@@ -149,8 +142,8 @@ export function CreateAppointmentForm({ onSubmit, onCancel, isSaving, patients, 
                     Cancelar
                 </Button>
                 
-                <Button variant="primary" type="submit" disabled={isSaving}>
-                    {isSaving ? <Spinner />  : 'Agendar cita'}
+                <Button variant="primary" type="submit" disabled={createAppointmentMutation.isPending}>
+                    {createAppointmentMutation.isPending ? <Spinner />  : 'Agendar cita'}
                 </Button>
 
             </FieldGroup>
