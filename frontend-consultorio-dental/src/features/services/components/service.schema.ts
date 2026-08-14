@@ -17,10 +17,12 @@ export const CreateServiceSchema = z.object({
     duration_minutes: z
         .coerce
         .number<unknown>("Los minutos deben ser exclusivamente números enteros")
-        .min(0),
+        .min(0)
+        .max(60, 'No puedes registrar mas de 60 minutos'),
     description: z
         .string()
-        .min(1, 'Campo obligatorio'),
+        .min(1, 'Campo obligatorio')
+        .max(300, 'La descripcion debe tener maximo 300 caracteres'),
 }).superRefine((data, ctx) => {
 
     const totalDuration = (data.duration_hours * 60) + (data.duration_minutes ?? 0);
