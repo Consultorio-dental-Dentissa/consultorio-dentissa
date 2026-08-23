@@ -53,22 +53,22 @@ api.interceptors.response.use(
 )
 
 
-export async function get<T>(endpoint: string): Promise<T> {
+export async function get<T>(endpoint: string): Promise<ApiResponse<T>> {
     return api.get(endpoint);
 }
 
-export async function post<T>(endpoint: string, data: object): Promise<T> {
+export async function post<T>(endpoint: string, data: object): Promise<ApiResponse<T>> {
     return api.post(endpoint, data);
 }
 
-export async function put<T>(endpoint: string, data: object): Promise<T> {
+export async function put<T>(endpoint: string, data: object): Promise<ApiResponse<T>> {
     return api.put(endpoint, data)
 }
 
-export async function patch<T>(endpoint: string, data: object): Promise<T> {
+export async function patch<T>(endpoint: string, data: object): Promise<ApiResponse<T>> {
     return api.patch(endpoint, data);
 }
 
-export async function deleteR<T>(endpoint: string): Promise<T> {
+export async function deleteR<T>(endpoint: string): Promise<ApiResponse<T>> {
     return api.delete(endpoint);
 }
