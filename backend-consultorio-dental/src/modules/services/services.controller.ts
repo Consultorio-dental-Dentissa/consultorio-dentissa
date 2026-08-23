@@ -3,6 +3,7 @@ import { ServicesService } from './services.service';
 import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { IsActiveUserGuard } from '../../infrastructure/security/guards/is-active-user.guard';
+import { Public } from 'src/infrastructure/security/decorators/public.decorator';
 
 @UseGuards(AuthGuard, IsActiveUserGuard)
 @Controller('services')
@@ -10,6 +11,7 @@ export class ServiciosController {
 
     constructor(private servicesService: ServicesService) {}
 
+    @Public()
     @Get()
     async get() {
         return await this.servicesService.getAllServices();

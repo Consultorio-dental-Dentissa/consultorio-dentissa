@@ -2,27 +2,38 @@ import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
-import { Public } from '../decorators/public.decorator';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
 
     constructor(
         private jwtService: JwtService,
-        // private reflector: Reflector
+        private reflector: Reflector
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
 
         try {
 
-            /*
-            // Evaluamos si el endpoint que potege el guarda es publico
-            const es_publico = this.reflector.get(Public, context.getHandler());
-            if (es_publico) {
+            /**
+             * INDICACIÓN:
+             * Evaluamos si el endpoint que protege el guard es publico
+             */
 
+            const isPublic = this.reflector.getAllAndOverride<boolean>(
+                IS_PUBLIC_KEY,
+                [
+                    context.getHandler(),
+                    context.getClass(),
+                ]
+            );
+
+            if (isPublic) {
+                return true;
             }
-            */
+
+            // Si no lo es, validamos el token
             const request = context.switchToHttp().getRequest();
             const token = request.cookies['access_token'];
 
