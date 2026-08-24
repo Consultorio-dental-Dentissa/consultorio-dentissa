@@ -7,10 +7,13 @@ import { SearchInput } from "@/components/shared/input.component";
 import { Button } from "@/components/ui/button";
 import { Calendars } from "lucide-react";
 import { useState } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 
 export default function AppointmentsPage() {
 
     const [status, setStatus] = useState<string | null>(null);
+    const [search, setSearch] = useState<string>("");
+    const debouncedSearch = useDebounce(search, 300);
 
     return (
         <>
@@ -33,7 +36,12 @@ export default function AppointmentsPage() {
                             value={status}
                             onChange={setStatus}
                         />
-                        <SearchInput placeholder="Buscar por nombre del paciente"/>
+
+                        <SearchInput 
+                            placeholder="Buscar por nombre del paciente"
+                            onChange={(e) => setSearch(e.target.value)}
+                            value={search}
+                        />
 
                     </div>
 
@@ -44,7 +52,12 @@ export default function AppointmentsPage() {
                 </div>
 
                 <div className="border-t p-5">
-                    <AppointmentList />
+                    <AppointmentList
+                        filters={{
+                            status: status ?? undefined,
+                            search: debouncedSearch
+                        }}
+                    />
                 </div>
             </div>
         </>

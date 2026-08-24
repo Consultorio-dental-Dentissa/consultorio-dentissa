@@ -4,8 +4,9 @@ import { AppointmentInfoModal } from "@/features/appointments/components/appoint
 import { useAppointments } from "@/features/appointments/hooks/use-appointments";
 import { Spinner } from "@/components/ui/spinner";
 import type { Appointment } from "@/features/appointments/types/appointment.model"
+import type { AppointmentFilters } from "../types/appointment.filters";
 
-export function AppointmentList() {
+export function AppointmentList({ filters } : { filters?: AppointmentFilters }) {
 
     const [openInfoModal, setOpenInfoModal] = useState(false);
     const [actualAppointment, setActualAppointment] = useState<Appointment | null>(null);
@@ -15,7 +16,7 @@ export function AppointmentList() {
         setActualAppointment(appointment);
     }
     
-    const appointments = useAppointments();
+    const appointments = useAppointments(filters);
     
     return (
         <>

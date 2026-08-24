@@ -78,11 +78,19 @@ export function TextareaForm({ placeholder, error, registration, label }: InputF
  * Remember to use useDebounce to make the function run after
  * the user finishes typing in the input
  */
-export function SearchInput({ placeholder }: InputFormProps) {
+
+interface SearchInputProps {
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    value?: string;
+    placeholder?: string;
+}
+export function SearchInput({ onChange, value, placeholder }: SearchInputProps) {
     return (
         <div className="relative">
             <Input
+                onChange={onChange}
                 placeholder={placeholder}
+                value={value}
                 className="pl-10 py-4 rounded-md focus-visible:ring-rose-200 focus-visible:border-rose-300"
             />
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

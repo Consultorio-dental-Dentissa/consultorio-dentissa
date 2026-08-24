@@ -18,9 +18,9 @@ export function SelectFilterAppointment({ value, onChange }: SelectFilterProps) 
     ];
 
     return (
-        <Select value={value ? value : 'TODOS'} onValueChange={onChange} defaultValue={SelectStatusData[0].value}>
+        <Select value={value ? value : 'TODOS'} onValueChange={onChange}>
             <SelectTrigger className='flex rounded-md py-4'>
-                Estado: <SelectValue />
+                Estado: <SelectValue className="font-bold"/>
             </SelectTrigger>
             <SelectContent position='popper' className='w-full'>
                 {SelectStatusData.map(item => (

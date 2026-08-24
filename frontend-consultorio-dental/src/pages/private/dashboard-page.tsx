@@ -34,7 +34,7 @@ export default function DashboardPage() {
         />
 
         <CardDashboard
-          title="Citas de mañana"
+          title="Servicios activos"
           data={`0`}
           icon={SquarePlus}
         />

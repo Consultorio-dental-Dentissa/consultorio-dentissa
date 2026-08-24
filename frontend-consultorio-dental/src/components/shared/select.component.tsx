@@ -9,9 +9,9 @@ export interface SelectData {
 }
 
 interface SelectProps {
-    title: string;
+    title?: string;
     placeholder?: string;
-    onChange: (e: any) => void;
+    onChange?: (e: any) => void;
     data: SelectData[],
     value?: string;
     styles?: string;
@@ -20,14 +20,11 @@ interface SelectProps {
 export function SelectComponent({ title, placeholder, data, onChange, value, styles }: SelectProps) {
     return (
         <Select onValueChange={onChange} value={value}>
-            <SelectTrigger className={`w-full p-5 rounded-md ${styles}`}>
-                <SelectValue placeholder={placeholder} />
+            <SelectTrigger className={`rounded-md ${styles}`}>
+                <SelectValue className="placeholder:text-black" placeholder={placeholder} />
             </SelectTrigger>
-            <SelectContent className='px-5 py-1 flex justify-center'>
-                <SelectGroup>
-                    <SelectLabel>{title}</SelectLabel>
+            <SelectContent position="popper">
                     {data.map((dato) => <SelectItem value={String(dato.value)}>{String(dato.data)}</SelectItem>)}
-                </SelectGroup>
             </SelectContent>
         </Select>
     )
