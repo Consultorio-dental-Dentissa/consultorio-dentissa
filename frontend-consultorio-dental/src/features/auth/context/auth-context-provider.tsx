@@ -43,6 +43,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, []);
 
 
+    useEffect(() => {
+
+        const handleSessionExpired = () => {
+            setUser(null);
+            setIsAuthenticated(false);
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
+        };
+
+        window.addEventListener('auth:session-expired', handleSessionExpired);
+
+        return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
+
+    }, []);
+
+
     const saveUserData = (user: User) => {
 
         // Autenticamos al usuario y guardamos sus datos
