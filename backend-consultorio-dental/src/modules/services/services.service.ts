@@ -1,14 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ServicesRepository } from './repositories/services.repository';
 import { CreateServiceDto } from './dto/create-service.dto';
+import { GetServicesDto } from './dto/get-services.dto';
 
 @Injectable()
 export class ServicesService {
 
     constructor(private servicesRepository: ServicesRepository) { }
 
-    async getAllServices() {
-        return this.servicesRepository.getAll();
+    async getAllServices(filters?: GetServicesDto) {
+        return this.servicesRepository.getAll(filters);
     }
 
     async updateServiceStatus(id: number, estado: boolean) {
