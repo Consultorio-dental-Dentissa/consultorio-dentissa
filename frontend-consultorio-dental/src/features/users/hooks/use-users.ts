@@ -2,12 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateUserStatus, createUser, getAllUsers } from "@/features/users/services/users.service"
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";
 import type { User } from "@/features/users/types/user.model";
+import type { UserFilters } from "@/features/users/types/user.filters";
 
 
-export function useUsers() {
+export function useUsers(filters?: UserFilters) {
     return useQuery({
-        queryKey: ['users'],
-        queryFn: () => getAllUsers()
+        queryKey: ['users', filters],
+        queryFn: () => getAllUsers(filters)
     });
 }
 
