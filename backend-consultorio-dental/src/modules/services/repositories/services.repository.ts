@@ -1,14 +1,34 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { CreateServiceDto } from "../dto/create-service.dto";
+import { GetServicesDto } from "../dto/get-services.dto";
 
 @Injectable()
 export class ServicesRepository {
 
     constructor(private prisma: PrismaService) { }
 
-    async getAll() {
-        return await this.prisma.service.findMany();
+    async getAll(filters?: GetServicesDto) {
+
+        /**
+         * INDICACIÓN:
+         * "price" es un campo Decimal, no un texto, así que no
+         * se puede buscar con "contains" como el resto de los
+         * campos. Si lo que se escribió en la búsqueda es un
+         * número válido, además de buscar por nombre, se
+         * agrega una comparación exacta contra el precio.
+         */
+        const searchAsPrice = filters?.search ? Number(filters.search) : NaN;
+
+        return await this.prisma.service.findMany({
+            where: {
+                status: filters?.status,
+                OR: filters?.search ? [
+                    { name: { contains: filters.search, mode: 'insensitive' } },
+                    ...(Number.isNaN(searchAsPrice) ? [] : [{ price: searchAsPrice }])
+                ] : undefined
+            }
+        });
     }
 
     async existByName(name: string) {

@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards, Post, Body, Delete, ParseIntPipe, Param, Patch } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Body, Delete, ParseIntPipe, Param, Patch, Query } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { CreateServiceDto } from './dto/create-service.dto';
+import { GetServicesDto } from './dto/get-services.dto';
 import { IsActiveUserGuard } from '../../infrastructure/security/guards/is-active-user.guard';
 import { Public } from 'src/infrastructure/security/decorators/public.decorator';
 
@@ -13,8 +14,8 @@ export class ServiciosController {
 
     @Public()
     @Get()
-    async get() {
-        return await this.servicesService.getAllServices();
+    async get(@Query() filters: GetServicesDto) {
+        return await this.servicesService.getAllServices(filters);
     }
 
     @Patch('status/:id')
