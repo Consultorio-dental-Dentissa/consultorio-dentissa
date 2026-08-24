@@ -6,6 +6,23 @@ const api = axios.create({
     withCredentials: true
 });
 
+/**
+ * Evita que varias peticiones que expiran al mismo tiempo disparen
+ * cada una su propia llamada a /auth/refresh: todas comparten esta
+ * misma promesa mientras el refresh está en curso.
+ */
+let refreshPromise: Promise<unknown> | null = null;
+
+function refreshAccessToken() {
+    if (!refreshPromise) {
+        refreshPromise = api.post('/auth/refresh').finally(() => {
+            refreshPromise = null;
+        });
+    }
+
+    return refreshPromise;
+}
+
 api.interceptors.response.use(
     (response) => {
 
@@ -20,12 +37,30 @@ api.interceptors.response.use(
 
         return response.data;
     },
-    (error) => {
+    async (error) => {
 
         if (!axios.isAxiosError(error)) {
             console.log("Error no esperado");
 
             throw new Error('Error desconocido');
+        }
+
+        const originalRequest = error.config as (typeof error.config & { _retry?: boolean });
+        const isAuthEndpoint = originalRequest?.url?.includes('/auth/login') || originalRequest?.url?.includes('/auth/refresh');
+
+        if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthEndpoint) {
+            originalRequest._retry = true;
+
+            try {
+                await refreshAccessToken();
+                return api(originalRequest);
+            } catch {
+                /**
+                 * El refresh token tambien expiró o fue revocado.
+                 * Avisamos a la app para que cierre la sesión.
+                 */
+                window.dispatchEvent(new Event('auth:session-expired'));
+            }
         }
 
         /* --RECORDAR: Manejar el contrato de respuestas de error */
