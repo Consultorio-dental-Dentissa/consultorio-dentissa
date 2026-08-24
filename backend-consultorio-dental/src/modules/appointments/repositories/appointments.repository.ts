@@ -13,7 +13,12 @@ export class AppointmentsRepository {
         return await this.prisma.appointment.findMany({
             where: {
                 patient_id: filters.patient_id,
-                status: filters.status
+                status: filters.status,
+                OR: filters.search ? [
+                    { patient: { user: { name: { contains: filters.search, mode: 'insensitive' } } } },
+                    { patient: { user: { lastname: { contains: filters.search, mode: 'insensitive' } } } },
+                    { service: { name: { contains: filters.search, mode: 'insensitive' } } },
+                ] : undefined
             },
             select: {
                 id: true,

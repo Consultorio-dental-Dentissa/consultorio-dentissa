@@ -9,6 +9,9 @@ export class GetAppointmentsDto {
     patient_id?: number;
 
     @IsOptional()
+    search?: string;
+
+    @IsOptional()
     @Transform(({ value }) => value.toUpperCase())
     @IsEnum(AppointmentStatus, {message: `El estatus debe ser de: ${Object.values(AppointmentStatus)}`})
     status?: AppointmentStatus
