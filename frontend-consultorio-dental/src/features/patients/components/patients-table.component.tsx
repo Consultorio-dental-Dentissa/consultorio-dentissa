@@ -2,10 +2,11 @@ import { DataTable } from "@/components/shared/data-table.component"
 import { getPatientsColumns } from "./patients-columns.component"
 import { usePatients } from "../hooks/use-patients";
 import { Spinner } from "@/components/ui/spinner";
+import type { PatientFilters } from "@/features/patients/types/patient.filters";
 
-export function PatientsTable() {
+export function PatientsTable({ filters }: { filters?: PatientFilters }) {
 
-    const patiens = usePatients();
+    const patiens = usePatients(filters);
     const columns = getPatientsColumns();
 
     if (patiens.isLoading) {
