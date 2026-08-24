@@ -21,8 +21,22 @@ model User {
   notifications Notification[]
   patient       Patient?
   role          Role           @relation(fields: [role_id], references: [id])
+  refreshTokens RefreshToken[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  token_hash String    @unique
+  user_id    Int
+  expires_at DateTime
+  revoked_at DateTime?
+  created_at DateTime  @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("refresh_tokens")
 }
 
 model Role {
