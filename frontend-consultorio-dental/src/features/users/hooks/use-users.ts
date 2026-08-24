@@ -27,11 +27,17 @@ export function useUpdateUserStatus() {
         onSuccess: (success, variables) => {
 
             /**
-             * Update the status of the user status 
-             * to avoid making a new GET request to the API
+             * Update the status of the user status
+             * to avoid making a new GET request to the API.
+             * Uses setQueriesData (plural, partial key match) instead
+             * of setQueryData so every cached filter combination for
+             * ['users', ...] gets updated, not just the unfiltered one.
              */
 
-            queryClient.setQueryData<User[]>(['users'], prev => prev?.map(user => (user.id === variables.id) ? {...user, status: variables.status} : user));
+            queryClient.setQueriesData<User[]>(
+                { queryKey: ['users'] },
+                prev => prev?.map(user => (user.id === variables.id) ? {...user, status: variables.status} : user)
+            );
         },
     });
 }

@@ -26,12 +26,16 @@ export function useUpdateServiceStatus() {
         onSuccess: (success, variables) => {
 
             /**
-             * Update the status of the service status 
-             * to avoid making a new GET request to the API
+             * Update the status of the service status
+             * to avoid making a new GET request to the API.
+             * Uses setQueriesData (plural, partial key match) instead
+             * of setQueryData so every cached filter combination for
+             * ['services', ...] gets updated, not just the unfiltered one.
              */
 
-            queryClient.setQueryData<Service[]>(['services'], prev => 
-                prev?.map(service => (service.id === variables.id) ? {...service, status: variables.status} : service)
+            queryClient.setQueriesData<Service[]>(
+                { queryKey: ['services'] },
+                prev => prev?.map(service => (service.id === variables.id) ? {...service, status: variables.status} : service)
             );
         },
     });
