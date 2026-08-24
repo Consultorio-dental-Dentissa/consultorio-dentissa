@@ -2,14 +2,25 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from "@prisma/client";
 import { PrismaService } from "src/infrastructure/prisma/prisma.service";
 import { CreateUserDto } from '../dto/create-user.dto';
+import { GetUsersDto } from '../dto/get-users.dto';
 
 @Injectable()
 export class UsersRepository {
 
     constructor(private prisma: PrismaService) { }
 
-    async getAll() {
+    async getAll(filters?: GetUsersDto) {
         return await this.prisma.user.findMany({
+            where: {
+                role: filters?.role ? { role: filters.role } : undefined,
+                status: filters?.status,
+                OR: filters?.search ? [
+                    { name: { contains: filters.search, mode: 'insensitive' } },
+                    { lastname: { contains: filters.search, mode: 'insensitive' } },
+                    { email: { contains: filters.search, mode: 'insensitive' } },
+                    { phone: { contains: filters.search, mode: 'insensitive' } },
+                ] : undefined
+            },
             include: {
                 role: true
             }

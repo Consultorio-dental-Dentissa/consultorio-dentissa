@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, Param } from '@nest
 import { UsersRepository } from './repositories/users.repository';
 import { PatientsRepository } from '../patients/repositories/patients.repository';
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetUsersDto } from './dto/get-users.dto';
 import type { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Role } from './enums/rol.enum';
@@ -19,8 +20,8 @@ export class UsersService {
     ) { }
 
 
-    async getAllUsers(): Promise<User[]> {
-        return await this.usersRepository.getAll();
+    async getAllUsers(filters?: GetUsersDto): Promise<User[]> {
+        return await this.usersRepository.getAll(filters);
     }
 
 
