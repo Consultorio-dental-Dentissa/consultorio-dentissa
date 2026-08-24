@@ -1,7 +1,8 @@
-import { Controller, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { Get, Post, Patch,  Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetUsersDto } from './dto/get-users.dto';
 import { AuthGuard } from '../../infrastructure/security/guards/auth.guard';
 import { IsActiveUserGuard } from '../../infrastructure/security/guards/is-active-user.guard';
 
@@ -12,8 +13,8 @@ export class UsersController {
     constructor(private userService: UsersService) { }
 
     @Get()
-    async get() {
-        return await this.userService.getAllUsers();
+    async get(@Query() filters: GetUsersDto) {
+        return await this.userService.getAllUsers(filters);
     }
 
     @Get(':id')
