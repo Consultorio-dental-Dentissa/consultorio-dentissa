@@ -2,11 +2,12 @@ import { getAllServices, updateServiceStatus, createService } from "@/features/s
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import type { Service } from "@/features/services/types/service.model";
 import type { CreateServiceDto } from "@/features/services/types/create-service.dto";
+import type { ServiceFilters } from "@/features/services/types/service.filters";
 
-export function useServices() {
+export function useServices(filters?: ServiceFilters) {
     return useQuery({
-        queryKey: ['services'],
-        queryFn: () => getAllServices()
+        queryKey: ['services', filters],
+        queryFn: () => getAllServices(filters)
     });
 }
 

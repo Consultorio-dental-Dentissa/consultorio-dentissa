@@ -3,11 +3,12 @@ import { useServices } from "../hooks/use-services";
 import { getServicesColumns } from "./services-columns.component";
 import { Spinner } from "@/components/ui/spinner";
 import { useMemo } from "react";
+import type { ServiceFilters } from "@/features/services/types/service.filters";
 
 
-export function ServicesTable() {
+export function ServicesTable({ filters }: { filters?: ServiceFilters }) {
 
-    const services = useServices();
+    const services = useServices(filters);
     const columns = useMemo(() => getServicesColumns(), []);
 
 
