@@ -1,74 +1,57 @@
 # Dentissa
 
-Sistema de gestión para consultorio dental: administración de citas, pacientes, historial clínico (odontograma), servicios, ofertas y notificaciones.
+Sistema de gestión para un consultorio dental: citas, pacientes, servicios, usuarios y más.
 
-> El detalle funcional completo está en [`/docs/requerimientos.md`](/docs/requerimientos/requerimientos.md). Este README solo cubre cómo levantar el proyecto localmente.
+El proyecto tiene dos partes, cada una con sus propias dependencias:
 
-## Stack técnico
+| Carpeta | Qué es | Tecnología |
+| --- | --- | --- |
+| `frontend-consultorio-dental/` | La aplicación web | React + Vite |
+| `backend-consultorio-dental/` | La API | NestJS + Prisma + PostgreSQL |
+| `docs/` | Requerimientos, diagramas y prototipos | — |
 
-- **Frontend:** React
-- **Backend:** NestJS
-- **Base de datos:** PostgreSQL
-- **ORM:** Prisma
-- **Gestor de paquetes:** npm
+---
 
-## Requisitos previos
+## Cómo ejecutar el proyecto
 
-- Node.js (v22 o superior recomendado)
-- npm
-- PostgreSQL corriendo localmente (o accesible vía conexión remota)
+Elige **una** de las dos opciones.
 
-## Estructura del repositorio
+### Opción 1: con Docker (recomendada)
 
-```
-/
-├── backend-consultorio-dental/          # API NestJS + Prisma
-├── frontend-consultorio-dental/         # Aplicación React
-├── docs/ # Documentación del proyecto (requerimientos, arquitectura, diagramas, etc.)
-└── README.md
-```
-
-Frontend y backend son proyectos independientes dentro del mismo repositorio, cada uno con su propio `package.json` y sus propias dependencias.
-
-## Instalación y arranque local
-
-### 1. Clonar el repositorio
+Solo necesitas tener [Docker](https://docs.docker.com/get-docker/) instalado.
 
 ```bash
-git clone https://github.com/Consultorio-dental-Dentissa/consultorio-dentissa.git
-cd consultorio-dentissa
+docker compose up -d --build
 ```
 
-### 2. Backend
-Copia el archivo de variables de entorno de ejemplo y complétalo con tus datos locales:
+Listo. Abre **http://localhost:5173** en el navegador.
+
+Docker levanta la base de datos, el backend y el frontend, y prepara la base de datos automáticamente.
+
+Comandos útiles:
+
+```bash
+docker compose down        # detener el proyecto (los datos se conservan)
+docker compose down -v     # detener y borrar la base de datos
+docker compose logs -f     # ver lo que está pasando
+```
+
+### Opción 2: sin Docker
+
+Necesitas **Node.js 22 o superior** y **PostgreSQL** instalado y corriendo.
+
+**1. Backend** (en una terminal):
 
 ```bash
 cd backend-consultorio-dental
-cp .env.example .env
-```
-
-Corre las dependencias y prepara la base de datos con el ORM prisma. Para eso hay que correr el comando `npm run setup`. Este comando se encargará de:
-
-- Instalar las dependencias (`npm install`).
-- Crear el cliente de prisma (`npx prisma generate`)
-- Aplicar las migraciones (`npx prisma migrate dev`)
-- Correr las semillas para crear el primer usuario administrador (`npx prisma db seed`)
-
-*Nota: revisa la salida de la consola tras correr el seed para las credenciales del usuario administrador inicial*
-
-```bash
-npm run setup
-```
-
-Levanta el servidor en modo desarrollo:
-
-```bash
+cp .env.example .env       # luego edita .env con los datos de tu PostgreSQL
+npm run setup              # instala dependencias y prepara la base de datos
 npm run start:dev
 ```
 
-### 3. Frontend
+En el archivo `.env` solo es obligatorio completar `DATABASE_URL` y `JWT_SECRET`.
 
-En otra terminal:
+**2. Frontend** (en otra terminal):
 
 ```bash
 cd frontend-consultorio-dental
@@ -76,24 +59,34 @@ npm install
 npm run dev
 ```
 
-## Variables de entorno
+Abre **http://localhost:5173** en el navegador.
 
-Ver [`backend-consultorio-dental/.env.example`](backend-consultorio-dental/.env.example) para la lista completa. Las más importantes:
+---
 
-| Variable            | Descripción                                                                                        |
-| ------------------- | -------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`      | Cadena de conexión a PostgreSQL. Formato: `postgresql://usuario:password@localhost:5432/nombre_db` |
-| `DATABASE_HOST`     | Host del servidor de base de datos                                                                 |
-| `DATABASE_PORT`     | Puerto de PostgreSQL                                                                               |
-| `DATABASE_NAME`     | Nombre de la base de datos                                                                         |
-| `DATABASE_USER`     | Usuario de conexión a la base de datos                                                             |
-| `DATABASE_PASSWORD` | Contraseña del usuario de base de datos                                                            |
-| `ON_PRODUCTION`     | Bandera booleana que indica si el entorno actual es de producción                                  |
-| `JWT_SECRET`        | Clave para firmar los tokens de autenticación                                                      |
+## Iniciar sesión
 
-## Documentación adicional
+Con cualquiera de las dos opciones se crea un usuario administrador:
 
-- [Requerimientos funcionales y no funcionales](/docs/requerimientos/requerimientos.md)
-- [Diagrama entidad-relación](/docs/requerimientos/diagramas.md)
-- Arquitectura del proyecto — próximamente en `/docs/arquitectura.md`
-- Guía de contribución — próximamente en `CONTRIBUTING.md`
+- **Correo:** `administrador@gmail.com`
+- **Contraseña:** `12345678`
+
+---
+
+## Direcciones
+
+| Qué | Dirección |
+| --- | --- |
+| Aplicación web | http://localhost:5173 |
+| API | http://localhost:3000 |
+| Base de datos (solo con Docker) | `localhost:5433` |
+
+> No cambies los puertos 5173 y 3000: el backend solo acepta peticiones desde `http://localhost:5173`.
+
+---
+
+## Documentación
+
+- [Requerimientos del sistema](docs/requerimientos/requerimientos.md)
+- [Diagrama de la base de datos](docs/requerimientos/diagramas.md)
+- [Convenciones del backend](docs/convenciones/backend.md)
+- [Convenciones del frontend](docs/convenciones/frontend.md)
