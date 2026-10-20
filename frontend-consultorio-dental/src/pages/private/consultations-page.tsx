@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { PageTitle } from "../../components/shared/page-title.component";
 
 export default function ConsultationPage() {
-
-    const [consultations, setConsultations] = useState<object | null>(null)
 
     return (
         <div>

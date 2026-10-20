@@ -23,7 +23,7 @@ export function useUpdateServiceStatus() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ id, status }: { id: number, status: boolean }) => updateServiceStatus(id, status),
-        onSuccess: (success, variables) => {
+        onSuccess: (_, variables) => {
 
             /**
              * Update the status of the service status

@@ -13,7 +13,7 @@ export default function PatientProfile() {
 
     const {id} = useParams();
     const actualPatient = useActualPatient(Number(id));
-    const actualPatientAppointments = useAppointments(`patient_id=${id}`);
+    const actualPatientAppointments = useAppointments({ patient_id: Number(id) });
 
     if (!id) {
         return null;

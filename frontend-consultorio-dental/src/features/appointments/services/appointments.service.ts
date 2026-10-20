@@ -10,6 +10,10 @@ export async function getAllAppointments(filters?: AppointmentFilters): Promise<
 
     const params = new URLSearchParams();
 
+    if (filters?.patient_id) {
+        params.set('patient_id', String(filters.patient_id));
+    }
+
     if (filters?.status && filters.status !== 'TODOS') {
         params.set('status', filters.status);
     }

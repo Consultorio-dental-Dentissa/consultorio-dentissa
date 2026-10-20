@@ -24,7 +24,7 @@ export function useUpdateUserStatus() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ id, status }: { id: number, status: boolean }) => updateUserStatus(id, status),
-        onSuccess: (success, variables) => {
+        onSuccess: (_, variables) => {
 
             /**
              * Update the status of the user status
