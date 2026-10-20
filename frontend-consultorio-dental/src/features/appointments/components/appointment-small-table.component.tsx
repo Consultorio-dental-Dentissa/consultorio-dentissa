@@ -8,11 +8,6 @@ import { Spinner } from "@/components/ui/spinner"
 import { STATUS_APPOINTMENT } from "../types/status-appointment.enum"
 
 
-interface AppointmentSmallTableProps {
-    appointments: Appointment[]
-}
-
-
 /* Table columns */
 const columns = (): ColumnDef<Appointment>[] => [
         {
@@ -40,7 +35,7 @@ const columns = (): ColumnDef<Appointment>[] => [
 
 export function AppointmentSmallTable({ patientId }: { patientId: number }) {
     
-    const patientAppointments = useAppointments(`patient_id=${patientId}`);
+    const patientAppointments = useAppointments({ patient_id: patientId });
 
     if (patientAppointments.isLoading) {
         return <Spinner />

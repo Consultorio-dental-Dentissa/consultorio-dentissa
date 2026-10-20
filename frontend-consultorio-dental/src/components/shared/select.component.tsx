@@ -1,6 +1,6 @@
 import {
-    Select, SelectContent, SelectGroup,
-    SelectItem, SelectLabel, SelectTrigger, SelectValue,
+    Select, SelectContent,
+    SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select"
 
 export interface SelectData {
@@ -17,7 +17,7 @@ interface SelectProps {
     styles?: string;
 }
 
-export function SelectComponent({ title, placeholder, data, onChange, value, styles }: SelectProps) {
+export function SelectComponent({ placeholder, data, onChange, value, styles }: SelectProps) {
     return (
         <Select onValueChange={onChange} value={value}>
             <SelectTrigger className={`rounded-md ${styles}`}>
