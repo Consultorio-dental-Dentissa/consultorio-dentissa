@@ -22,7 +22,9 @@ ENV NODE_ENV=production \
 EXPOSE 3000
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# INDICACIÓN: se eliminan los CRLF por si el script se clonó en Windows
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "dist/main"]
