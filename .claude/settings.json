@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./prototipos/**)",
+      "Edit(./prototipos/**)",
+      "Bash(npx prisma migrate reset:*)",
+      "Bash(prisma migrate reset:*)",
+      "Bash(npx prisma db push --force-reset:*)",
+      "Bash(npx prisma db push --accept-data-loss:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)"
+    ]
+  }
+}
