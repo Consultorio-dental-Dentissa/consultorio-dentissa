@@ -26,6 +26,7 @@ const FILTERS: { value: Filter; label: string; read: boolean | undefined }[] = [
 
 /** Icono y colores por tipo de notificación (colores de Notificaciones.dc.html). */
 const TYPE_STYLES: Record<string, { icon: LucideIcon; box: string }> = {
+    CITA_CREADA: { icon: Calendar, box: "bg-brand-soft text-brand" },
     CITA_CONFIRMADA: { icon: CalendarCheck, box: "bg-success-soft text-success" },
     CITA_COMPLETADA: { icon: CalendarCheck, box: "bg-info-soft text-info" },
     CITA_CANCELADA: { icon: CalendarX, box: "bg-danger-soft text-destructive" },
@@ -38,6 +39,7 @@ const DEFAULT_STYLE = { icon: Calendar, box: "bg-brand-soft text-brand" };
 
 /** Título derivado del tipo: el backend solo entrega type + message. */
 const TYPE_TITLES: Record<string, string> = {
+    CITA_CREADA: "Nueva cita",
     CITA_CONFIRMADA: "Cita confirmada",
     CITA_COMPLETADA: "Cita completada",
     CITA_CANCELADA: "Cita cancelada",

@@ -30,6 +30,8 @@ describe('AppointmentsService - propiedad de las citas', () => {
       getAll: jest.fn().mockResolvedValue({ items: [], total: 0 }),
       getById: jest.fn(),
       getAppointmentsByDate: jest.fn().mockResolvedValue([]),
+      getActiveAdminIds: jest.fn().mockResolvedValue([1, 2]),
+      createNotifications: jest.fn().mockResolvedValue(undefined),
       create: jest.fn().mockResolvedValue({
         id: 1,
         scheduled_at: new Date(),
@@ -221,6 +223,25 @@ describe('AppointmentsService - propiedad de las citas', () => {
     expect(patients.getIdByUserId).toHaveBeenCalledWith(5, tx);
     expect(patients.getUserStatusByPatientId).toHaveBeenCalledWith(10, tx);
     expect(services.getById).toHaveBeenCalledWith(1, tx);
+  });
+
+  it('al crear un PACIENTE, avisa a cada administrador con su nombre; el personal no genera aviso', async () => {
+    const body = {
+      patient_id: 99,
+      service_id: 1,
+      notes: 'n',
+      scheduled_at: new Date(Date.now() + 86400000),
+    } as any;
+
+    await service.createAppoinment(body, patientUser);
+    const sent = appointments.createNotifications.mock.calls[0][0];
+    expect(sent.map((n: any) => n.user_id)).toEqual([1, 2]);
+    expect(sent[0].type).toBe('CITA_CREADA');
+    expect(sent[0].message).toContain('A B agendó una cita');
+
+    appointments.createNotifications.mockClear();
+    await service.createAppoinment({ ...body, patient_id: 10 }, assistant);
+    expect(appointments.createNotifications).not.toHaveBeenCalled();
   });
 
   it('un ASISTENTE debe indicar el patient_id al crear', async () => {

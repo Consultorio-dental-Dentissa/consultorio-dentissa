@@ -255,6 +255,20 @@ export class AppointmentsService {
         tx,
       );
 
+      // Si agenda el propio paciente, se avisa a los administradores (el personal no se notifica a sí mismo)
+      if ((user.role as Role) === Role.PACIENTE) {
+        const adminIds = await this.appointmentRepository.getActiveAdminIds(tx);
+        await this.appointmentRepository.createNotifications(
+          adminIds.map((user_id) => ({
+            type: 'CITA_CREADA',
+            message: `${this.patientLabel(created)} agendó una cita de ${service.name} para el ${formatDateTime(created.scheduled_at)}`,
+            user_id,
+            appointment_id: created.id,
+          })),
+          tx,
+        );
+      }
+
       await this.auditService.log(
         {
           userId: user.id,
