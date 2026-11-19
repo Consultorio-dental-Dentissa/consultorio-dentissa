@@ -8,20 +8,29 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  lastname   String
-  email      String   @unique
-  password   String
-  phone      String?
-  created_at DateTime @default(now())
-  role_id    Int
-  status     Boolean  @default(true)
+  id                  Int       @id @default(autoincrement())
+  name                String
+  lastname            String
+  email               String    @unique
+  password            String
+  phone               String?
+  created_at          DateTime  @default(now())
+  role_id             Int
+  status              Boolean   @default(true)
+  // Los access tokens emitidos antes de esta fecha dejan de ser validos.
+  password_changed_at DateTime?
 
-  notifications Notification[]
-  patient       Patient?
-  role          Role           @relation(fields: [role_id], references: [id])
-  refreshTokens RefreshToken[]
+  notifications       Notification[]
+  patient             Patient?
+  role                Role                 @relation(fields: [role_id], references: [id])
+  refreshTokens       RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
+
+  cancelledAppointments  Appointment[]           @relation("AppointmentCancelledBy")
+  appointmentReschedules AppointmentReschedule[] @relation("RescheduleChangedBy")
+  auditLogs              AuditLog[]
+  consultationsCreated   Consultation[]          @relation("ConsultationCreatedBy")
+  consultationsUpdated   Consultation[]          @relation("ConsultationUpdatedBy")
 
   @@map("users")
 }
@@ -37,6 +46,20 @@ model RefreshToken {
   user User @relation(fields: [user_id], references: [id])
 
   @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id         Int       @id @default(autoincrement())
+  token_hash String    @unique
+  user_id    Int
+  expires_at DateTime
+  used_at    DateTime?
+  created_at DateTime  @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("password_reset_tokens")
 }
 
 model Role {
@@ -63,7 +86,7 @@ model Patient {
 
 model Service {
   id              Int     @id @default(autoincrement())
-  name            String
+  name            String  @unique
   durationMinutes Int
   price           Decimal @db.Decimal(10, 2)
   description     String
@@ -79,11 +102,12 @@ model Service {
 model ServiceImage {
   id         Int     @id @default(autoincrement())
   url        String
-  location  String?
+  location   String?
   service_id Int
 
   service Service @relation(fields: [service_id], references: [id])
 
+  @@index([service_id])
   @@map("services_images")
 }
 
@@ -96,23 +120,47 @@ enum AppointmentStatus {
 }
 
 model Appointment {
-  id              Int      @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   scheduled_at    DateTime
   durationMinutes Int
-  status          AppointmentStatus   @default(PENDIENTE)
+  status          AppointmentStatus @default(PENDIENTE)
   notes           String
   reason          String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
   patient_id      Int
   service_id      Int
+  cancel_reason   String?
+  cancelled_by_id Int?
+  cancelled_at    DateTime?
 
-  patient       Patient        @relation(fields: [patient_id], references: [id])
-  service       Service        @relation(fields: [service_id], references: [id])
+  patient       Patient                 @relation(fields: [patient_id], references: [id])
+  service       Service                 @relation(fields: [service_id], references: [id])
+  cancelledBy   User?                   @relation("AppointmentCancelledBy", fields: [cancelled_by_id], references: [id])
   consultation  Consultation?
   notifications Notification[]
+  reschedules   AppointmentReschedule[]
 
+  @@index([scheduled_at])
+  @@index([patient_id])
+  @@index([status])
   @@map("appointments")
+}
+
+model AppointmentReschedule {
+  id                    Int      @id @default(autoincrement())
+  appointment_id        Int
+  previous_scheduled_at DateTime
+  new_scheduled_at      DateTime
+  changed_by_id         Int
+  reason                String?
+  created_at            DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointment_id], references: [id])
+  changedBy   User        @relation("RescheduleChangedBy", fields: [changed_by_id], references: [id])
+
+  @@index([appointment_id])
+  @@map("appointment_reschedules")
 }
 
 model Consultation {
@@ -121,10 +169,16 @@ model Consultation {
   observations   String
   created_at     DateTime @default(now())
   appointment_id Int      @unique
+  updated_at     DateTime @default(now()) @updatedAt
+  created_by_id  Int?
+  updated_by_id  Int?
 
-  appointment Appointment           @relation(fields: [appointment_id], references: [id])
+  appointment Appointment         @relation(fields: [appointment_id], references: [id])
   images      ConsultationImage[]
+  createdBy   User?               @relation("ConsultationCreatedBy", fields: [created_by_id], references: [id])
+  updatedBy   User?               @relation("ConsultationUpdatedBy", fields: [updated_by_id], references: [id])
 
+  @@index([created_at])
   @@map("consultations")
 }
 
@@ -136,6 +190,7 @@ model ConsultationImage {
 
   consultation Consultation @relation(fields: [consultation_id], references: [id])
 
+  @@index([consultation_id])
   @@map("consultations_images")
 }
 
@@ -143,11 +198,17 @@ model Offer {
   id          Int      @id @default(autoincrement())
   name        String
   description String
+  // Nombre del archivo almacenado (generado por el servidor); null = sin imagen.
+  image       String?
   start_date  DateTime
   end_date    DateTime
   status      Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
 
   services ServiceOffer[]
+
+  @@index([status, start_date, end_date])
 
   @@map("offers")
 }
@@ -183,9 +244,13 @@ model UnavailableTimeSlots {
 
 model FrequentlyAskedQuestion {
   id       Int    @id @default(autoincrement())
-  question String
-  response String
+  question   String
+  response   String
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
+  @@index([status])
   @@map("frequently_asked_questions")
 }
 
@@ -194,6 +259,7 @@ model Notification {
   type           String
   message        String
   is_read        Boolean  @default(false)
+  read_at        DateTime?
   user_id        Int
   appointment_id Int?
   created_at     DateTime @default(now())
@@ -201,5 +267,27 @@ model Notification {
   appointment Appointment? @relation(fields: [appointment_id], references: [id])
   user        User         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
+  @@index([user_id, is_read])
   @@map("notifications")
+}
+
+/// Historial de auditoria: solo se inserta (nunca se edita ni se borra).
+/// before/after guardan unicamente campos minimizados (sin contrasenas, tokens ni datos clinicos).
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  user_id    Int?
+  action     String
+  entity     String
+  entity_id  Int?
+  before     Json?
+  after      Json?
+  created_at DateTime @default(now())
+
+  user User? @relation(fields: [user_id], references: [id], onDelete: Restrict)
+
+  @@index([created_at])
+  @@index([entity, entity_id])
+  @@index([user_id])
+  @@index([action])
+  @@map("audit_logs")
 }
