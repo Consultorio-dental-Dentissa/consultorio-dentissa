@@ -3,9 +3,10 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 @Injectable()
-export class PrismaService extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy {
-
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor() {
     const connectionString = process.env.DATABASE_URL;
 
@@ -13,9 +14,14 @@ export class PrismaService extends PrismaClient
       throw new Error('DATABASE_URL no definida');
     }
 
-    const adapter = new PrismaPg({
-      connectionString,
-    });
+    // Esquema opcional (si no se define, el del datasource). Lo usan las
+    // pruebas e2e para aislarse en un esquema propio (DATABASE_SCHEMA=e2e_test).
+    const schema = process.env.DATABASE_SCHEMA?.trim();
+
+    const adapter = new PrismaPg(
+      { connectionString },
+      schema ? { schema } : undefined,
+    );
 
     super({
       adapter,
@@ -25,7 +31,6 @@ export class PrismaService extends PrismaClient
           password: true,
         },
       },
-
     });
   }
 

@@ -1,7 +1,0 @@
-export interface AppointmentStatuses {
-    PENDIENTE: 'PENDIENTE';
-    CANCELADO: 'CANCELADO';
-    CONFIRMADO: 'COMFIRMADO';
-    REPROGRAMADO: 'REPROGRAMADO';
-    NO_ASISTIO: 'NO_ASISTIO';
-}

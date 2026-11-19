@@ -5,16 +5,9 @@ import { ServicesRepository } from './repositories/services.repository';
 import { SecurityModule } from '../../infrastructure/security/security.module';
 
 @Module({
-  imports: [
-    SecurityModule,
-  ],
-  controllers: [
-    ServiciosController
-  ],
-  providers: [
-    ServicesService, 
-    ServicesRepository
-  ],
-  exports: [ServicesRepository]
+  imports: [SecurityModule],
+  controllers: [ServiciosController],
+  providers: [ServicesService, ServicesRepository],
+  exports: [ServicesRepository],
 })
 export class ServicesModule {}

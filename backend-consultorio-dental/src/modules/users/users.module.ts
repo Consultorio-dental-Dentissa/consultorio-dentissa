@@ -9,6 +9,6 @@ import { SecurityModule } from '../../infrastructure/security/security.module';
   controllers: [UsersController],
   providers: [UsersService, UsersRepository],
   exports: [UsersService, UsersRepository],
-  imports: [PatientsModule, SecurityModule]
+  imports: [PatientsModule, SecurityModule],
 })
 export class UsersModule {}

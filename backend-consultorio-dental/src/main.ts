@@ -1,27 +1,18 @@
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { TransformResponseInterceptor } from './infrastructure/common/interceptors/transform-response.interceptor'
-import cookieParser from 'cookie-parser';
+import { configureApp } from './app.setup';
+import { assertJwtSecret } from './infrastructure/security/env-validation';
 
 async function bootstrap() {
+  assertJwtSecret();
 
-  const app = await NestFactory.create(AppModule);
-
-  app.use(cookieParser());
-
-  app.enableCors({
-    origin: "http://localhost:5173",
-    credentials: true
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    // Se desactiva el parser por defecto para fijar limites por ruta
+    bodyParser: false,
   });
 
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true, // INDICACION: Permite transformar los datos del JSON
-    whitelist: true, // INDICACION: Elimina los campos que no están en el DTO
-    stopAtFirstError: true, //INDICACION: Solo devuelve el primer error de cada campo del DTO
-  }));
-
-  app.useGlobalInterceptors(new TransformResponseInterceptor());
+  configureApp(app);
 
   await app.listen(process.env.PORT ?? 3000);
 }

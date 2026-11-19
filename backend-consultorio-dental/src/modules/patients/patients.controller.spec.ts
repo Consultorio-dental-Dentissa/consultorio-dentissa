@@ -1,18 +1,37 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { RolesGuard } from '../../infrastructure/security/guards/roles.guard';
 import { PacientesController } from './patients.controller';
+import { Role } from '../users/enums/rol.enum';
 
-describe('PacientesController', () => {
-  let controller: PacientesController;
+function contextFor(handler: Function, role: string): ExecutionContext {
+  return {
+    getHandler: () => handler,
+    getClass: () => PacientesController,
+    switchToHttp: () => ({ getRequest: () => ({ user: { id: 1, role } }) }),
+  } as unknown as ExecutionContext;
+}
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [PacientesController],
-    }).compile();
+describe('PacientesController - permisos', () => {
+  const guard = new RolesGuard(new Reflector());
+  const proto = PacientesController.prototype;
 
-    controller = module.get<PacientesController>(PacientesController);
+  it('un PACIENTE no puede listar pacientes', () => {
+    expect(() =>
+      guard.canActivate(contextFor(proto.get, Role.PACIENTE)),
+    ).toThrow(ForbiddenException);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('ADMIN y ASISTENTE pueden listar pacientes', () => {
+    expect(guard.canActivate(contextFor(proto.get, Role.ADMINISTRADOR))).toBe(
+      true,
+    );
+    expect(guard.canActivate(contextFor(proto.get, Role.ASISTENTE))).toBe(true);
+  });
+
+  it('un PACIENTE llega al detalle (la propiedad se valida en el service)', () => {
+    expect(guard.canActivate(contextFor(proto.getById, Role.PACIENTE))).toBe(
+      true,
+    );
   });
 });

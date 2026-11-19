@@ -9,13 +9,11 @@ import { SecurityModule } from 'src/infrastructure/security/security.module';
 @Module({
   controllers: [AppointmentsController],
   providers: [
-    AppointmentsService, 
-    AppointmentsRepository, 
-    ServicesRepository, 
+    AppointmentsService,
+    AppointmentsRepository,
+    ServicesRepository,
     PatientsRepository,
   ],
-  imports: [
-    SecurityModule
-  ]
+  imports: [SecurityModule],
 })
 export class AppointmentsModule {}
