@@ -64,7 +64,16 @@ export function AboutSection({ heading = "h2" }: { heading?: "h1" | "h2" }) {
     return (
         <PublicSection id="nosotros" muted>
             <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-                <PhotoBlock src={clinicContent.aboutImageUrl} alt="Equipo de Dentissa" className="h-[280px] bg-[#e9ebee] sm:h-[340px] lg:h-[400px]" />
+                <div className="h-[280px] overflow-hidden rounded-2xl bg-[#e9ebee] sm:h-[340px] lg:h-[400px]">
+                    <iframe
+                        src={clinicContent.mapEmbedUrl}
+                        title="Mapa con la ubicación del consultorio"
+                        className="size-full border-0"
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                </div>
                 <div>
                     <SectionEyebrow>Sobre nosotros</SectionEyebrow>
                     <SectionTitle as={heading}>Más de 15 años cuidando la salud dental de nuestros pacientes</SectionTitle>

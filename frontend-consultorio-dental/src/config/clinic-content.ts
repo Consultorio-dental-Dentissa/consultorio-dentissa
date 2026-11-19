@@ -8,7 +8,7 @@
  * viven aquí: se leen de la API (GET /services, /offers y /faq).
  */
 
-import heroImage from "@/assets/dentisa-rosa.webp";
+import heroImage from "@/assets/logo-dentissa.png";
 
 export interface TeamMember {
     name: string;
@@ -40,8 +40,9 @@ export const clinicContent = {
     mapUrl: "",
     /** URL de una foto propia del consultorio para el hero. Vacío = ilustración neutra. */
     heroImageUrl: heroImage,
-    /** URL de una foto propia del equipo para "Sobre nosotros". Vacío = bloque neutro. */
-    aboutImageUrl: "",
+    /** Mapa embebido de "Sobre nosotros": solo el valor de `src` del iframe de Google Maps ("Compartir > Incorporar un mapa"). */
+    mapEmbedUrl:
+        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20513.357279094773!2d-102.2496466673532!3d17.97250139948458!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x84315dffd396d683%3A0x262bf4998f94e994!2sDentiluna!5e0!3m2!1ses-419!2smx!4v1795050833347!5m2!1ses-419!2smx",
     /**
      * Cifras de "Sobre nosotros". Las de `key` "patients" y "treatments" se leen de la base de
      * datos (GET /public/stats); su `value` aquí es solo de relleno. Los años son EJEMPLO.
