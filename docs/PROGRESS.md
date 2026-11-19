@@ -3,20 +3,20 @@
 > Claude: actualiza este archivo al terminar cada tarea. Mantenlo breve.
 
 ## Fases
-- [ ] Fase 1 — Diagnóstico → genera `docs/DIAGNOSIS.md`
+- [x] Fase 1 — Diagnóstico → `docs/DIAGNOSIS.md`
 - [ ] Fase 2 — Modelo de datos (Prisma, restricciones, índices, migraciones)
-- [ ] Fase 3 — Backend por módulo:
-  - [ ] Auth (registro, login, logout, me, cambio y recuperación de contraseña, sesiones de usuarios desactivados)
-  - [ ] Users
-  - [ ] Patients
-  - [ ] Services (+ imágenes)
-  - [ ] Appointments (disponibilidad, concurrencia, estados, reprogramación)
-  - [ ] Consultations (+ imágenes privadas)
-  - [ ] FAQ
-  - [ ] Offers (+ imagen)
-  - [ ] Notifications
-  - [ ] Audit log
-  - [ ] Dashboard stats
+- [x] Fase 3 — Backend por módulo (completo, verificado con HTTP real contra BD local; sin commit):
+  - [x] Auth (hecho en código, migraciones SIN aplicar y sin probar contra BD real) (registro, login, logout, me, cambio y recuperación de contraseña, sesiones de usuarios desactivados)
+  - [x] Users
+  - [x] Patients (perfil propio, edición admin, historial)
+  - [x] Services (+ imágenes)
+  - [x] Appointments (backend completo; transiciones, reprogramación e historial hechos en código; falta auditoría general; sin probar contra BD) (disponibilidad, concurrencia, estados, reprogramación)
+  - [x] Consultations (+ imágenes privadas)
+  - [x] FAQ
+  - [x] Offers (+ imagen)
+  - [x] Notifications
+  - [x] Audit log
+  - [x] Dashboard stats
 - [ ] Fase 4 — Frontend funcional (mismo orden de módulos + página pública + layout privado + calendario)
 - [ ] Fase 5 — Diseño visual unificado
 - [ ] Fase 6 — Pruebas críticas (`docs/spec/06-bd-pruebas-entrega.md`)
@@ -24,9 +24,75 @@
 
 ## Decisiones
 <!-- Formato: fecha — decisión — motivo -->
+- 2026-11-17 — NO renombrar estados/campos/roles al inglés por ahora (se mantienen los nombres actuales) — decisión de Luis, evita cambiar el contrato de la API.
+- 2026-11-17 — Se mantiene duración de servicio 15-120 min y teléfono único — decisión de Luis.
+- 2026-11-17 — ASSISTANT puede crear, cancelar y reprogramar citas; NO confirmar ni completar — decisión de Luis.
+- 2026-11-17 — Correo de recuperación de contraseña con nodemailer — decisión de Luis (dependencia justificada).
+- 2026-11-17 — Toda contraseña (incluida la del admin del seed) debe tener mínimo 10 caracteres — decisión de Luis.
 
 ## Preguntas abiertas para Luis
-- Transiciones de cita permitidas para ASSISTANT.
+- Datos públicos reales de la clínica (dirección, teléfono, equipo, estadísticas) para la web pública; hoy están fijos en el código.
 
 ## Último estado
-<!-- Qué se hizo en la última sesión y cuál es el siguiente paso exacto -->
+- 2026-11-17: Fase 1 hecha. Carpetas reales: `backend-consultorio-dental/`, `frontend-consultorio-dental/`.
+- 2026-11-17: Fase 3 parcial (base de seguridad backend, revisada por reviewer y corregida): RolesGuard/@Roles, ownership en patients/appointments, sin hash de password en users, GET /services público solo activos, GlobalExceptionFilter, 401 en login, refresh atómico y con usuario activo, contraseñas >=10, citas en transacción Serializable con solape estricto, paginación `{items,total,page,limit}` en users/patients/appointments. Build OK y 81/81 tests unitarios (con mocks; NO probado contra Postgres real). Lint: 0 errores en no-spec; ~146 en specs (any en mocks).
+- Seed ahora exige `SEED_ADMIN_PASSWORD` (>=10); docker-compose y .env.example actualizados.
+- Pendiente inmediato: Auth (GET /auth/me, cambio y recuperación con nodemailer, rate limit, cookies secure/sameSite); Appointments: cancelar/reprogramar (ADMIN, ASISTENTE, PACIENTE propio no confirmada), confirmar/completar (solo ADMIN), historial, notificaciones, auditoría; migración de integridad (UNIQUE services.name, índices, CHECK, EXCLUDE btree_gist) con --create-only y revisar SQL; citas que cruzan medianoche; limpiar lint de specs.
+- Frontend roto hasta adaptarlo: users/patients/appointments services leen array, ahora `.items`.
+- 2026-11-17: Auth completado y revisado (me, cambio/recuperación de contraseña con nodemailer, reutilización de refresh, password_changed_at, throttling, cookies, trust proxy, JWT_SECRET validado). Build OK, 115/115 tests unitarios (mocks).
+- MIGRACIONES PENDIENTES DE APLICAR (aditivas, revisadas): `20261117120000_add_password_reset_tokens`, `20261117130000_add_user_password_changed_at`. Aplicar con `npx prisma migrate deploy` ANTES de arrancar (los guards leen password_changed_at). Nunca probado contra Postgres real.
+- Dependencias nuevas: `nodemailer` (aprobada por Luis, correo de recuperación), `@nestjs/throttler` (rate limiting declarativo en /auth).
+- Variables nuevas: SEED_ADMIN_PASSWORD, JWT_SECRET (obligatorio, >=32 en prod), FRONTEND_URL, COOKIE_SAMESITE, TRUST_PROXY_HOPS, SMTP_*, MAIL_FROM, APP_TIMEZONE.
+- Siguiente: Appointments (cancelar/reprogramar/confirmar/completar, historial, notificaciones, auditoría) + migración de integridad; luego levantar BD y probar de punta a punta.
+- 2026-11-17: Appointments: confirm/complete (solo ADMIN), cancel/reschedule (ADMIN, ASISTENTE; PACIENTE propias PENDIENTE/REPROGRAMADA), motivo obligatorio en ambas, historial `appointment_reschedules`, notificaciones en la misma transacción, EXCLUDE de solape (tsrange, sin btree_gist, estados PENDIENTE/CONFIRMADA/REPROGRAMADA). Reprogramar NO cambia estado. Build OK, 171/171 tests (mocks).
+- MIGRACIONES PENDIENTES (aditivas, sin aplicar, en orden): 20261117120000_add_password_reset_tokens, 20261117130000_add_user_password_changed_at, 20261117140000_add_appointment_cancel_and_reschedule_history, 20261117150000_add_integrity_constraints (puede FALLAR sin perder datos si hay duplicados/solapes: correr verificación previa de DIAGNOSIS/informe: services.name duplicado, durationMinutes<=0, price<0, offers start_date>end_date, citas PENDIENTE/CONFIRMADA/REPROGRAMADA solapadas).
+- Riesgos: EXCLUDE/CHECK no modelados por Prisma (posible drift en `migrate dev`; comprobar antes de la siguiente migración); detección del EXCLUDE no probada contra Postgres real; el frontend debe enviar `reason` al reprogramar.
+- DECISIÓN PENDIENTE (Luis): ¿confirmar solo citas futuras, completar solo citas ya iniciadas, y bloquear cancelar/reprogramar citas pasadas al PACIENTE?
+- Siguiente: levantar BD (docker) y aplicar migraciones/probar de punta a punta; módulos Consultations, FAQ, Offers, Notifications (endpoints), Audit log, Dashboard; luego frontend.
+- 2026-11-17 BLOQUEO: el contenedor `dentissa-db-1` (BD real de Luis) tiene aplicadas migraciones de la rama `feature/VERSION-ESTABLE-CODEX` (commit 06648ef: complete_clinic, add_odontogram, add_actor_and_session_version, unique_faq_question, unique_user_phone; tablas audit_logs, patient_teeth, etc.) que NO existen en esta rama y chocan por timestamp (20261117120000-150000) con las migraciones de esta rama. NO se tocó la BD (solo se arrancó y se paró el contenedor, lectura). Decidir: ¿continuar esta rama (Claude), partir de CODEX o fusionar? Hasta decidir, NO aplicar migraciones a esa BD.
+- 2026-11-17 DECISIÓN: Luis elige continuar con esta rama (CLAUDE); la rama CODEX queda aparte. BD de pruebas separada `dentissa_claude` en el contenedor `dentissa-db-1` (la BD `dentissa` de Luis NO se tocó). Las 12 migraciones aplican limpias en BD vacía, sin drift (`migrate diff` vacío), CHECK y EXCLUDE presentes.
+- Verificado por HTTP contra Postgres real: login/me/401, registro (>=10 chars), PACIENTE 403 en /users, crear servicio, cita (solape 409, 5 reservas simultáneas → 1 creada y 4x409), confirm solo ADMIN, PACIENTE no cancela CONFIRMADA, reprogramar exige motivo + historial, completar, notificaciones generadas.
+- Probar con la BD de pruebas: `DATABASE_URL=postgresql://dentissa:dentissa@localhost:5433/dentissa_claude` (hay que arrancar el contenedor `dentissa-db-1`).
+- Pendiente menor: GET /users expone `password_changed_at` (omitirlo).
+- Siguiente: backend de Consultations, FAQ, Offers, Notifications (endpoints), Audit log y Dashboard; luego frontend (paginación, roles, `reason` al reprogramar, datos fijos).
+- 2026-11-17 DECISIÓN: se bloquean por fecha (409): confirmar citas pasadas, completar citas que no han iniciado, y PACIENTE cancelar/reprogramar citas pasadas (ADMIN/ASISTENTE sin restricción). Implementado; 177/177 tests unitarios.
+- 2026-11-17 DECISIÓN: se trabaja con Postgres LOCAL (localhost:5432), BD `dentissa_local_prueba`, configurada en `backend-consultorio-dental/.env` (ignorado por git; no commitear). Docker queda aparcado (su imagen/BD vienen de la rama CODEX). 12 migraciones y seed aplicados ahí; sin drift. Admin: administrador@gmail.com, contraseña = SEED_ADMIN_PASSWORD del .env. La BD `dentissa_claude` del contenedor ya no se usa.
+- Pendiente: alargar JWT_SECRET del .env a >=32 caracteres antes de producción.
+- 2026-11-17: Backend FAQ, Offers (sin imagen), Notifications, Audit log y Dashboard hechos, revisados por reviewer y corregidos; migraciones `20261118032611_add_audit_log_faq_offers_notifications` y `20261118034129_audit_logs_immutable` (trigger: audit_logs no admite UPDATE/DELETE/TRUNCATE; FK user RESTRICT) APLICADAS en `dentissa_local_prueba`. Probado por HTTP contra esa BD. Build OK, 23 suites / 252 tests.
+- Incidencia resuelta: `@nestjs/mapped-types` estaba en node_modules como 12.0.1 (ESM, rompía Jest) aunque el lock decía 2.1.0; se fijó en 2.1.0 exacto en package.json. Evitar `npm install` sin versión fija.
+- Contratos para el frontend: FAQ usa `response`; ofertas `name`,`start_date`,`end_date`,`status` (obligatorio al crear), fechas `YYYY-MM-DD` o ISO con zona; listas `{items,total,page,limit}`; notificaciones /notifications, /unread-count, /read-all; /audit-logs y /dashboard/stats solo ADMIN.
+- La BD local contiene datos de prueba (usuario/servicios ZZ Test, citas, filas de auditoría inmutables).
+- Siguiente: Consultations (+ imágenes privadas), imágenes de Services y Offers, edición del perfil del paciente (PATCH email/contraseña/teléfonos) e historial; luego frontend.
+- 2026-11-17: FASE 3 (backend) COMPLETA. Consultations (solo ADMIN, mapeo API description→notes, dentistObservations→observations), imágenes (privadas de consulta; públicas de servicios/ofertas por endpoint; JPEG/PNG/WebP por magic bytes, 5 MB, máx 5; `STORAGE_DIR`), perfil de paciente (PATCH /patients/me con current_password para cambiar correo, throttle 5/min; PATCH /patients/:id ADMIN; GET /patients/:id/history), ASISTENTE ve ficha reducida. Revisado por reviewer y corregido. Migraciones aplicadas en BD local: 20261118035123_add_consultation_audit_fields_and_offer_image, 20261118041527_image_fk_indexes_and_phone_unique (users.phone UNIQUE parcial). Build OK, 28 suites / 363 tests.
+- CONTRATOS que el frontend debe adoptar: listados `{items,total,page,limit}` en users, patients, appointments, services (GET /services ahora paginado; público solo activos), consultations, offers, faq, notifications, audit-logs; teléfonos normalizados (dígitos y +); fechas YYYY-MM-DD o ISO con zona; servicios nacen INACTIVOS y no se activan sin imagen; reprogramar exige `reason`; cancelar exige `reason`; cambiar correo exige `current_password`; imágenes por URL de endpoint (`images:[{id,url}]`, `image_url`).
+- Pendientes backend menores: job de limpieza de archivos huérfanos en STORAGE_DIR; volumen de STORAGE_DIR en docker-compose (Docker aparcado); lint de specs (any en mocks); `birth_date` antiguos en UTC vs nuevos en medianoche local.
+- Datos ZZ de prueba en `dentissa_local_prueba` (incluye servicios activos sin imagen ids 4 y 5). Para demo real habrá que recrear la BD.
+- Siguiente: FASE 4 frontend (ver docs/FRONTEND_DENTISSA_DOCUMENTACION.md y spec 05): adaptar servicios/hooks a los contratos, guardas de rol en router/sidebar, GET /auth/me en vez de localStorage, módulos nuevos (consultas, FAQ, ofertas, notificaciones, auditoría, dashboard real), calendario de citas, recuperación de contraseña, quitar datos fijos (necesito de Luis: dirección, teléfono, equipo y estadísticas reales de la clínica).
+- 2026-11-17 DECISIÓN (Luis): para la web pública se permiten textos de EJEMPLO (dirección, correo, teléfono, equipo médico, especialidades, estadísticas) como contenido editable que Luis cambiará; centralizarlos en un único archivo de configuración de contenido (p.ej. `src/config/clinic-content.ts`) claramente marcado como contenido de ejemplo. Las estadísticas las decide Claude (preferir las reales de la API cuando existan). Excepción acotada a la web pública; dashboard y paneles siguen sin datos simulados.
+- 2026-11-17 DECISIÓN (Luis): rediseño de TODO el frontend con estilo Flat Design 2.0 / Soft UI minimalista, respetando las pautas del diseño actual; prioridad: pacientes y perfiles de pacientes (no le gustan), hacer todo más intuitivo.
+- 2026-11-17 SESIÓN INTERRUMPIDA (por tokens, a petición de Luis): Fase 4 bloque 1 (frontend base, diseño Soft UI, auth, pacientes/perfil, usuarios, servicios, citas lista) COMPLETO y verificado (build + lint OK; ver docs/DESIGN.md). Bloque 2 y el ajuste de backend (filtro `from`/`to` y `sort` en GET /appointments; `next_appointment_at`, `user_id`, `user.status` en pacientes) se lanzaron en paralelo y se DETUVIERON a mitad: pueden haber quedado cambios PARCIALES o sin verificar en `backend-consultorio-dental/src/modules/{appointments,patients}` y `frontend-consultorio-dental/` (calendario, consultas, FAQ, ofertas, notificaciones, auditoría, dashboard, web pública, `src/config/clinic-content.ts`). AL REANUDAR: 1) `git status` y revisar lo nuevo; 2) `npm run build && npm test` en backend y `npm run build && npm run lint` en frontend para ver si compila; 3) retomar backend (huecos) y luego bloque 2 frontend (ver alcance en esta nota) y verificar; 4) reviewer sobre todo el frontend; 5) actualizar docs/FRONTEND_DENTISSA_DOCUMENTACION.md y docs/convenciones/frontend.md (mencionan librerías eliminadas); 6) Fase 6 pruebas críticas y Fase 7 informe. Sin commit aún.
+- 2026-11-17 DECISIÓN (Luis, SUSTITUYE la del Soft UI genérico): el diseño del bloque 1 NO gustó ("feo y sin alma"). La fuente de verdad visual es `docs/DISEÑO/` (maquetas `*.dc.html` por pantalla + `uploads/diseño*.jpeg` + `uploads/requerimientos.md`/`diagramas.md`/`use_flow_dentissa.pdf`). Hay que IMITARLO TAL CUAL en todo el frontend (estilo Flat Design 2.0 / Soft UI minimalista, pero el de las maquetas). `docs/DESIGN.md` debe reescribirse a partir de las maquetas. No leer `prototipos/` (distinta carpeta).
+- 2026-11-18: FASE 4 (frontend) COMPLETA en código, REVISADA por reviewer y corregida. Diseño: réplica de `docs/DISEÑO/` (tokens reales en `docs/DESIGN.md`). Pantallas: login/registro/recuperar/restablecer, pacientes + perfil + mi perfil, usuarios, servicios (+imágenes), citas (calendario día/semana/mes + lista con filtros estado/texto/fecha), consultas (+imágenes privadas), notificaciones (campana con contador), FAQ y ofertas (admin en `/gestionar-preguntas`, `/gestionar-ofertas`), auditoría, dashboard real, web pública (Inicio fiel a `Sitio Web.dc.html`, servicios, ofertas, FAQ, contacto; contenido de ejemplo en `src/config/clinic-content.ts`). Code splitting por ruta (chunk principal 1.1 MB → 445 kB). Build y lint OK (0 errores, 1 warning conocido de TanStack Table). Backend: 29 suites; la suite auth-account tarda ~37 s (bcrypt) y puede fallar por timeout si el equipo está saturado.
+- Backend añadido en esta ronda: teléfonos 10-15 dígitos validados en servidor; `consultation_id` (solo ADMIN) en citas; `GET /appointments?completed_without_consultation=true` (solo ADMIN).
+- LIMPIEZA PENDIENTE de Luis: borrar `backend-consultorio-dental/dist-fe-test/` (artefacto sin seguimiento); paciente de QA `qa.frontend.paciente@example.com` y datos ZZ en `dentissa_local_prueba`; 11 pacientes de prueba con `emergency_phone` fuera de formato.
+- Entorno: el proyecto está en OneDrive; el build del frontend tardó ~4 min en una pasada (antes ~16 s) sin procesos huérfanos; considerar sacar el repo de OneDrive o excluir node_modules de la sincronización.
+- NO verificado con clics reales: reprogramar con todos los roles, confirmar/completar como ADMIN desde la UI, registrar consulta desde cita completada sin consulta, recuperar contraseña con token real (no hay SMTP), refresh entre dos pestañas, móvil en la mayoría de pantallas.
+- Siguiente: actualizar docs/FRONTEND_DENTISSA_DOCUMENTACION.md y docs/convenciones/frontend.md; Fase 6 (pruebas críticas, spec 06: 4 casos de permisos + concurrencia de citas + flujos E2E); Fase 7 (verificación final + informe de entrega); decidir commits.
+- 2026-11-18: FASE 6 COMPLETA: suite e2e real `npm run test:e2e` (7 suites, 194 tests, esquema aislado e2e_test eliminado al terminar; `public` intacto: 28 users/16 citas/233 audit) + 29 suites/380 unitarios. Verificado por Claude con ejecución propia.
+- 2026-11-18: FASE 7: `docs/DELIVERY.md` escrito (8 secciones). Pendiente solo lo listado ahí (sobre todo: commits, contenido real, limpieza de datos ZZ, producción, pruebas de clics reales en UI). Documentación del frontend actualizada.
+- 2026-11-18: EDICIÓN añadida a petición de Luis. Backend: `PATCH /users/:id` (ADMIN; rol solo ADMINISTRADOR<->ASISTENTE, PACIENTE no cambia de rol, no autodegradarse ni degradar al último admin; cambiar correo/rol revoca sesiones y cambiar rol invalida access tokens vía password_changed_at), `PATCH /services/:id` (ADMIN; nombre único, precio>=0, duración 15-120; no altera citas existentes), `PATCH /appointments/:id` (service_id, notes; ADMIN/ASISTENTE en PENDIENTE/CONFIRMADA/REPROGRAMADA, PACIENTE solo propias PENDIENTE/REPROGRAMADA futuras; cambio de servicio revalida solape; notificación `CITA_ACTUALIZADA`; auditoría USER_/SERVICE_/APPOINTMENT_UPDATED con changedFields). Frontend: botones y modales de edición en usuarios, servicios y citas (tabla, tarjeta móvil y detalle), páginas Notificaciones y FAQ a ancho completo, avatares con iniciales eliminados de las tablas (se conservan en menú de usuario, hero de perfil, selector de pacientes y cabecera de detalle de consulta). Verificado por Claude: backend build OK, 437 tests unitarios (32 suites), 222 e2e (8 suites); frontend build y lint OK.
+- No verificado de la edición: flujos como ASISTENTE o PACIENTE desde la UI, 409 real de choque al cambiar servicio desde la UI, modal de edición en móvil.
+- 2026-11-18: PANEL DE CITAS rediseñado según `docs/DISEÑO-NUEVO/Citas.dc.html` (la carpeta `docs/DISEÑO/` fue sustituida por `docs/DISEÑO-NUEVO/`, ahora la única fuente visual; solo cambió la maqueta de Citas). Una tarjeta con título + "Agendar cita", selector Día/Semana/Mes, rejilla horaria (56 px/h, línea "ahora"), panel derecho 330 px (mini calendario con puntos + "Citas de hoy"), modales con eyebrow "CITA · FOLIO #id". Quitadas las tarjetas de estadísticas y la leyenda. Build y lint OK (verificado por Claude); comparación visual hecha por el agente contra la maqueta renderizada.
+- DECISIÓN PENDIENTE (Luis): la maqueta muestra un modo "Modificar cita" con selector de 5 estados + fecha/hora + motivo + notas en un solo guardado. NO implementado (el backend separa confirmar/completar/cancelar/reprogramar/editar con reglas propias; "Pendiente" no es reversible; un guardado único no sería atómico). Se mantienen botones por rol/estado. Teléfono del paciente omitido en el detalle (el backend no lo devuelve en citas).
+- 2026-11-18: REDISEÑO COMPLETO según `docs/DISEÑO-FINAL/` (sustituye a DISEÑO y DISEÑO-NUEVO): etapas 1-4 + pulido + revisión de reviewer corregida. Nuevas: `/mi-perfil` (3 roles), Mis citas (paciente), Panel. Backend añadido: `current_password` al cambiar correo propio el admin; `status` atómico en PATCH /patients/:id. VERIFICADO por Claude: backend build OK, 32 suites/445 unitarios, 8 suites/225 e2e; frontend build OK y lint 0 errores (1 warning TanStack). Ver `docs/DELIVERY.md` (actualizado) y `docs/DESIGN.md` §8.
+- Pendiente: commits (cientos de archivos sin confirmar), contenido real en `src/config/clinic-content.ts`, limpieza de datos ZZ/QA en `dentissa_local_prueba` (auditoría inmutable: recrear BD), borrar `backend-consultorio-dental/dist-fe-test/`, pruebas con clics reales restantes (ver DELIVERY), límite de intentos en cambio de correo propio del admin, términos/aviso de privacidad (decidir), JWT_SECRET >=32 y SMTP real para producción.
+
+## Ajustes posteriores al rediseño (2026-11-18)
+- Citas: botón "Marcar completada" en el formulario de edición (ADMIN, cita confirmada y ya iniciada); al completar desde cualquier vista se abre el detalle de la cita para registrar la consulta.
+- Mini calendario: anillo en el día inspeccionado (`selectedDay`).
+- Perfil de paciente: botón "Editar" por cita abre el mismo detalle del calendario (`AppointmentWorkflow`) con todas sus acciones; la edición de servicio/notas se conserva dentro del detalle.
+- Registrar consulta: el selector pide `completed_without_consultation=true` (solo citas completadas sin consulta).
+- Notificaciones al ADMIN por cancelar/reprogramar/editar el paciente ahora incluyen su nombre (antes "Un paciente"). Las ya existentes conservan el texto viejo.
+- Web pública: nuevo `GET /public/stats` (público, solo conteos: pacientes registrados y servicios activos); "Sobre nosotros" lo usa (muestra "—" mientras carga). "Años de experiencia" sigue siendo ejemplo en `clinic-content.ts`.
+- Hero público usa `src/assets/dentisa-rosa.webp`.
+- Pendiente: probar estos cambios en navegador; commits creados en esta fecha.

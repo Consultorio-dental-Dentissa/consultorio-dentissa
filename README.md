@@ -49,7 +49,7 @@ npm run setup              # instala dependencias y prepara la base de datos
 npm run start:dev
 ```
 
-En el archivo `.env` solo es obligatorio completar `DATABASE_URL` y `JWT_SECRET`.
+En el archivo `.env` solo es obligatorio completar `DATABASE_URL` y `JWT_SECRET` (en producción, mínimo 32 caracteres; no se acepta el valor de ejemplo). Si no configuras SMTP, la recuperación de contraseña responde 503.
 
 **2. Frontend** (en otra terminal):
 
@@ -68,7 +68,7 @@ Abre **http://localhost:5173** en el navegador.
 Con cualquiera de las dos opciones se crea un usuario administrador:
 
 - **Correo:** `administrador@gmail.com`
-- **Contraseña:** `12345678`
+- **Contraseña:** la que definas en `SEED_ADMIN_PASSWORD` (mínimo 10 caracteres) en el `.env` antes de iniciar
 
 ---
 

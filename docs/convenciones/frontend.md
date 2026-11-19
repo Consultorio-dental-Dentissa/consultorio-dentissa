@@ -1,169 +1,83 @@
 # Estructura y convenciones — Frontend (React)
 
-> Este documento describe **cómo está construido actualmente** el frontend de Dentissa: organización de carpetas y convención de nombres. Complementa a `CONTRIBUTING.md` (que define cómo trabajamos como equipo) con el detalle específico de este proyecto.
+> Describe cómo está construido hoy `frontend-consultorio-dental/`: carpetas y convenciones de nombres y de código. La guía general (arquitectura, sesión, rutas, contratos) está en `../FRONTEND_DENTISSA_DOCUMENTACION.md`; el diseño visual en `../DESIGN.md`.
 
 ---
 
 ## 1. Estructura de carpetas
 
 ```
-frontend-consultorio-dental/
-├── src/
-│   ├── main.tsx
-│   ├── App.tsx
-│   ├── assets/
-│   │
-│   ├── features/                  # Un módulo por dominio de negocio
-│   │   ├── appointments/
-│   │   │   ├── components/        # appointment-card.component.tsx, create-appointment-form.component.tsx, ...
-│   │   │   ├── hooks/             # use-appointments.ts
-│   │   │   ├── services/          # appointments.service.ts
-│   │   │   └── types/             # appointment.model.ts, appointment.response.ts, create-appointment.dto.ts, appointment.mapper.ts, status-appointment.enum.ts
-│   │   ├── auth/
-│   │   │   ├── context/           # auth-context.ts, auth-context-provider.tsx
-│   │   │   ├── hooks/             # use-login.ts, use-register.ts
-│   │   │   ├── services/          # auth.service.ts
-│   │   │   └── types/             # login.dto.ts, login.response.ts
-│   │   ├── patients/
-│   │   │   ├── components/        # patients-columns.component.tsx
-│   │   │   ├── hooks/             # use-patients.ts
-│   │   │   ├── services/          # patients.service.ts
-│   │   │   └── types/             # patient.model.ts, patient.response.ts, patient.mapper.ts
-│   │   ├── services/               # dominio "servicios dentales" (⚠️ no confundir con la capa `services/`)
-│   │   │   ├── components/        # services-columns.component.tsx, create-service-form.component.tsx
-│   │   │   ├── hooks/             # use-services.ts
-│   │   │   ├── services/          # services.service.ts   ← sí, se repite el nombre (ver nota abajo)
-│   │   │   └── types/             # service.model.ts, service.response.ts, create-service.dto.ts, service.mapper.ts
-│   │   └── users/
-│   │       ├── components/        # users-colums.component.tsx, create-user-form.component.tsx
-│   │       ├── hooks/             # use-users.ts
-│   │       ├── services/          # users.service.ts
-│   │       └── types/             # user.model.ts, user.response.ts, create-user.dto.ts, user.mapper.ts, rol.enum.ts
-│   │
-│   ├── components/
-│   │   ├── common/                # Componentes compartidos entre dominios (DataTable, Modal, Sidebar, CardDashboard...)
-│   │   └── ui/                    # Componentes de shadcn/ui
-│   │
-│   ├── hooks/
-│   │   └── use-mobile.ts          # Único hook sin dominio: estado de viewport, usado por components/ui/sidebar.tsx
-│   │
-│   ├── layouts/
-│   │   ├── private-layout.tsx     # Layout del panel de administración
-│   │   └── public-layout.tsx      # Layout de las vistas públicas
-│   │
-│   ├── pages/
-│   │   ├── private/                # Vistas que usan private-layout
-│   │   └── public/                 # Vistas que usan public-layout
-│   │
-│   ├── router/
-│   │   └── router.tsx              # Definición de rutas (react-router)
-│   │
+src/
+├── main.tsx, App.tsx
+├── assets/
+├── config/                  # navigation.ts, clinic-content.ts, filters.ts, labels.ts
+├── features/<dominio>/      # appointments, audit, auth, consultations, dashboard, faq,
+│   ├── components/          # notifications, offers, patients, public, services, users
+│   ├── hooks/               # (auth también tiene context/; public tiene public-styles.ts)
 │   ├── services/
-│   │   └── api.ts                  # Cliente HTTP centralizado; cada features/<dominio>/services/ lo consume
-│   │
-│   ├── styles/                     # Estilos globales
-│   │
-│   ├── types/
-│   │   └── api.response.ts         # Único tipo realmente genérico: el wrapper `ApiResponse<T>`
-│   │
-│   └── utils/                      # Funciones de apoyo sin dominio (formatters.ts, etc.)
+│   └── types/
+├── components/
+│   ├── shared/              # reutilizables entre dominios (sufijo .component.tsx)
+│   └── ui/                  # primitivos shadcn/ui (nombres que genera la CLI)
+├── hooks/                   # sin dominio: use-debounce, use-debounced-search, use-disclosure, use-mobile, use-now, use-pagination
+├── layouts/                 # public-layout, auth-layout, private-layout, role-route
+├── pages/{public,private}/  # vistas por ruta
+├── router/router.tsx
+├── services/api.ts          # cliente HTTP único
+├── types/                   # api.response.ts, pagination.ts
+├── utils/                   # clinic-time, formatters, query, validation
+└── lib/utils.ts             # cn()
 ```
 
-### Organización por dominio (`features/`)
+Regla de ubicación: si conoce el modelo de un dominio → `features/<dominio>/`; si es genérico y lo usan 2+ dominios → `components/shared/`; si es una vista de ruta → `pages/`. `features/services/` es el dominio "servicios dentales" (no confundir con la capa `services/`).
 
-Cada dominio de negocio (`appointments`, `patients`, `users`, `services`, `auth`) tiene su propia carpeta dentro de `features/`, y **dentro de cada una se repiten las mismas 4 capas**: `components/`, `hooks/`, `services/`, `types/`. Es la misma separación por capas que antes vivía a nivel de todo el proyecto, solo que ahora anidada por dominio en vez de mezclar los cinco dominios en una sola carpeta por capa.
-
-**Regla para decidir dónde va un archivo nuevo:**
-- Si el archivo conoce el modelo de negocio de un dominio (sabe qué es una `Cita`, un `Paciente`, etc.) → va dentro de `features/<dominio>/`.
-- Si es genérico y no le importa qué dominio lo use (un botón, una tabla, un modal) → se queda en `components/common/` o `components/ui/`.
-- `pages/` **no** se movió a `features/`: las páginas siguen siendo el punto de composición de rutas, y ahora importan lo que necesitan directamente desde `features/<dominio>/...`.
-
-**Sobre `features/services/services/`:** el dominio "servicios" (tratamientos dentales) coincide de nombre con la capa `services/` (llamadas a la API). Se mantiene así por consistencia con el resto de dominios — todos usan las mismas 4 subcarpetas — aunque la ruta resultante se lea repetida. Si en el futuro molesta, la alternativa es renombrar el dominio (p. ej. `features/treatments/`), no la capa.
-
-### Descripción de cada carpeta
-
-| Carpeta | Responsabilidad |
-|---|---|
-| `features/<dominio>/components/` | Componentes de UI que conocen el modelo de ese dominio |
-| `features/<dominio>/hooks/` | Estado y lógica del dominio, expuestos a las vistas mediante hooks |
-| `features/<dominio>/services/` | Peticiones al backend específicas del dominio, construidas sobre `services/api.ts` |
-| `features/<dominio>/types/` | Modelo, DTOs, responses, mappers y enums de ese dominio |
-| `features/auth/context/` | Providers/contextos de React del dominio de autenticación (sesión, usuario actual) |
-| `components/common/` | Componentes reutilizables sin lógica de negocio, usados por 2+ dominios |
-| `components/ui/` | Componentes de la librería shadcn/ui |
-| `hooks/` | Hooks que no pertenecen a ningún dominio (hoy: `use-mobile.ts`) |
-| `layouts/` | Estructura visual compartida entre grupos de vistas (panel privado vs. público) |
-| `pages/` | Vistas de la aplicación, asociadas a rutas; componen `features/<dominio>/...` |
-| `router/` | Configuración de enrutamiento |
-| `services/` | Cliente HTTP base (`api.ts`), compartido por todos los dominios |
-| `types/` | Tipos verdaderamente genéricos, sin dominio (hoy: el wrapper `ApiResponse<T>`) |
-| `utils/` | Funciones auxiliares sin estado ni dependencia de dominio |
+Capas: UI → Hook → Service → API Client (`services/api.ts`). Solo `api.ts` conoce códigos HTTP; el resto usa `ApiError.code`.
 
 ---
 
-## 2. Convención de nombres de archivos
+## 2. Nombres de archivo
 
-**Regla general: todos los nombres de archivo están en `kebab-case`.**
+Todo en `kebab-case`, con sufijo por tipo:
 
-Cada carpeta usa un sufijo que identifica el tipo de archivo:
-
-| Tipo de archivo | Sufijo | Ejemplo |
+| Tipo | Patrón | Ejemplo |
 |---|---|---|
-| Componente | `.component.tsx` | `appointment-card.component.tsx` |
-| Modelo | `.model.ts` | `appointment.model.ts` |
-| Servicio | `.service.ts` | `appointment.service.ts` |
-| Mapper | `.mapper.ts` | `appointment.mapper.ts` |
-| DTO (request) | `.dto.ts` | `create-appointment.dto.ts` |
-| Response | `.response.ts` | `appointment.response.ts` |
-| Enum | `.enum.ts` | `status-appointment.enum.ts` |
+| Componente de `components/shared` y de `features/*/components` | `.component.tsx` | `confirm-dialog.component.tsx`, `appointment-card.component.tsx` |
+| Schema zod | `<entidad>.schema.ts` | `user.schema.ts` |
+| Modelo / Response / DTO / Mapper / Filters / Enum | `.model.ts`, `.response.ts`, `.dto.ts`, `.mapper.ts`, `.filters.ts`, `.enum.ts` | `patient.model.ts`, `create-user.dto.ts` |
+| Hook | `use-<nombre>.ts` | `use-appointments.ts` |
+| Service | `<dominio>.service.ts` | `auth.service.ts` |
+| Página | `<nombre>-page.tsx` (export default) | `patients-page.tsx` |
+| Layout | `<nombre>-layout.tsx` (export default); guarda de ruta `role-route.tsx` | `private-layout.tsx` |
+| shadcn/ui | el que genera la CLI | `button.tsx` |
 
-> Los componentes dentro de `components/ui/` (shadcn/ui) **no** siguen el sufijo `.component.tsx`; se manejan con la convención propia que genera la CLI de shadcn/ui.
-
-### Excepciones actuales (deuda técnica documentada)
-
-Estas dos excepciones existen por un desfase de coordinación en el equipo. Se documentan **tal cual están hoy**; el estándar correcto se aplicará en una migración futura.
-
-**Hooks** — actualmente usan prefijo `use-` en vez del sufijo `.hook.ts`:
-
-```
-# Estado actual (vigente):
-features/appointments/hooks/use-appointments.ts
-features/users/hooks/use-users.ts
-
-# Estándar futuro (pendiente de migración):
-features/appointments/hooks/appointments.hook.ts
-features/users/hooks/users.hook.ts
-```
-
-**Pages** — actualmente usan `-page` (guion) en vez de `.page.` (punto):
-
-```
-# Estado actual (vigente):
-appointments.page.tsx        ← ya sigue el formato correcto
-dashboard-page.tsx           ← usa guion en vez de punto
-
-# Estándar futuro (pendiente de migración):
-appointment.page.tsx
-dashboard.page.tsx
-```
-
-> ⚠️ Hasta que no se realice la migración formal (con su propia rama `refactor/`), los archivos nuevos de `pages/` deben seguir el patrón `nombre.page.tsx` cuando sea posible, y los existentes con guion no se renombran de forma aislada — se migran todos juntos para no dejar el módulo en un estado mixto a medias.
+Notas del estado real: los componentes de `features/public/components/` y `features/auth/context/auth-context-provider.tsx` no llevan el sufijo `.component`; el enum de roles es `features/users/types/rol.enum.ts`. No renombres archivos de forma aislada.
 
 ---
 
-## 3. Convención de nombres dentro del código
+## 3. Convenciones dentro del código
 
-- **Nombres de archivo:** `kebab-case` (ver sección 2).
-- **Nombres de clases/componentes/interfaces:** `PascalCase`.
-- **Propiedades de objetos e interfaces (DTOs, responses, models):** `snake_case`, para mantener consistencia directa con los nombres de columna que expone el backend (Prisma/PostgreSQL).
+- Código (identificadores, archivos, rutas de carpetas) en **inglés**; textos visibles, mensajes de validación, toasts y URLs públicas en **español**.
+- `PascalCase` para componentes, interfaces y tipos; `camelCase` para funciones y variables; props como `interface XProps`.
+- Propiedades de datos (DTO, response, model): `snake_case`, igual que el backend.
+- Exportaciones nombradas para componentes, hooks y services; `export default` solo en páginas y layouts.
+- Query keys: `['<dominio>', 'list' | 'detail' | ..., filtros]`; toda mutación exitosa invalida o actualiza la caché.
+- Un archivo por componente; services devuelven modelos mapeados (nunca el response crudo).
+- Un solo sistema de avisos (`react-hot-toast`) y una sola librería de iconos (`lucide-react`). Confirmaciones destructivas con `ConfirmDialog`.
+- Estilos con tokens de Tailwind del sistema de diseño (`../DESIGN.md`) y `cn()` para clases condicionales; sin hex sueltos ni estilos distintos por módulo.
+- Fechas/horas con `utils/clinic-time.ts` (America/Mexico_City), no con la zona del navegador.
+- Importa con el alias `@/`; dentro del mismo feature se aceptan rutas relativas.
 
-**Ejemplo — `create-appointment.dto.ts`:**
+### Reglas de TypeScript (`tsconfig.app.json`)
+
+- `strict`, `noUnusedLocals`, `noUnusedParameters`.
+- `verbatimModuleSyntax`: tipos con `import type`.
+- `erasableSyntaxOnly`: **sin `enum` de TS**; usa objeto `as const` + tipo derivado:
 
 ```ts
-export interface CreateAppointmentDto {
-  scheduled_at: string;
-  notes: string;
-  patient_id: number;
-  service_id: number;
-}
+export const Role = { ADMINISTRADOR: 'ADMINISTRADOR', ASISTENTE: 'ASISTENTE', PACIENTE: 'PACIENTE' } as const;
+export type Role = typeof Role[keyof typeof Role];
 ```
+
+### Verificación
+
+`npm run lint` y `npm run build` deben pasar sin errores (`npm run typecheck` también pasa limpio).
