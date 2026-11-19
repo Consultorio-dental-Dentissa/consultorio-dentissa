@@ -1,14 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateUserStatus, createUser, getAllUsers } from "@/features/users/services/users.service"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { updateUser, updateUserStatus, createUser, getAllUsers } from "@/features/users/services/users.service";
 import type { CreateUserDto } from "@/features/users/types/create-user.dto";
-import type { User } from "@/features/users/types/user.model";
+import type { UpdateUserDto } from "@/features/users/types/update-user.dto";
 import type { UserFilters } from "@/features/users/types/user.filters";
-
+import { SESSION_QUERY_KEY } from "@/features/auth/context/auth-context";
 
 export function useUsers(filters?: UserFilters) {
     return useQuery({
-        queryKey: ['users', filters],
-        queryFn: () => getAllUsers(filters)
+        queryKey: ["users", filters],
+        queryFn: () => getAllUsers(filters),
+        placeholderData: keepPreviousData,
     });
 }
 
@@ -16,28 +17,42 @@ export function useCreateUser() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (newUser: CreateUserDto) => createUser(newUser),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] })
+        onSuccess: (user) => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            // Un usuario PACIENTE nuevo también aparece en el listado de pacientes
+            if (user.role === "PACIENTE") queryClient.invalidateQueries({ queryKey: ["patients"] });
+        },
+    });
+}
+
+export function useUpdateUser(id: number) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (dto: UpdateUserDto) => updateUser(id, dto),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            // Nombre, correo y teléfono también se muestran en pacientes, citas y auditoría
+            queryClient.invalidateQueries({ queryKey: ["patients"] });
+            queryClient.invalidateQueries({ queryKey: ["appointments"] });
+            queryClient.invalidateQueries({ queryKey: ["audit"] });
+            queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+            // Si el administrador edita su propio perfil, la sesión (/auth/me) debe reflejarlo.
+            queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY });
+        },
     });
 }
 
 export function useUpdateUserStatus() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ id, status }: { id: number, status: boolean }) => updateUserStatus(id, status),
-        onSuccess: (_, variables) => {
-
-            /**
-             * Update the status of the user status
-             * to avoid making a new GET request to the API.
-             * Uses setQueriesData (plural, partial key match) instead
-             * of setQueryData so every cached filter combination for
-             * ['users', ...] gets updated, not just the unfiltered one.
-             */
-
-            queryClient.setQueriesData<User[]>(
-                { queryKey: ['users'] },
-                prev => prev?.map(user => (user.id === variables.id) ? {...user, status: variables.status} : user)
-            );
+        mutationFn: ({ id, status }: { id: number; status: boolean }) => updateUserStatus(id, status),
+        onSuccess: () => {
+            // El estado del usuario también se refleja en pacientes y citas.
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["patients"] });
+            queryClient.invalidateQueries({ queryKey: ["appointments"] });
+            queryClient.invalidateQueries({ queryKey: ["audit"] });
+            queryClient.invalidateQueries({ queryKey: ["dashboard"] });
         },
     });
 }

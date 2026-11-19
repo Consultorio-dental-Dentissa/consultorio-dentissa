@@ -1,97 +1,97 @@
-import { AuthContext, } from '@/features/auth/context/auth-context';
-import { useState, useContext, type ReactNode, useEffect } from 'react';
-import { useLogoutUser } from '@/features/auth/hooks/use-login';
-import type { User } from '@/features/users/types/user.model';
+import { useCallback, useEffect, useMemo, type ReactNode } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AuthContext, SESSION_QUERY_KEY, type AuthContextType } from "@/features/auth/context/auth-context";
+import { requestLogin, requestLogout, requestMe } from "@/features/auth/services/auth.service";
+import { ApiError, SESSION_EXPIRED_EVENT } from "@/services/api";
+import type { User } from "@/features/users/types/user.model";
+import type { LoginDto } from "@/features/auth/types/login.dto";
+
+
+async function fetchSessionUser(): Promise<User | null> {
+    try {
+        return await requestMe();
+    } catch (error) {
+        // Sin sesión válida no es un error de la app: simplemente no hay usuario.
+        if (error instanceof ApiError && error.code === "unauthorized") return null;
+        throw error;
+    }
+}
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
-
+/**
+ * La sesión vive en cookies httpOnly; el rol y los datos del usuario se
+ * obtienen de GET /auth/me (fuente de autoridad), nunca de localStorage.
+ */
 export function AuthProvider({ children }: AuthProviderProps) {
+    const queryClient = useQueryClient();
 
-    const [user, setUser] = useState<User | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true);
+    const sessionQuery = useQuery({
+        queryKey: SESSION_QUERY_KEY,
+        queryFn: fetchSessionUser,
+        retry: false,
+        staleTime: 5 * 60 * 1000,
+    });
 
-    const logoutMutation = useLogoutUser();
+    const clearSession = useCallback(() => {
+        // Primero se fija la sesión en null (mantiene vivo el observer de AuthProvider);
+        // después se descarta todo lo demás para no filtrar datos entre usuarios.
+        queryClient.setQueryData(SESSION_QUERY_KEY, null);
+        queryClient.removeQueries({
+            predicate: (query) => query.queryKey[0] !== SESSION_QUERY_KEY[0] || query.queryKey[1] !== SESSION_QUERY_KEY[1],
+        });
+    }, [queryClient]);
 
     useEffect(() => {
+        window.addEventListener(SESSION_EXPIRED_EVENT, clearSession);
+        return () => window.removeEventListener(SESSION_EXPIRED_EVENT, clearSession);
+    }, [clearSession]);
 
-        try {
-            const user = JSON.parse(localStorage.getItem('user') ?? 'null');
+    const login = useCallback(
+        async (credentials: LoginDto) => {
+            await requestLogin(credentials);
+            const user = await queryClient.fetchQuery({
+                queryKey: SESSION_QUERY_KEY,
+                queryFn: fetchSessionUser,
+                staleTime: 0,
+            });
 
             if (!user) {
-                setUser(null);
-                setIsAuthenticated(false);
-                return;
+                throw new ApiError("No se pudo iniciar la sesión. Inténtalo de nuevo.", "unauthorized");
             }
 
-            setUser(user);
-            setIsAuthenticated(true);
-
-        } catch {
-            localStorage.removeItem('user');
-            setUser(null);
-            setIsAuthenticated(false);
-
-        } finally {
-            setLoading(false);
-
-        }
-
-    }, []);
-
-
-    useEffect(() => {
-
-        const handleSessionExpired = () => {
-            setUser(null);
-            setIsAuthenticated(false);
-            localStorage.removeItem('user');
-            localStorage.removeItem('isAuthenticated');
-        };
-
-        window.addEventListener('auth:session-expired', handleSessionExpired);
-
-        return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
-
-    }, []);
-
-
-    const saveUserData = (user: User) => {
-
-        // Autenticamos al usuario y guardamos sus datos
-        setIsAuthenticated(true);
-        setUser(user);
-
-        // Guardamos lo datos en el localStorage
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('isAuthenticated', 'true');
-    };
-
-
-    const logOut = async () => {
-
-        setUser(null);
-        setIsAuthenticated(false);
-        localStorage.removeItem('user');
-        localStorage.removeItem('isAuthenticated');
-        logoutMutation.mutate();
-    };
-
-    return (
-        <AuthContext.Provider value={{ user, isAuthenticated, saveUserData, logOut, loading }}>
-            {children}
-        </AuthContext.Provider>
+            return user;
+        },
+        [queryClient],
     );
-}
 
+    const logOut = useCallback(async () => {
+        try {
+            await requestLogout();
+        } catch {
+            // Aunque el servidor falle, la sesión local se cierra de todos modos.
+        }
+        clearSession();
+    }, [clearSession]);
 
-export function useAuth() {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth debe usarse dentro de AuthProvider');
-    }
-    return context;
+    const user = sessionQuery.data ?? null;
+    const { isPending, isError, error, refetch } = sessionQuery;
+
+    const value = useMemo<AuthContextType>(
+        () => ({
+            user,
+            isAuthenticated: user !== null,
+            loading: isPending,
+            isError: isError && user === null,
+            errorMessage: isError ? error.message : null,
+            retry: () => void refetch(),
+            login,
+            logOut,
+        }),
+        [user, isPending, isError, error, refetch, login, logOut],
+    );
+
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

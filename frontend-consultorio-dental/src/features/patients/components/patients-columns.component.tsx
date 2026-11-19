@@ -1,55 +1,57 @@
-import type { ColumnDef } from "@tanstack/react-table"
-import type { Patient } from "@/features/patients/types/patient.model"
-import { formatDate, formatPhone } from "@/utils/formatters"
-import { ActiveSpan } from "@/components/shared/span.component"
-import { Link } from "react-router-dom"
-import { Eye } from "lucide-react"
+import { Link } from "react-router-dom";
+import type { ColumnDef } from "@tanstack/react-table";
+import { ActiveBadge } from "@/components/shared/status-badge.component";
+import { Button } from "@/components/ui/button";
+import { formatDateTime, formatPhone } from "@/utils/formatters";
+import type { Patient } from "@/features/patients/types/patient.model";
 
-export const getPatientsColumns = (): ColumnDef<Patient>[] => [
-    {
-        header: 'NOMBRE',
-        cell: ({ row }) => (
-            <div className="font-bold">{`${row.original.name} ${row.original.lastname}`}</div>
-        )
-    },
-    {
-        header: 'CORREO ELECTRONICO',
-        cell: ({ row }) => <div>{row.original.email}</div>
-    },
-    {
-        header: 'TELEFONO',
-        cell: ({ row }) => (
-            <div>{formatPhone(row.original.phone)}</div>
-        )
-    },
-    {
-        header: 'TELEFONO DE EMERGENCIA',
-        cell: ({ row }) => (
-            <div>{formatPhone(row.original.emergency_phone)}</div>
-        )
-    },
-    {
-        header: 'FECHA DE NACIMIENTO',
-        cell: ({ row }) => <div>{formatDate(row.original.birth_date)}</div>
-    },
-    {
-        header: 'ESTADO',
-        cell: ({ row }) => (
-            <ActiveSpan
-                status={row.original.status}
-            />
-        )
-    },
-    {
-        header: 'PERFIL',
-        cell: ({ row }) => (
-            <div className="flex">
-                <Link 
-                    to={`/pacientes/${row.original.id}`}
-                    className="bg-gray-100 w-full flex justify-center border-2 border-gray-300 rounded-sm p-1">
-                        <Eye size={19}/>
-                </Link>
-            </div>
-        )
-    }
-]
+/** Columnas de Pacientes.dc.html: Nombre (con correo), Teléfono, Próxima cita, Estatus y Acciones. */
+export function getPatientsColumns(): ColumnDef<Patient>[] {
+    return [
+        {
+            id: "patient",
+            header: "Nombre",
+            cell: ({ row }) => (
+                <div className="min-w-0">
+                    <p className="truncate text-[15.5px] font-bold">{row.original.name} {row.original.lastname}</p>
+                    <p className="mt-0.5 truncate text-sm text-ink-4">{row.original.email}</p>
+                </div>
+            ),
+        },
+        {
+            accessorKey: "phone",
+            header: "Teléfono",
+            cell: ({ row }) => <span className="text-ink-2">{formatPhone(row.original.phone)}</span>,
+        },
+        {
+            id: "next_appointment",
+            header: "Próxima cita",
+            cell: ({ row }) => (
+                <span className="text-ink-2">
+                    {row.original.next_appointment_at ? formatDateTime(row.original.next_appointment_at) : "—"}
+                </span>
+            ),
+        },
+        {
+            accessorKey: "status",
+            header: "Estatus",
+            cell: ({ row }) => <ActiveBadge active={row.original.status} />,
+        },
+        {
+            id: "profile",
+            header: () => <span className="block text-right">Acciones</span>,
+            cell: ({ row }) => (
+                <div className="flex justify-end">
+                    <Button asChild variant="secondary" size="sm">
+                        <Link
+                            to={`/pacientes/${row.original.id}`}
+                            aria-label={`Ver perfil de ${row.original.name} ${row.original.lastname}`}
+                        >
+                            Ver perfil
+                        </Link>
+                    </Button>
+                </div>
+            ),
+        },
+    ];
+}

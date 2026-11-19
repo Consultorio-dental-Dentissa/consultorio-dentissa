@@ -1,22 +1,35 @@
-import { CreateAppointmentForm } from "./create-appointment-form.component";
+import { CalendarPlus } from "lucide-react";
 import { Modal } from "@/components/shared/modal.component";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { CreateAppointmentForm } from "@/features/appointments/components/create-appointment-form.component";
+import type { PickedPatient } from "@/features/patients/components/patient-picker.component";
 
-export function CreateAppointmentModal() {
+interface CreateAppointmentModalProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    canPickPatient: boolean;
+    defaultPatient?: PickedPatient;
+    defaultDate?: string;
+    defaultTime?: string;
+}
 
-    const [openModal, setOpenModal] = useState(false);
-
+export function CreateAppointmentModal({
+    open, onOpenChange, canPickPatient, defaultPatient, defaultDate, defaultTime,
+}: CreateAppointmentModalProps) {
     return (
         <Modal
+            icon={CalendarPlus}
+            open={open}
+            onClose={onOpenChange}
             title="Agendar cita"
-            open={openModal}
-            onClose={setOpenModal}
-            trigger={<Button variant="primary">Agendar cita</Button>}
+            description={canPickPatient ? "Registra una nueva cita para un paciente (hora del consultorio)" : "Elige el servicio y el horario (hora del consultorio)"}
         >
-            <CreateAppointmentForm 
-               onSubmit={() => setOpenModal(false)}
-               onCancel={() => setOpenModal(false)}
+            <CreateAppointmentForm
+                canPickPatient={canPickPatient}
+                defaultPatient={defaultPatient}
+                defaultDate={defaultDate}
+                defaultTime={defaultTime}
+                onSuccess={() => onOpenChange(false)}
+                onCancel={() => onOpenChange(false)}
             />
         </Modal>
     );

@@ -2,10 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 
-import '@fontsource/plus-jakarta-sans/400.css';
-import '@fontsource/plus-jakarta-sans/500.css';
-import '@fontsource/plus-jakarta-sans/600.css';
-import '@fontsource/plus-jakarta-sans/700.css';
+// Nunito Sans variable (ejes wght + opsz), como en docs/DISEÑO-FINAL.
+import '@fontsource-variable/nunito-sans/opsz.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

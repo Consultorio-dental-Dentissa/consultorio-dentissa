@@ -1,140 +1,144 @@
-import { useForm, Controller } from "react-hook-form";
+import { useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldGroup } from "@/components/ui/field";
-import { InputForm, SelectForm } from "@/components/shared/input.component";
-import { createUserSchema } from "@/features/users/components/user.schema";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Role } from "@/features/users/types/rol.enum";
-import { Spinner } from "@/components/ui/spinner";
-import { useCreateUser } from "../hooks/use-users";
-import type { SelectData } from "@/components/shared/select.component";
-import type { CreateUserDto } from "@/features/users/types/create-user.dto";
-import type { UserFormData } from "@/features/users/components/user.schema";
 import toast from "react-hot-toast";
+import { InputForm, SelectForm } from "@/components/shared/input.component";
+import { Alert } from "@/components/shared/alert.component";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useCreateUser } from "@/features/users/hooks/use-users";
+import { createUserSchema, type UserFormData } from "@/features/users/components/user.schema";
+import { Role } from "@/features/users/types/rol.enum";
+import type { CreateUserDto } from "@/features/users/types/create-user.dto";
+import { normalizePhone, PASSWORD_MIN_LENGTH } from "@/utils/validation";
+import { toDateInputValue } from "@/utils/formatters";
 
-
-const ROLES_SELECT_DATA: SelectData[] = [
-    { value: Role.ADMINISTRADOR, data: "Administrador" },
-    { value: Role.ASISTENTE, data: "Asistente" },
-    { value: Role.PACIENTE, data: "Paciente" },
+const ROLE_OPTIONS = [
+    { data: "Administrador", value: Role.ADMINISTRADOR },
+    { data: "Asistente", value: Role.ASISTENTE },
+    { data: "Paciente", value: Role.PACIENTE },
 ];
 
+interface CreateUserFormProps {
+    onSuccess: () => void;
+    onCancel: () => void;
+    /** Fija el rol (p. ej. "Nuevo paciente" desde Pacientes): oculta el selector de rol. */
+    fixedRole?: Role;
+    submitLabel?: string;
+    successMessage?: string;
+}
 
-export function CreateUserForm({ onSubmit, onCancel }: { onSubmit: () => void, onCancel: () => void }) {
+export function CreateUserForm({
+    onSuccess, onCancel, fixedRole, submitLabel = "Crear usuario", successMessage = "Usuario creado correctamente",
+}: CreateUserFormProps) {
+    const createUserMutation = useCreateUser();
+    const [formError, setFormError] = useState<string | null>(null);
 
-    const { register, handleSubmit, control, watch, formState: { errors } } = useForm<UserFormData>({
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm<UserFormData>({
         resolver: zodResolver(createUserSchema),
-        mode: 'onChange'
+        defaultValues: { role: fixedRole ?? Role.ASISTENTE },
     });
 
-    const createUserMutation = useCreateUser();
+    const isPatient = useWatch({ control, name: "role" }) === Role.PACIENTE;
 
-    const isPatient = watch("role") === Role.PACIENTE;
+    const onSubmit = (data: UserFormData) => {
+        setFormError(null);
 
-    const handleSubmitForm = (data: UserFormData) => {
-
-        /**
-         * INDICACION:
-         * aqui convertimos los datos del formulario
-         * al DTO de crear usuario
-         */
-        const createUserDto: CreateUserDto = {
-            ...data
+        const payload: CreateUserDto = {
+            name: data.name,
+            lastname: data.lastname,
+            email: data.email,
+            phone: normalizePhone(data.phone),
+            password: data.password,
+            role: data.role,
+            patient: isPatient
+                ? {
+                    address: data.address ?? "",
+                    birth_date: data.birth_date ?? "",
+                    emergency_phone: normalizePhone(data.emergency_phone ?? ""),
+                }
+                : undefined,
         };
 
-        createUserDto.role !== Role.PACIENTE && delete createUserDto.patient;
-
-        createUserMutation.mutate(createUserDto, {
+        createUserMutation.mutate(payload, {
             onSuccess: () => {
-                onSubmit();
-                toast.success('Has registrado un usuario correctamente');
+                toast.success(successMessage);
+                onSuccess();
             },
-            onError: (error) => toast.error(error.message)
+            onError: (error) => setFormError(error.message),
         });
     };
 
     return (
-        <form
-            className="flex flex-col gap-7"
-            onSubmit={handleSubmit(handleSubmitForm)}
-        >
-            <FieldGroup className="flex-row">
-                <InputForm label="Nombre" placeholder="Ingresa tu nombre"
-                    error={errors.name?.message}
-                    registration={register("name")}
-                />
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+            {formError && <Alert>{formError}</Alert>}
 
-                <InputForm label="Apellido" placeholder="Ingresa tu apellido"
-                    error={errors.lastname?.message}
-                    registration={register("lastname")}
-                />
-            </FieldGroup>
+            <div className="grid gap-4 sm:grid-cols-2">
+                <InputForm label="Nombre" required registration={register("name")} error={errors.name?.message} />
+                <InputForm label="Apellido" required registration={register("lastname")} error={errors.lastname?.message} />
+            </div>
 
-            <FieldGroup className="flex-row">
-                <InputForm label="Correo electrónico" placeholder="Ingresa tu correo"
-                    error={errors.email?.message}
-                    registration={register("email")}
-                />
+            <InputForm
+                label="Correo electrónico" required type="email"
+                registration={register("email")} error={errors.email?.message}
+            />
 
-                <InputForm label="Teléfono" placeholder="Ingresa tu teléfono"
-                    error={errors.phone?.message}
-                    registration={register("phone")}
+            <div className="grid gap-4 sm:grid-cols-2">
+                <InputForm
+                    label="Teléfono" required type="tel" inputMode="tel"
+                    registration={register("phone")} error={errors.phone?.message}
                 />
-            </FieldGroup>
+                {!fixedRole && (
+                    <Controller
+                        control={control}
+                        name="role"
+                        render={({ field }) => (
+                            <SelectForm
+                                label="Rol" required
+                                data={ROLE_OPTIONS}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.role?.message}
+                            />
+                        )}
+                    />
+                )}
+            </div>
 
-            <FieldGroup className="flex-row">
-                <InputForm type="password" label="Contraseña"
-                    placeholder="Mínimo 8 caracteres"
-                    error={errors.password?.message}
-                    registration={register("password")}
-                />
-
-                <Controller control={control} name="role"
-                    render={({ field }) => (
-                        <SelectForm label="Rol" title="Roles" placeholder="Seleccione un rol"
-                            DATA={ROLES_SELECT_DATA}
-                            onChange={field.onChange}
-                            value={field.value}
-                            error={errors.role?.message}
-                        />
-                    )}
-                />
-            </FieldGroup>
+            <InputForm
+                label="Contraseña" required type="password" autoComplete="new-password"
+                hint={`Mínimo ${PASSWORD_MIN_LENGTH} caracteres.`}
+                registration={register("password")} error={errors.password?.message}
+            />
 
             {isPatient && (
-                <>
-                    <hr />
-                    <FieldGroup className="flex-row">
-                        <InputForm label="Dirección" placeholder="La dirección es obligatoria"
-                            error={errors.patient?.address?.message}
-                            registration={register("patient.address")}
+                <fieldset className="flex flex-col gap-4 border-t border-dashed border-input pt-4">
+                    <legend className="pr-2 text-xs font-bold tracking-[0.04em] text-ink-4 uppercase">Datos obligatorios para pacientes</legend>
+                    <InputForm label="Dirección" required registration={register("address")} error={errors.address?.message} />
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <InputForm
+                            label="Fecha de nacimiento" required type="date" max={toDateInputValue(new Date())}
+                            registration={register("birth_date")} error={errors.birth_date?.message}
                         />
-
-                        <InputForm label="Teléfono de emergencia" placeholder="Ingrese su teléfono de emergencia"
-                            error={errors.patient?.emergency_phone?.message}
-                            registration={register("patient.emergency_phone")}
+                        <InputForm
+                            label="Teléfono de emergencia" required type="tel" inputMode="tel"
+                            registration={register("emergency_phone")} error={errors.emergency_phone?.message}
                         />
-                    </FieldGroup>
-
-                    <FieldGroup className="flex-row">
-                        <InputForm type="date" label="Fecha de nacimiento" placeholder="Ingrese su fecha de nacimiento"
-                            error={errors.patient?.birth_date?.message}
-                            registration={register("patient.birth_date")}
-                        />
-                    </FieldGroup>
-                </>
+                    </div>
+                </fieldset>
             )}
 
-            <Separator />
-
-            <div className="flex justify-end gap-2 mt-2">
-                <Button variant="secondary" type="button" onClick={() => onCancel()}>
+            <div className="form-footer">
+                <Button type="button" variant="outline" onClick={onCancel} disabled={createUserMutation.isPending}>
                     Cancelar
                 </Button>
-                
-                <Button variant="primary" type="submit" disabled={createUserMutation.isPending}>
-                    {createUserMutation.isPending && <Spinner />} Registrar usuario
+                <Button type="submit" disabled={createUserMutation.isPending}>
+                    {createUserMutation.isPending && <Spinner />} {submitLabel}
                 </Button>
             </div>
         </form>

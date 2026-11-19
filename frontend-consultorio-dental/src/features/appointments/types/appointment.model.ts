@@ -9,10 +9,19 @@ export interface Appointment {
     created_at: Date;
     notes: string;
     patient: {
-        name: string
-        lastname: string
-    },
+        name: string;
+        lastname: string;
+    };
     service: {
-        name: string
-    }
+        name: string;
+    };
+}
+
+export interface AppointmentDetail extends Appointment {
+    reason: string | null;
+    cancel_reason: string | null;
+    cancelled_at: Date | null;
+    patient_id: number;
+    service_id: number;
+    service_price: string;
 }

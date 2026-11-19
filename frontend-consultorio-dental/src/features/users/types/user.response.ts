@@ -6,9 +6,7 @@ export interface UserResponse {
     phone: string;
     status: boolean;
     created_at: string;
-    role: {
-        id: number,
-        role: string
-    };
-
+    /** Los listados devuelven `{ role }`; /auth/me devuelve el texto directo. */
+    role: string | { id?: number; role: string };
+    patient_id?: number | null;
 }

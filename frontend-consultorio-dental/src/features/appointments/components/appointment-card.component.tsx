@@ -1,45 +1,80 @@
-import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
-import type { Appointment } from "@/features/appointments/types/appointment.model"
-import { formatFirstLetterUppercase, formatTotalMinutesToHours } from "@/utils/formatters";
+import { CalendarClock, Check, CheckCheck, Pencil, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AppointmentStatusBadge } from "@/components/shared/status-badge.component";
+import { getAppointmentActions, hasAnyAction } from "@/features/appointments/types/appointment.permissions";
+import { Role } from "@/features/users/types/rol.enum";
+import { formatDateTime, formatTotalMinutesToHours } from "@/utils/formatters";
+import type { Appointment } from "@/features/appointments/types/appointment.model";
 
-export interface AppointmentCardProps {
+interface AppointmentCardProps {
     appointment: Appointment;
-    onClick?: () => void;
+    role: string;
+    /** Instante actual (ms) de `useNow`, para decidir qué acciones se ofrecen. */
+    now: number;
+    onView: (appointment: Appointment) => void;
+    onConfirm: (appointment: Appointment) => void;
+    onComplete: (appointment: Appointment) => void;
+    onCancel: (appointment: Appointment) => void;
+    onReschedule: (appointment: Appointment) => void;
+    onEdit: (appointment: Appointment) => void;
 }
 
-
-const COLORS_BY_STATUS: Record<STATUS_APPOINTMENT, string> = {
-    [STATUS_APPOINTMENT.PENDIENTE]: 'bg-neutral-200 text-neutral-700',
-    [STATUS_APPOINTMENT.CONFIRMADA]: 'bg-green-200 text-green-700',
-    [STATUS_APPOINTMENT.COMPLETADA]: 'bg-blue-200 text-blue-700',
-    [STATUS_APPOINTMENT.CANCELADA]: 'bg-red-200 text-red-700',
-    [STATUS_APPOINTMENT.REPROGRAMADA]: 'bg-orange-200 text-orange-700',
-};
-
-
-export function AppointmentCard({ appointment, onClick }: AppointmentCardProps) {
-    
-    const colors = COLORS_BY_STATUS[appointment.status];
+/** Versión en tarjeta de una fila de citas para pantallas pequeñas. */
+export function AppointmentCard({
+    appointment, role, now, onView, onConfirm, onComplete, onCancel, onReschedule, onEdit,
+}: AppointmentCardProps) {
+    const actions = getAppointmentActions(role, appointment, new Date(now));
 
     return (
-        <>
-            <div 
-                className="flex flex-col rounded-xl p-2 border transition-transform duration-200 hover:scale-102 cursor-pointer gap-2"
-                onClick={onClick}>
-                <div className={`font-bold text-sm rounded-lg p-2 ${colors}`}>
-                    {formatFirstLetterUppercase(appointment.status)}
-                </div>
-
-                <div className="font-medium truncate">
-                    {`${appointment.patient.name} ${appointment.patient.lastname}`}
-                </div>
-
-                <div className="flex items-center justify-between mt-auto border-t">
-                    <p className="text-sm font-medium text-gray-500">{`${appointment.service.name}`}</p>
-                    <p>{formatTotalMinutesToHours(appointment.durationMinutes)}</p>
-                </div>
+        <div className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4">
+            <div className="flex items-start justify-between gap-3">
+                <button
+                    type="button"
+                    onClick={() => onView(appointment)}
+                    className="min-w-0 rounded-md text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+                >
+                    <span className="block text-[15px] font-bold">{formatDateTime(appointment.scheduled_at)}</span>
+                    <span className="block text-sm text-muted-foreground">
+                        {appointment.service.name} · {formatTotalMinutesToHours(appointment.durationMinutes)}
+                    </span>
+                    {role !== Role.PACIENTE && (
+                        <span className="mt-1 block text-sm font-medium">
+                            {appointment.patient.name} {appointment.patient.lastname}
+                        </span>
+                    )}
+                </button>
+                <AppointmentStatusBadge status={appointment.status} />
             </div>
-        </>
-    )
 
+            {hasAnyAction(actions) && (
+                <div className="flex flex-wrap gap-2 border-t border-border/70 pt-3">
+                    {actions.confirm && (
+                        <Button variant="secondary" size="sm" onClick={() => onConfirm(appointment)}>
+                            <Check /> Confirmar
+                        </Button>
+                    )}
+                    {actions.complete && (
+                        <Button variant="secondary" size="sm" onClick={() => onComplete(appointment)}>
+                            <CheckCheck /> Completar
+                        </Button>
+                    )}
+                    {actions.edit && (
+                        <Button variant="outline" size="sm" onClick={() => onEdit(appointment)}>
+                            <Pencil /> Editar
+                        </Button>
+                    )}
+                    {actions.reschedule && (
+                        <Button variant="outline" size="sm" onClick={() => onReschedule(appointment)}>
+                            <CalendarClock /> Reprogramar
+                        </Button>
+                    )}
+                    {actions.cancel && (
+                        <Button variant="dangerOutline" size="sm" onClick={() => onCancel(appointment)}>
+                            <X /> Cancelar
+                        </Button>
+                    )}
+                </div>
+            )}
+        </div>
+    );
 }

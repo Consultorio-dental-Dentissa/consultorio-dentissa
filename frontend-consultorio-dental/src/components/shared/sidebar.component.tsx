@@ -1,137 +1,96 @@
-import {
-    Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
-    SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
-    SidebarHeader, SidebarFooter,
-} from "@/components/ui/sidebar"
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar";
+import { Wordmark } from "@/components/shared/brand-logo.component";
+import { LogoutIcon } from "@/components/shared/nav-icons.component";
+import { useAuth } from "@/features/auth/hooks/use-auth";
+import { useUnreadNotificationsCount } from "@/features/notifications/hooks/use-notifications";
+import { getHomeRoute, getNavItems, type NavItem } from "@/config/navigation";
+import { cn } from "@/lib/utils";
 
-import { LayoutGrid, Calendar, Users, User, FileText, Tag,
-         MessageSquare, Bell, LogOut, Wrench, ClipboardPlus } from "lucide-react";
+const ITEM =
+    "flex w-full items-center gap-3 rounded-lg px-3 py-[11px] text-[15px] outline-none transition-colors focus-visible:ring-3 focus-visible:ring-white/60";
 
-import type { IconType } from "react-icons/lib"
-import { useAuth } from "@/features/auth/context/auth-context-provider";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-
-
-
-interface BusinessItem {
-    href: string;
-    label: string;
-    icon: IconType;
-}
-
-
-const businessItems: BusinessItem[] = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
-    { href: '/usuarios', label: 'Usuarios', icon: Users },
-    { href: '/pacientes', label: 'Pacientes', icon: User },
-    { href: '/citas', label: 'Citas', icon: Calendar },
-    { href: '/consultas', label: 'Consultas', icon: FileText },
-    { href: '/servicios', label: 'Servicios', icon: Wrench },
-]
-
-
-const publicityItems: BusinessItem[] = [
-    { href: '/preguntas', label: 'Preguntas frecuentes', icon: MessageSquare },
-    { href: '/ofertas', label: 'Ofertas', icon: Tag },
-    { href: '/notificaciones', label: 'Notificaciones', icon: Bell },
-]
-
+/**
+ * Barra lateral de docs/DISEÑO-FINAL: 240px, fondo rosa #fc7186, padding 24x16, "Dentissa" blanco 24/800,
+ * ítems de 15px con gap 12 y radio 8. Activo: fondo blanco, texto #e0566c/800 e icono #fc7186. Inactivo: blanco/600,
+ * hover rgba(255,255,255,.16). "Cerrar sesión" al pie. El menú depende del rol (ver config/navigation.ts).
+ */
 export function SidebarApp() {
-
     const navigate = useNavigate();
-    const { logOut } = useAuth();
+    const { pathname } = useLocation();
+    const { user, logOut } = useAuth();
+    const unread = useUnreadNotificationsCount(!!user);
 
-    const handleLogout = () => {
-        logOut();
-        navigate('/login');
-    }
+    if (!user) return null;
+
+    const items = getNavItems(user.role);
+    const unreadCount = unread.data ?? 0;
+
+    const renderItem = (item: NavItem) => {
+        const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const showBadge = item.badge === "notifications" && unreadCount > 0;
+
+        return (
+            <li key={`${item.href}-${item.label}`}>
+                <Link
+                    to={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                        ITEM,
+                        isActive ? "bg-white font-extrabold text-brand" : "font-semibold text-white hover:bg-white/16",
+                    )}
+                >
+                    <item.icon className={isActive ? "text-primary" : undefined} />
+                    <span>{item.label}</span>
+                    {showBadge && (
+                        <span
+                            className={cn(
+                                "ml-auto rounded-full px-2 py-px text-[12.5px] font-extrabold",
+                                isActive ? "bg-primary text-white" : "bg-white text-brand",
+                            )}
+                        >
+                            <span aria-hidden="true">{unreadCount > 99 ? "99+" : unreadCount}</span>
+                            <span className="sr-only">{unreadCount} sin leer</span>
+                        </span>
+                    )}
+                </Link>
+            </li>
+        );
+    };
+
+    const handleLogout = async () => {
+        await logOut();
+        navigate("/login", { replace: true });
+    };
 
     return (
-        <Sidebar className="">
-            <SidebarHeader className="mt-1 flex flex-row justify-start items-center gap-2 p-5">
-                <div className="bg-rose-300 p-2 rounded-lg">
-                    <ClipboardPlus className="text-white"/>
-                </div>
-                <div>
-                    <p className="text-md font-bold text-white">Dentissa</p>
-                    <p className="text-xs font-medium text-white">Panel clinico</p>
-                </div>
+        <Sidebar className="border-r-0">
+            <SidebarHeader className="px-4 pt-6 pb-0">
+                <Link
+                    to={getHomeRoute(user.role)}
+                    aria-label="Dentissa, ir al inicio"
+                    className="block rounded-lg px-3 pb-[30px] text-2xl outline-none focus-visible:ring-3 focus-visible:ring-white/60"
+                >
+                    <Wordmark light />
+                </Link>
             </SidebarHeader>
 
-            <SidebarContent className="text-black px-3">
-                <SidebarGroup>
-                    
-                    <SidebarGroupLabel className="mt-0 text-white font-bold">GENERAL</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenuComponent
-                            items={businessItems}
-                        />
-                    </SidebarGroupContent>
-
-                    <SidebarGroupLabel className="mt-0 text-white font-bold">PUBLICIDAD</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenuComponent
-                            items={publicityItems}
-                        />
-                    </SidebarGroupContent>
-                        
-                </SidebarGroup>
+            <SidebarContent className="gap-0 px-4">
+                <nav aria-label="Navegación principal">
+                    <ul className="flex flex-col gap-1">{items.map(renderItem)}</ul>
+                </nav>
             </SidebarContent>
 
-            <SidebarFooter className="px-5">
+            <SidebarFooter className="px-4 pt-0 pb-6">
                 <button
-                    className="text-white text-sm font-medium flex items-center gap-2 p-2 rounded-md hover:bg-[#fbeeec] hover:text-rose-500"
+                    type="button"
                     onClick={handleLogout}
+                    className={cn(ITEM, "font-bold text-white hover:bg-white/16")}
                 >
-                    <LogOut size={23} className="font-bold"/>
-                    Cerrar sesión
+                    <LogoutIcon />
+                    <span>Cerrar sesión</span>
                 </button>
             </SidebarFooter>
         </Sidebar>
-    )
-}
-
-
-
-
-interface SidebarMenuComponentProps {
-    items: BusinessItem[]
-}
-
-
-function SidebarMenuComponent({ items }: SidebarMenuComponentProps) {
-    
-    const { pathname: currentUrl } = useLocation();
-
-    return (
-        <SidebarMenu className="flex-col gap-1">
-            {items.map((item) => {
-                const isActive = currentUrl === item.href;
-
-                return (
-                    <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton
-                            asChild
-                            className={`group/link font-normal py-3 hover:bg-[#fda4af] ${
-                                isActive ? 'bg-[#fbeeec] font-bold' : ''}`}
-                        >
-                            <Link to={item.href} className="flex items-center gap-3">
-                                <item.icon
-                                    size={18}
-                                    className={`group-hover/link:text-[#ffece9] font-bold ${
-                                        isActive ? 'text-[#c0685c]' : 'text-white'}`}
-                                />
-                                <p
-                                    className={`text-sm group-hover/link:text-[#ffece9] group-hover/link:font-bold font-bold ${
-                                        isActive ? 'text-[#c0685c] font-bold' : 'text-white'}`}
-                                >
-                                    {item.label}
-                                </p>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                );
-            })}
-        </SidebarMenu>
     );
 }
