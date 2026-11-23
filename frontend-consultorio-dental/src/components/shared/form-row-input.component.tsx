@@ -24,18 +24,20 @@ interface FormRowInputProps {
     readOnlyValue?: string;
     /** Pinta el asterisco y marca el control con `aria-required`. */
     required?: boolean;
+    /** Etiqueta encima del control en lugar de a su izquierda. */
+    stacked?: boolean;
 }
 
 /** Campo en fila de formulario de docs/DISEÑO-FINAL (Modificar datos): etiqueta con icono a la izquierda, control a la derecha. */
 export function FormRowInput({
-    label, icon, registration, type = "text", autoComplete, inputMode, max, min, step, placeholder, error, hint, readOnlyValue, required,
+    label, icon, registration, type = "text", autoComplete, inputMode, max, min, step, placeholder, error, hint, readOnlyValue, required, stacked,
 }: FormRowInputProps) {
     const id = useId();
     const errorId = `${id}-error`;
     const hintId = `${id}-hint`;
 
     return (
-        <FormRow label={label} icon={icon} htmlFor={readOnlyValue !== undefined ? undefined : id} required={required}>
+        <FormRow label={label} icon={icon} htmlFor={readOnlyValue !== undefined ? undefined : id} required={required} stacked={stacked}>
             <div className="flex flex-col gap-1.5">
                 {readOnlyValue !== undefined ? (
                     <Input value={readOnlyValue} readOnly disabled aria-label={label} aria-describedby={hint ? hintId : undefined} />
@@ -72,16 +74,18 @@ interface FormRowTextareaProps {
     error?: string;
     hint?: ReactNode;
     required?: boolean;
+    /** Etiqueta encima del control en lugar de a su izquierda. */
+    stacked?: boolean;
 }
 
 /** Área de texto en fila de formulario (etiqueta arriba a la izquierda, como en docs/DISEÑO-FINAL). */
-export function FormRowTextarea({ label, icon, registration, rows, maxLength, placeholder, error, hint, required }: FormRowTextareaProps) {
+export function FormRowTextarea({ label, icon, registration, rows, maxLength, placeholder, error, hint, required, stacked }: FormRowTextareaProps) {
     const id = useId();
     const errorId = `${id}-error`;
     const hintId = `${id}-hint`;
 
     return (
-        <FormRow label={label} icon={icon} htmlFor={id} align="top" required={required}>
+        <FormRow label={label} icon={icon} htmlFor={id} align="top" required={required} stacked={stacked}>
             <div className="flex flex-col gap-1.5">
                 <Textarea
                     id={id}
@@ -110,16 +114,18 @@ interface FormRowSelectProps {
     error?: string;
     hint?: ReactNode;
     required?: boolean;
+    /** Etiqueta encima del control en lugar de a su izquierda. */
+    stacked?: boolean;
 }
 
 /** Selector en fila de formulario. */
-export function FormRowSelect({ label, icon, data, value, onChange, placeholder, error, hint, required }: FormRowSelectProps) {
+export function FormRowSelect({ label, icon, data, value, onChange, placeholder, error, hint, required, stacked }: FormRowSelectProps) {
     const id = useId();
     const errorId = `${id}-error`;
     const hintId = `${id}-hint`;
 
     return (
-        <FormRow label={label} icon={icon} htmlFor={id} required={required}>
+        <FormRow label={label} icon={icon} htmlFor={id} required={required} stacked={stacked}>
             <div className="flex flex-col gap-1.5">
                 <SelectComponent
                     id={id}

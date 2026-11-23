@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { ConsultationImagesManager } from "@/features/consultations/components/consultation-images-manager.component";
 import { useConsultation, useUpdateConsultation } from "@/features/consultations/hooks/use-consultations";
+import { OdontogramSection } from "@/features/odontogram/components/odontogram-section.component";
 import type { Consultation } from "@/features/consultations/types/consultation.model";
 import { formatClinicShortDate } from "@/utils/clinic-time";
 
@@ -96,6 +97,8 @@ export function ConsultationDetailModal({ consultationId, onClose }: Consultatio
                         <h3 className={SECTION_TITLE}>Imágenes adjuntas ({consultation.images.length})</h3>
                         <ConsultationImagesManager consultation={consultation} editable />
                     </section>
+
+                    <OdontogramSection patientId={consultation.patient.id} />
 
                     {!editing && (
                         <div className="form-footer">

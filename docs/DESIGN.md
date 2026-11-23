@@ -82,7 +82,7 @@ Regla de marca: **relleno rosa = `primary` `#fc7186`**; **texto/icono rosa sobre
 
 Colores de estado de cita (RF-014): Pendiente gris, Completada azul, Confirmada verde, Cancelada rojo, Reprogramada amarillo.
 Barras laterales del Panel por estado: `#9ca3af` / `#93b4f5` (completada) / `#86d9a6` (confirmada) / `#fc7186` (en curso).
-Odontograma: sano `#fff` borde `#cfd3d8`; caries `#1f2328`; extraído `#ef4444` borde `#dc2626`; revisión `#6b7280` borde `#4b5563`.
+Odontograma: ver §9 (SANO blanco, CARIES negro, REMOVIDO rojo, CORONA dorado).
 
 > Conflicto con requisitos: RNF-006 pide tonos rosados "derivados de `#f2b0a6`". Las maquetas finales usan `#fc7186`.
 > Se siguió `DISEÑO-FINAL` (instrucción de Luis). Conviene actualizar RNF-006.
@@ -203,7 +203,7 @@ Lo que se **omitió o adaptó** porque el backend no lo soporta (la fuente de au
 - **Recordarme** (Iniciar sesión): no hay sesión persistente opcional.
 - **Términos y aviso de privacidad** (Registrarse): no hay campo, páginas legales ni endpoint; se omitió la casilla.
 - **Login social / "continuar con..."**: el backend solo autentica con correo y contraseña.
-- **Odontograma / datos clínicos** (Perfil de paciente): sin modelo ni endpoints.
+- **Odontograma**: ya existe (ver §9); solo ADMIN.
 - **Odontólogo** (citas, agenda, consultas): `Appointment` no tiene odontólogo.
 - **Descuento de ofertas**: `Offer` no tiene el campo; solo nombre, descripción, imagen, fechas, estatus y servicios.
 - **Eliminar usuarios, servicios y notificaciones**: no existen `DELETE /users`, `/services` ni `/notifications`. Usuarios y servicios se desactivan con el switch; las notificaciones se marcan como leídas.
@@ -220,3 +220,22 @@ Adaptaciones:
 - **Duración de servicio**: un solo campo numérico en minutos (15 a 120) en vez de dos selectores horas/minutos; es la misma regla del backend.
 - **Calendario de Citas**: el encabezado sigue la maqueta (mes, anterior/Hoy/siguiente, estatus, vista); la búsqueda por paciente/servicio, que la maqueta no tiene, se colocó junto a los botones de la cabecera de página.
 - **Páginas agregadas**: `/mi-perfil` para los tres roles (Perfil de usuario para ADMIN y ASISTENTE; "Modificar datos" solo para ADMIN, el cambio de contraseña para ambos), y Auditoría `/auditoria` (sin maqueta).
+
+## 9. Odontograma
+
+Componente `Odontogram` (`src/features/odontogram/`), dibujado con SVG propio (sin dependencias). 32 dientes FDI en dos arcadas
+(superior 18→11 | 21→28, inferior 48→41 | 31→38) con el número visible dentro del diente. Cada diente es un botón enfocable
+(`aria-label` "Diente 36, Caries, con nota"; `title` con la nota). Un punto rosa en el diente indica que tiene nota.
+
+| Estado | Color | Relleno / borde / número |
+|---|---|---|
+| SANO (por defecto) | Blanco | `#ffffff` / `#9aa0a8` / `#1f2328` |
+| CARIES | Negro | `#111827` / `#000000` / blanco |
+| REMOVIDO | Rojo | `#dc2626` / `#991b1b` / blanco |
+| CORONA | Dorado | `#e0b13a` / `#a16207` / `#1f2328` |
+
+- Leyenda de los 4 estados (+ "Con nota") bajo las arcadas. En pantallas estrechas las arcadas hacen scroll horizontal (ancho mínimo 600px).
+- Al pulsar un diente (si no es `readOnly`) se abre `ToothEditModal`: estado como radios en botones, nota de máx. 300 con contador,
+  zod + react-hook-form; sin cambios avisa "No hay cambios para guardar" sin llamar a la API. Tras guardar actualiza y invalida la query `["odontogram", patientId]`.
+- Solo ADMIN (el backend responde 403 al resto). Se usa en: pestaña "Odontograma" del perfil de paciente, y sección colapsable
+  "Odontograma del paciente" (`OdontogramSection`) en Registrar consulta y en el Detalle de consulta.

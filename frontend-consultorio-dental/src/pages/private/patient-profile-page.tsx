@@ -23,6 +23,7 @@ import { AppointmentWorkflow } from "@/features/appointments/components/appointm
 import { Role } from "@/features/users/types/rol.enum";
 import { ApiError } from "@/services/api";
 import { ConsultationDetailModal } from "@/features/consultations/components/consultation-detail-modal.component";
+import { Odontogram } from "@/features/odontogram/components/odontogram.component";
 import { useDisclosure } from "@/hooks/use-disclosure";
 import { calculateAge, formatPhone } from "@/utils/formatters";
 
@@ -33,7 +34,7 @@ const BACK_LINK = "w-fit text-[15px] font-bold text-ink-4 hover:text-foreground"
 /**
  * Perfil de paciente.dc.html (ADMIN) y Asistente - Perfil de paciente.dc.html (ASISTENTE).
  * El ASISTENTE no puede ver consultas (el backend responde 403): solo Historial de citas y Datos personales.
- * No hay pestaña de odontograma: no existe en el backend.
+ * Pestaña "Odontograma" solo para ADMIN (el backend responde 403 al resto).
  */
 export default function PatientProfilePage() {
     const { id } = useParams();
@@ -144,6 +145,7 @@ export default function PatientProfilePage() {
                 <TabsList aria-label="Secciones del perfil">
                     <TabsTrigger value="appointments">Historial de citas</TabsTrigger>
                     {isAdmin && <TabsTrigger value="consultations">Historial de consultas</TabsTrigger>}
+                    {isAdmin && <TabsTrigger value="odontogram">Odontograma</TabsTrigger>}
                     <TabsTrigger value="data">Datos personales</TabsTrigger>
                 </TabsList>
 
@@ -166,6 +168,14 @@ export default function PatientProfilePage() {
                             onPageChange={setConsultationsPage}
                             onViewConsultation={setConsultationId}
                         />
+                    </TabsContent>
+                )}
+
+                {isAdmin && (
+                    <TabsContent value="odontogram">
+                        <TableCard className="p-6">
+                            <Odontogram patientId={patient.id} />
+                        </TableCard>
                     </TabsContent>
                 )}
 

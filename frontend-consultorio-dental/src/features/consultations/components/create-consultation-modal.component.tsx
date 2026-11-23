@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import toast from "react-hot-toast";
-import { AlignLeft, CalendarCheck, FileText, ImagePlus, NotebookPen, X } from "lucide-react";
+import { AlignLeft, CalendarCheck, FileText, ImagePlus, NotebookPen, Smile, X } from "lucide-react";
 import { Modal } from "@/components/shared/modal.component";
 import { Alert } from "@/components/shared/alert.component";
 import { FormRow } from "@/components/shared/form-row.component";
@@ -14,8 +14,9 @@ import { ImageDropzone } from "@/features/consultations/components/image-dropzon
 import { validateImageFiles } from "@/features/consultations/types/image-files";
 import { useCreateConsultation, useUploadConsultationImages } from "@/features/consultations/hooks/use-consultations";
 import { MAX_CONSULTATION_IMAGES } from "@/features/consultations/types/consultation.model";
-import { useAppointments } from "@/features/appointments/hooks/use-appointments";
+import { useAppointment, useAppointments } from "@/features/appointments/hooks/use-appointments";
 import { STATUS_APPOINTMENT } from "@/features/appointments/types/status-appointment.enum";
+import { Odontogram } from "@/features/odontogram/components/odontogram.component";
 import { formatClinicShortDate } from "@/utils/clinic-time";
 
 const MAX_TEXT = 50000;
@@ -30,6 +31,8 @@ type FormInput = z.infer<typeof schema>;
 
 export interface ConsultationAppointment {
     id: number;
+    /** Paciente de la cita (para mostrar su odontograma). */
+    patient_id: number;
     /** Texto para mostrar, p. ej. "María Ramírez · Limpieza dental · 10 jul 2025". */
     label: string;
 }
@@ -51,6 +54,7 @@ export function CreateConsultationModal({ open, onOpenChange, appointment, onCre
             onClose={onOpenChange}
             title="Registrar consulta"
             description="Vinculada a una cita completada"
+            size="xl"
         >
             <CreateForm appointment={appointment} onClose={() => onOpenChange(false)} onCreated={onCreated} />
         </Modal>
@@ -73,6 +77,11 @@ function CreateForm({ appointment, onClose, onCreated }: { appointment?: Consult
         resolver: zodResolver(schema),
         defaultValues: { appointment_id: appointment ? String(appointment.id) : "", description: "", observations: "" },
     });
+
+    // La lista de citas no trae patient_id: se obtiene del detalle de la cita elegida.
+    const selectedId = useWatch({ control, name: "appointment_id" });
+    const detail = useAppointment(appointment ? null : selectedId ? Number(selectedId) : null);
+    const patientId = appointment ? appointment.patient_id : detail.data?.patient_id ?? null;
 
     const addFiles = (incoming: File[]) => {
         if (files.length + incoming.length > MAX_CONSULTATION_IMAGES) {
@@ -126,7 +135,7 @@ function CreateForm({ appointment, onClose, onCreated }: { appointment?: Consult
             {formError && <Alert>{formError}</Alert>}
 
             {appointment ? (
-                <FormRow label="Cita" icon={CalendarCheck}>
+                <FormRow label="Cita" icon={CalendarCheck} stacked>
                     <p className="flex min-h-[46px] items-center rounded-[9px] bg-field px-3.5 text-[15px] font-bold text-foreground">{appointment.label}</p>
                 </FormRow>
             ) : (
@@ -137,7 +146,7 @@ function CreateForm({ appointment, onClose, onCreated }: { appointment?: Consult
                         name="appointment_id"
                         render={({ field }) => (
                             <FormRowSelect
-                                label="Cita" icon={CalendarCheck}
+                                label="Cita" icon={CalendarCheck} stacked
                                 placeholder={completed.isPending ? "Cargando citas..." : "Selecciona la cita"}
                                 data={(completed.data?.items ?? []).map((item) => ({
                                     value: item.id,
@@ -153,10 +162,10 @@ function CreateForm({ appointment, onClose, onCreated }: { appointment?: Consult
                 </>
             )}
 
-            <FormRowTextarea label="Notas" icon={AlignLeft} rows={4} placeholder="Describe el procedimiento realizado…" registration={register("description")} error={errors.description?.message} />
-            <FormRowTextarea label="Observaciones" icon={NotebookPen} rows={3} placeholder="Indicaciones y seguimiento…" registration={register("observations")} error={errors.observations?.message} />
+            <FormRowTextarea label="Notas" icon={AlignLeft} stacked rows={4} placeholder="Describe el procedimiento realizado…" registration={register("description")} error={errors.description?.message} />
+            <FormRowTextarea label="Observaciones" icon={NotebookPen} stacked rows={3} placeholder="Indicaciones y seguimiento…" registration={register("observations")} error={errors.observations?.message} />
 
-            <FormRow label="Imágenes" icon={ImagePlus} align="top">
+            <FormRow label="Imágenes" icon={ImagePlus} align="top" stacked>
                 <div className="flex flex-col gap-2">
                     <ImageDropzone onFiles={addFiles} disabled={busy} remaining={MAX_CONSULTATION_IMAGES - files.length} />
                     {files.length > 0 && (
@@ -179,6 +188,22 @@ function CreateForm({ appointment, onClose, onCreated }: { appointment?: Consult
                     )}
                 </div>
             </FormRow>
+
+            {/* Odontograma al final, con su etiqueta arriba (ocupa todo el ancho del formulario). */}
+            {patientId !== null && (
+                <div role="group" aria-labelledby="consultation-odontogram-label" className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1">
+                        <span id="consultation-odontogram-label" className="flex items-center gap-[11px] text-[15px] font-semibold text-ink-4">
+                            <Smile className="size-[19px] shrink-0 text-ink-5" strokeWidth={1.9} aria-hidden="true" />
+                            Odontograma del paciente
+                        </span>
+                        <p className="text-sm text-ink-4">
+                            Cada cambio en un diente se guarda al instante; es independiente de guardar la consulta.
+                        </p>
+                    </div>
+                    <Odontogram patientId={patientId} legendPosition="top" />
+                </div>
+            )}
 
             <div className="form-footer">
                 <Button type="button" variant="outline" onClick={onClose} disabled={busy}>Cancelar</Button>

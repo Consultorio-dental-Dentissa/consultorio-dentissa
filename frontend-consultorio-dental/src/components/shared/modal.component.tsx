@@ -9,7 +9,7 @@ interface ModalProps {
     title: string;
     description?: string;
     children: ReactNode;
-    size?: "sm" | "md" | "lg";
+    size?: "sm" | "md" | "lg" | "xl";
     /** Se conserva por compatibilidad: las cabeceras de modal de docs/DISEÑO-FINAL no llevan icono. */
     icon?: LucideIcon;
     /** Rótulo en mayúsculas sobre el título (detalle de citas); sustituye a la descripción. */
@@ -18,7 +18,7 @@ interface ModalProps {
     headerExtra?: ReactNode;
 }
 
-const SIZES = { sm: "sm:max-w-[440px]", md: "sm:max-w-[620px]", lg: "sm:max-w-[680px]" } as const;
+const SIZES = { sm: "sm:max-w-[440px]", md: "sm:max-w-[620px]", lg: "sm:max-w-[680px]", xl: "sm:max-w-[860px]" } as const;
 
 /**
  * Modal estándar de docs/DISEÑO-FINAL: 620px (680 con imágenes), radio 16, sombra 0 20px 50px, cabecera de

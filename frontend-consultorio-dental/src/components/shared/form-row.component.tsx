@@ -15,6 +15,8 @@ interface FormRowProps {
     htmlFor?: string;
     /** Pinta el asterisco de campo obligatorio (el control debe llevar `aria-required`). */
     required?: boolean;
+    /** Etiqueta encima del control (una sola columna) en lugar de a su izquierda. */
+    stacked?: boolean;
     children: ReactNode;
     className?: string;
 }
@@ -23,11 +25,11 @@ interface FormRowProps {
  * Fila de formulario de docs/DISEÑO-FINAL (Citas, Servicios, Ofertas, Consultas, Perfil): etiqueta con icono en una
  * columna de 150px (15px/600 #6b7280) y el control a la derecha; separación de 16px. En móvil se apila.
  */
-export function FormRow({ label, icon: Icon, align = "center", htmlFor, required, children, className }: FormRowProps) {
+export function FormRow({ label, icon: Icon, align = "center", htmlFor, required, stacked, children, className }: FormRowProps) {
     const labelId = useId();
     const labelClass = cn(
         "flex items-center gap-[11px] text-[15px] font-semibold text-ink-4",
-        align === "top" && "sm:pt-3",
+        align === "top" && !stacked && "sm:pt-3",
     );
     const content = (
         <>
@@ -40,8 +42,9 @@ export function FormRow({ label, icon: Icon, align = "center", htmlFor, required
     return (
         <div
             className={cn(
-                "grid gap-2 sm:grid-cols-[150px_1fr] sm:gap-4",
-                align === "center" ? "sm:items-center" : "sm:items-start",
+                "grid gap-2",
+                !stacked && "sm:grid-cols-[150px_1fr] sm:gap-4",
+                !stacked && (align === "center" ? "sm:items-center" : "sm:items-start"),
                 className,
             )}
         >

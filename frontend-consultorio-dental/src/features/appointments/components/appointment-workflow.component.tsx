@@ -85,6 +85,7 @@ export function AppointmentWorkflow({ appointmentId, role, onClose }: Appointmen
                 onRegisterConsultation={fromDetail<AppointmentDetail>((a) =>
                     setConsultationFor({
                         id: a.id,
+                        patient_id: a.patient_id,
                         label: `${a.patient.name} ${a.patient.lastname} · ${a.service.name} · ${formatClinicShortDate(a.scheduled_at)}`,
                     }),
                 )}
