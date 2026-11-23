@@ -31,6 +31,7 @@ model User {
   auditLogs              AuditLog[]
   consultationsCreated   Consultation[]          @relation("ConsultationCreatedBy")
   consultationsUpdated   Consultation[]          @relation("ConsultationUpdatedBy")
+  toothRecordsUpdated    ToothRecord[]           @relation("ToothRecordUpdatedBy")
 
   @@map("users")
 }
@@ -80,6 +81,7 @@ model Patient {
 
   appointments Appointment[]
   user         User          @relation(fields: [user_id], references: [id])
+  toothRecords ToothRecord[]
 
   @@map("patients")
 }
@@ -290,4 +292,31 @@ model AuditLog {
   @@index([user_id])
   @@index([action])
   @@map("audit_logs")
+}
+
+enum ToothStatus {
+  SANO
+  CARIES
+  REMOVIDO
+  CORONA
+}
+
+/// Solo existen filas para dientes modificados; sin fila = SANO sin nota.
+/// CHECK de numeracion FDI escrito a mano en la migracion.
+model ToothRecord {
+  id            Int         @id @default(autoincrement())
+  patient_id    Int
+  tooth_number  Int
+  status        ToothStatus
+  notes         String?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  updated_by_id Int?
+
+  patient   Patient @relation(fields: [patient_id], references: [id], onDelete: Restrict)
+  updatedBy User?   @relation("ToothRecordUpdatedBy", fields: [updated_by_id], references: [id], onDelete: Restrict)
+
+  @@unique([patient_id, tooth_number])
+  @@index([patient_id])
+  @@map("tooth_records")
 }

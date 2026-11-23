@@ -17,6 +17,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ConsultationsModule } from './modules/consultations/consultations.module';
 import { StorageModule } from './infrastructure/storage/storage.module';
+import { OdontogramModule } from './modules/odontogram/odontogram.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { StorageModule } from './infrastructure/storage/storage.module';
     DashboardModule,
     StorageModule,
     ConsultationsModule,
+    OdontogramModule,
   ],
   controllers: [AppController],
   providers: [
