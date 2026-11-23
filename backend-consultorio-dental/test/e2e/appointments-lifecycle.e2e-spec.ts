@@ -242,12 +242,17 @@ describe('Citas: ciclo de estados y notificaciones (e2e)', () => {
   });
 
   describe('reglas por fecha', () => {
-    it('no se confirma una cita pasada (409)', async () => {
+    it('una cita pendiente que ya pasó se puede confirmar y luego completar', async () => {
       const id = await newPending();
       await forcePast(id);
-      const res = await api.patch(`/appointments/${id}/confirm`, admin);
-      expect(res.status).toBe(409);
-      expect(await status(id)).toBe('PENDIENTE');
+
+      const confirm = await api.patch(`/appointments/${id}/confirm`, admin);
+      expect(confirm.status).toBe(200);
+      expect(await status(id)).toBe('CONFIRMADA');
+
+      const complete = await api.patch(`/appointments/${id}/complete`, admin);
+      expect(complete.status).toBe(200);
+      expect(await status(id)).toBe('COMPLETADA');
     });
 
     it('no se completa una cita futura (409)', async () => {

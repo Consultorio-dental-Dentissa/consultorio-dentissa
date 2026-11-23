@@ -24,8 +24,8 @@ const PENDING_LIKE: string[] = [STATUS_APPOINTMENT.PENDIENTE, STATUS_APPOINTMENT
  * usabilidad: el backend valida cada transición y puede responder 409/403.
  *
  * - Editar (servicio y notas): mismos roles/estados que reprogramar.
- * - ADMIN: confirmar (cita futura pendiente), completar (confirmada y ya
- *   iniciada), cancelar y reprogramar citas abiertas.
+ * - ADMIN: confirmar (cita pendiente, aunque ya haya pasado), completar
+ *   (confirmada y ya iniciada), cancelar y reprogramar citas abiertas.
  * - ASISTENTE: cancelar y reprogramar; nunca confirma ni completa.
  * - PACIENTE: cancelar/reprogramar solo sus citas PENDIENTE/REPROGRAMADA futuras.
  */
@@ -39,7 +39,8 @@ export function getAppointmentActions(
 
     if (role === Role.ADMINISTRADOR) {
         return {
-            confirm: PENDING_LIKE.includes(appointment.status) && isFuture,
+            // Sin límite de fecha: una cita pendiente olvidada se puede confirmar aunque ya haya pasado.
+            confirm: PENDING_LIKE.includes(appointment.status),
             complete: appointment.status === STATUS_APPOINTMENT.CONFIRMADA && started,
             cancel: OPEN_STATUSES.includes(appointment.status),
             reschedule: OPEN_STATUSES.includes(appointment.status),

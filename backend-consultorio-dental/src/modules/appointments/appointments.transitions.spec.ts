@@ -260,20 +260,14 @@ describe('AppointmentsService - transiciones y permisos', () => {
     });
     afterEach(() => nowSpy.mockRestore());
 
-    it('confirmar: futura OK; exactamente ahora o pasada responde 409 sin escribir', async () => {
-      withStatus('PENDIENTE', at(1));
-      await expect(service.confirmAppointment(7, admin)).resolves.toMatchObject(
-        { status: 'CONFIRMADA' },
-      );
-
-      for (const offset of [0, -1, -86_400_000]) {
+    it('confirmar: se puede aunque la cita sea futura, sea ahora o ya haya pasado', async () => {
+      for (const offset of [1, 0, -1, -86_400_000]) {
         appointments.updateIfStatus.mockClear();
         withStatus('PENDIENTE', at(offset));
-        await expect(service.confirmAppointment(7, admin)).rejects.toThrow(
-          /ya pasó/,
-        );
-        expect(appointments.updateIfStatus).not.toHaveBeenCalled();
-        expect(appointments.createNotifications).toHaveBeenCalledTimes(1);
+        await expect(
+          service.confirmAppointment(7, admin),
+        ).resolves.toMatchObject({ status: 'CONFIRMADA' });
+        expect(appointments.updateIfStatus).toHaveBeenCalledTimes(1);
       }
     });
 

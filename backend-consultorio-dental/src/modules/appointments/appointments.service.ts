@@ -499,13 +499,8 @@ export class AppointmentsService {
         message: 'Tu cita ha sido confirmada por el consultorio',
       },
       AuditAction.APPOINTMENT_CONFIRMED,
-      (scheduledAt) => {
-        if (scheduledAt.getTime() <= Date.now()) {
-          throw new ConflictException(
-            'No se puede confirmar una cita cuya fecha y hora ya pasó',
-          );
-        }
-      },
+      // Sin restricción de fecha: si se olvidó confirmarla, se puede confirmar
+      // (y luego completar) aunque su hora ya haya pasado.
     );
   }
 
