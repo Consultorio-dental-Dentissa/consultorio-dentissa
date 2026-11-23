@@ -60,7 +60,7 @@ function Breadcrumbs({ homeRoute, isPatient }: { homeRoute: string; isPatient: b
 /**
  * Barra superior de docs/DISEÑO-FINAL: 68px, blanca, borde inferior #e5e7eb, padding 0 32px. Migas de pan a la
  * izquierda; a la derecha el nombre del usuario (15px/700) con menú desplegable de 200px que se abre al pasar el
- * cursor (y también con clic o teclado): Ver perfil · Notificaciones · Cerrar sesión. No lleva campana ni avatar.
+ * cursor con mouse (y también con clic, toque o teclado; en táctil se mantiene abierto hasta tocar de nuevo): Ver perfil · Notificaciones · Cerrar sesión. No lleva campana ni avatar.
  * "Ver perfil" lleva a /mi-perfil para todos los roles (Paciente: "Mi perfil"; Administrador y Asistente: "Perfil de usuario").
  */
 export function Header() {
@@ -73,11 +73,15 @@ export function Header() {
     if (!user) return null;
 
     const unreadCount = unread.data ?? 0;
-    const showOnHover = () => {
+    // El abrir/cerrar al pasar el cursor es solo para mouse. En pantallas táctiles el dedo dispara "pointerenter" al
+    // tocar y "pointerleave" al levantarlo, lo que cerraba el menú al instante: allí solo abre y cierra el toque.
+    const showOnHover = (event: React.PointerEvent) => {
+        if (event.pointerType !== "mouse") return;
         window.clearTimeout(closeTimer.current);
         setOpen(true);
     };
-    const hideOnLeave = () => {
+    const hideOnLeave = (event: React.PointerEvent) => {
+        if (event.pointerType !== "mouse") return;
         window.clearTimeout(closeTimer.current);
         closeTimer.current = window.setTimeout(() => setOpen(false), 150);
     };
