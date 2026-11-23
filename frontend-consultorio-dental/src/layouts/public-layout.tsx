@@ -126,7 +126,7 @@ function Header() {
                             </li>
                         ))}
                     </ul>
-                    <PwaInstallButton className="mt-3 w-full sm:hidden" onClick={() => setOpen(false)} />
+                    <PwaInstallButton className="mt-3 w-full sm:hidden" />
                     {!user && (
                         <div className="mt-3 flex gap-3 border-t border-line-soft pt-3 sm:hidden">
                             <Link

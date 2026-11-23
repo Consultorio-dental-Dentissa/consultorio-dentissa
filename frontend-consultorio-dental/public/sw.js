@@ -19,7 +19,8 @@ self.addEventListener("install", (event) => {
     caches
       .open(CACHE)
       // Se tolera que un archivo falle (p. ej. en desarrollo): no debe impedir instalar el worker.
-      .then((cache) => Promise.allSettled(urls.map((url) => cache.add(url))))
+      // `cache: "reload"` evita guardar un index.html viejo servido por la caché HTTP del navegador.
+      .then((cache) => Promise.allSettled(urls.map((url) => cache.add(new Request(url, { cache: "reload" })))))
       .then(() => self.skipWaiting()),
   );
 });
@@ -46,9 +47,11 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          if (response.ok) {
+          // Solo se guarda como "/" una página HTML real (no un JS, JSON o imagen abierto en una pestaña).
+          const isHtml = (response.headers.get("content-type") || "").includes("text/html");
+          if (response.ok && isHtml) {
             const copy = response.clone();
-            caches.open(CACHE).then((cache) => cache.put("/", copy));
+            event.waitUntil(caches.open(CACHE).then((cache) => cache.put("/", copy)));
           }
           return response;
         })
@@ -64,9 +67,11 @@ self.addEventListener("fetch", (event) => {
         (cached) =>
           cached ||
           fetch(request).then((response) => {
-            if (response.ok) {
+            // Un hosting con reescritura SPA puede responder index.html (200) a un archivo inexistente: no se guarda.
+            const isHtml = (response.headers.get("content-type") || "").includes("text/html");
+            if (response.ok && !isHtml) {
               const copy = response.clone();
-              caches.open(CACHE).then((cache) => cache.put(request, copy));
+              event.waitUntil(caches.open(CACHE).then((cache) => cache.put(request, copy)));
             }
             return response;
           }),

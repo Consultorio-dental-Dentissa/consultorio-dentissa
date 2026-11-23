@@ -18,7 +18,7 @@ export function OfflineBanner() {
     return (
         <div
             role="status"
-            className="fixed inset-x-0 top-0 z-[100] flex items-center justify-center gap-2 bg-foreground px-4 py-2 text-center text-sm font-semibold text-white"
+            className="fixed inset-x-0 bottom-0 z-[100] flex items-center justify-center gap-2 bg-foreground px-4 py-2 text-center text-sm font-semibold text-white"
         >
             <WifiOff className="size-4 shrink-0" aria-hidden="true" />
             Sin conexión. La aplicación abre, pero los datos necesitan internet.

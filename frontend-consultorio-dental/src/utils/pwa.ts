@@ -41,14 +41,22 @@ export function initPwa(): void {
         emit();
     });
 
-    // Solo en producción: en desarrollo un service worker estorba al recargar en caliente.
-    if (import.meta.env.PROD && "serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("/sw.js").catch(() => {
-                // Sin service worker la app sigue funcionando; solo se pierde el modo sin conexión.
+    if ("serviceWorker" in navigator) {
+        if (import.meta.env.PROD) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js").catch(() => {
+                    // Sin service worker la app sigue funcionando; solo se pierde el modo sin conexión.
+                });
             });
-        });
+        } else {
+            // En desarrollo un service worker de otra sesión (p. ej. Docker en el mismo puerto) estorba: se quita.
+            navigator.serviceWorker.getRegistrations().then((list) => list.forEach((registration) => registration.unregister()));
+        }
     }
+
+    // Tras un despliegue, una pestaña abierta con la versión anterior puede pedir un archivo que ya no existe:
+    // se recarga para tomar la versión nueva en lugar de dejar la pantalla rota.
+    window.addEventListener("vite:preloadError", () => window.location.reload());
 }
 
 function subscribe(listener: () => void) {
@@ -74,12 +82,15 @@ export function usePwaInstall() {
     const install = async (): Promise<"accepted" | "dismissed" | "unavailable"> => {
         if (!deferredPrompt) return "unavailable";
         const prompt = deferredPrompt;
-        await prompt.prompt();
-        const { outcome } = await prompt.userChoice;
-        // El evento solo sirve una vez.
+        // El evento solo sirve una vez: se descarta antes de esperar para que un doble clic no lo reutilice.
         deferredPrompt = null;
         emit();
-        return outcome;
+        try {
+            await prompt.prompt();
+            return (await prompt.userChoice).outcome;
+        } catch {
+            return "unavailable";
+        }
     };
 
     return {
