@@ -96,3 +96,10 @@
 - Web pública: nuevo `GET /public/stats` (público, solo conteos: pacientes registrados y servicios activos); "Sobre nosotros" lo usa (muestra "—" mientras carga). "Años de experiencia" sigue siendo ejemplo en `clinic-content.ts`.
 - Hero público usa `src/assets/dentisa-rosa.webp`.
 - Pendiente: probar estos cambios en navegador; commits creados en esta fecha.
+
+## Odontograma y reglas de confirmación (2026-11-23)
+- Odontograma por paciente (solo ADMIN): tabla `tooth_records` (migración aditiva `add_tooth_records`), 32 dientes FDI, estados SANO/CARIES/REMOVIDO/CORONA (blanco/negro/rojo/dorado), nota ≤300. Sin fila = SANO sin nota. `GET /patients/:id/odontogram` y `PUT /patients/:id/odontogram/:tooth`; auditoría en la misma transacción sin el texto de la nota (`note_changed`).
+- Frontend: componente `Odontogram` (SVG propio, dientes como cuadrados redondeados), pestaña en el perfil del paciente y sección en registrar/ver consulta (modal de consulta más ancho y con etiquetas arriba: `FormRow stacked`, `Modal size="xl"`).
+- DECISIÓN (Luis, 2026-11-23): se puede confirmar una cita pendiente aunque ya haya pasado (y luego completarla); reemplaza la regla "no confirmar pasadas" del 2026-11-17. Completar sigue exigiendo cita CONFIRMADA y ya iniciada.
+- Notificaciones al ADMIN: ahora también al agendar el paciente (`CITA_CREADA`), y las de cancelar/reprogramar/editar llevan el nombre del paciente.
+- Pendiente: `reviewer` del módulo odontograma; prueba manual en navegador.
