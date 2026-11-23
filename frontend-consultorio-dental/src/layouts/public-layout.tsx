@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { Menu, MessageCircle, X, type LucideProps } from "lucide-react";
 import { Wordmark } from "@/components/shared/brand-logo.component";
 import { RouteFallback } from "@/components/shared/route-fallback.component";
+import { PwaInstallButton } from "@/components/shared/pwa-install-button.component";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import { getHomeRoute } from "@/config/navigation";
 import { clinicContent } from "@/config/clinic-content";
@@ -74,6 +75,7 @@ function Header() {
                 </ul>
 
                 <div className="ml-auto flex items-center gap-3">
+                    <PwaInstallButton className="hidden sm:flex" />
                     {user ? (
                         <Link
                             to={getHomeRoute(user.role)}
@@ -124,6 +126,7 @@ function Header() {
                             </li>
                         ))}
                     </ul>
+                    <PwaInstallButton className="mt-3 w-full sm:hidden" onClick={() => setOpen(false)} />
                     {!user && (
                         <div className="mt-3 flex gap-3 border-t border-line-soft pt-3 sm:hidden">
                             <Link

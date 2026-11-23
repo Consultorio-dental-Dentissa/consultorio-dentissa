@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { Toaster } from "react-hot-toast";
+import { OfflineBanner } from "@/components/shared/offline-banner.component";
 import { ApiError, type ApiErrorCode } from "@/services/api";
 
 const CLIENT_ERROR_CODES: ApiErrorCode[] = [
@@ -56,6 +57,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppToaster />
+      <OfflineBanner />
 
       <AuthProvider>
         <Router />

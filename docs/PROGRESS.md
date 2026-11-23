@@ -103,3 +103,10 @@
 - DECISIÓN (Luis, 2026-11-23): se puede confirmar una cita pendiente aunque ya haya pasado (y luego completarla); reemplaza la regla "no confirmar pasadas" del 2026-11-17. Completar sigue exigiendo cita CONFIRMADA y ya iniciada.
 - Notificaciones al ADMIN: ahora también al agendar el paciente (`CITA_CREADA`), y las de cancelar/reprogramar/editar llevan el nombre del paciente.
 - Pendiente: `reviewer` del módulo odontograma; prueba manual en navegador.
+
+## PWA instalable (2026-11-23)
+- Frontend convertido en PWA SIN dependencias nuevas: `public/manifest.webmanifest` (display `standalone`, orientation `any`, theme `#d75078`), iconos en `public/icons/` generados desde `src/assets/logo-dentissa.png` (192, 512, maskable 512 y apple-touch 180), `public/sw.js` (service worker propio) y un plugin en `vite.config.ts` que al compilar escribe en `dist/sw.js` la versión y la lista de archivos a precachear.
+- Caché: solo el cascarón (HTML, JS, CSS, fuentes e iconos del mismo origen). La API NUNCA se cachea (otro origen, datos clínicos y de sesión): sin conexión la app abre pero los datos no cargan; hay un aviso "Sin conexión".
+- Botón "Instalar app" en la barra pública (`PwaInstallButton`, `utils/pwa.ts`): diálogo nativo en Chrome/Edge/Android; en iOS muestra los pasos manuales de Safari. Se oculta si ya está instalada.
+- nginx: `sw.js` y el manifiesto con `Cache-Control: no-cache`. En Render (sitio estático) conviene la misma cabecera para `/sw.js`.
+- Verificado en Chrome headless contra `dist`: service worker activo, 101 archivos en caché, Chrome dispara `beforeinstallprompt` (instalable), la raíz y una ruta profunda cargan con el modo sin conexión activado. NO verificado: instalación real en un celular, iOS, ni el botón visible en pantalla.
