@@ -13,11 +13,11 @@ interface PwaInstallButtonProps {
 }
 
 /**
- * Botón "Instalar app" del menú público. Solo aparece cuando se puede instalar: el navegador ofrece el diálogo
- * nativo (Chrome/Edge/Android) o es iOS, donde se muestran los pasos manuales. Oculto si la app ya está instalada.
+ * Botón "Instalar app" del menú público. En Chrome/Edge/Android dispara directamente la instalación y solo existe
+ * mientras la app NO esté instalada. En iOS, donde Safari no permite instalar desde código, abre los pasos de Safari.
  */
 export function PwaInstallButton({ className, onClick }: PwaInstallButtonProps) {
-    const { visible, needsManualSteps, install } = usePwaInstall();
+    const { visible, needsManualSteps, pending, install } = usePwaInstall();
     const [stepsOpen, setStepsOpen] = useState(false);
 
     if (!visible) return null;
@@ -37,8 +37,9 @@ export function PwaInstallButton({ className, onClick }: PwaInstallButtonProps) 
             <button
                 type="button"
                 onClick={handleClick}
+                disabled={pending}
                 className={cn(
-                    "flex h-[46px] items-center justify-center gap-2 rounded-[9px] border border-input px-[18px] text-[15.5px] font-bold text-foreground transition-[box-shadow,border-color] duration-[250ms] outline-none hover:border-primary hover:shadow-glow focus-visible:ring-3 focus-visible:ring-ring/30",
+                    "flex h-[46px] items-center justify-center gap-2 rounded-[9px] border border-input px-[18px] text-[15.5px] font-bold text-foreground transition-[box-shadow,border-color] duration-[250ms] outline-none disabled:pointer-events-none disabled:opacity-60 hover:border-primary hover:shadow-glow focus-visible:ring-3 focus-visible:ring-ring/30",
                     className,
                 )}
             >

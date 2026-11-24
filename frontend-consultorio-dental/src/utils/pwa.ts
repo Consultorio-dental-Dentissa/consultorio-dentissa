@@ -8,11 +8,13 @@ interface BeforeInstallPromptEvent extends Event {
 
 let deferredPrompt: BeforeInstallPromptEvent | null = null;
 let installed = false;
+/** El diálogo nativo está abierto: el botón sigue visible (deshabilitado) hasta que el usuario decida. */
+let pending = false;
 const listeners = new Set<() => void>();
-let snapshot = { canPrompt: false, installed: false };
+let snapshot = { canPrompt: false, installed: false, pending: false };
 
 function emit() {
-    snapshot = { canPrompt: deferredPrompt !== null, installed };
+    snapshot = { canPrompt: deferredPrompt !== null, installed, pending };
     listeners.forEach((listener) => listener());
 }
 
@@ -27,11 +29,19 @@ export function initPwa(): void {
     if (typeof window === "undefined") return;
 
     installed = isStandalone();
-    snapshot = { canPrompt: false, installed };
+    snapshot = { canPrompt: false, installed, pending };
 
     window.addEventListener("beforeinstallprompt", (event) => {
         event.preventDefault();
         deferredPrompt = event as BeforeInstallPromptEvent;
+        // Si el navegador ofrece instalar, la app no está instalada (p. ej. se desinstaló después de instalarla).
+        installed = false;
+        emit();
+    });
+
+    // Al abrir la app instalada o cambiar de modo de visualización se actualiza el estado.
+    window.matchMedia("(display-mode: standalone)").addEventListener("change", (event) => {
+        installed = event.matches;
         emit();
     });
 
@@ -83,20 +93,32 @@ export function usePwaInstall() {
         if (!deferredPrompt) return "unavailable";
         const prompt = deferredPrompt;
         // El evento solo sirve una vez: se descarta antes de esperar para que un doble clic no lo reutilice.
+        // Si el usuario cierra el diálogo sin instalar, el navegador vuelve a disparar `beforeinstallprompt` y el
+        // botón reaparece listo para instalar (ver `initPwa`).
         deferredPrompt = null;
+        pending = true;
         emit();
         try {
             await prompt.prompt();
-            return (await prompt.userChoice).outcome;
+            const { outcome } = await prompt.userChoice;
+            if (outcome === "accepted") installed = true;
+            return outcome;
         } catch {
             return "unavailable";
+        } finally {
+            pending = false;
+            emit();
         }
     };
 
     return {
         /** Hay que mostrar el botón: el navegador permite instalar, o es iOS y aún no está instalada. */
-        visible: !state.installed && (state.canPrompt || isIos),
-        /** En iOS no hay diálogo nativo: se muestran las instrucciones manuales. */
+        // Chromium solo dispara `beforeinstallprompt` cuando la app NO está instalada: sin evento (ya instalada) el
+        // botón no aparece; tras desinstalarla el navegador vuelve a disparar el evento y el botón regresa.
+        // iOS no tiene ese evento ni API de instalación: el botón explica los pasos de Safari.
+        visible: !state.installed && (state.canPrompt || state.pending || isIos),
+        /** Diálogo nativo abierto: el botón no debe poder pulsarse otra vez. */
+        pending: state.pending,
         needsManualSteps: !state.canPrompt && isIos,
         install,
     };
